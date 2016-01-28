@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
 }
 
 dependencies {
@@ -29,5 +32,8 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.3.0'
     compile 'io.realm:realm-android:0.87.2'
     compile 'com.github.thorbenprimke:realm-recyclerview:0.9.12'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 
 }
+
