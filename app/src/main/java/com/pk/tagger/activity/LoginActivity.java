@@ -1,7 +1,9 @@
 package com.pk.tagger.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,7 +13,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.pk.tagger.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,23 +45,21 @@ public class LoginActivity extends AppCompatActivity {
     //called on Login page
 
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
-    private static final String LOGIN_URL = "52.31.31.106:9000/oauth/token";
-    public static final String KEY_EMAIL = "email";
+    private static final int REQUEST_REGISTER = 0;
+    private static final String LOGIN_URL = "http://52.31.31.106:9000/oauth/token";
+    public static final String KEY_EMAIL = "username";
     public static final String KEY_PASSWORD = "password";
+    public static final String KEY_GRANT_TYPE = "grant_type";
+
+    // temporary string to show the parsed response
+    private String jsonResponse;
 
     //initialise views using ButterKnife
-
-    @Bind(R.id.input_email)
-    EditText _emailText;
-    @Bind(R.id.input_password)
-    EditText _passwordText;
-    @Bind(R.id.btn_login)
-    Button _loginButton;
-    @Bind(R.id.link_signup)
-    TextView _signupLink;
-    @Bind(R.id.link_skiplogin)
-    TextView _skiploginLink;
+    @Bind(R.id.input_email) EditText _emailText;
+    @Bind(R.id.input_password) EditText _passwordText;
+    @Bind(R.id.btn_login) Button _loginButton;
+    @Bind(R.id.link_register) TextView _registerLink;
+    @Bind(R.id.link_skiplogin) TextView _skiploginLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,13 +76,13 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //intialise Register link below
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+        _registerLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Start register activity
-                Toast.makeText(getApplicationContext(), "Signup is selected!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Register is selected!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_REGISTER);
             }
         });
 
@@ -100,16 +119,87 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
         // get fields and TODO: insert into HTTP POST request below
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
         // TODO: Implement your own authentication logic here. (make HTTP POST request to <server>/oauth/token)
         // JSON {"username":"bob@email.com", "password":"hunter2"}
 
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(LoginActivity.this,response.toString(),Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "Valid Response: " + response.toString());
+
+                        try {
+                            // Parsing json object response
+                            JSONObject j = new JSONObject(response);
+                            jsonResponse = "";
+                            String token = j.getString("access_token");
+                            jsonResponse += "Access token: " + token + "\n\n";
+                            Log.d(TAG, jsonResponse);
+                            onLoginSuccess(token);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "Error Response: " + error.toString());
+                        onLoginFailed();
+
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Log.d(TAG, "Timeout/no connection error: " + error.toString());
+                            Toast.makeText(getBaseContext(), "Please make sure you have internet connection", Toast.LENGTH_LONG);
+                        } else if (error instanceof AuthFailureError) {
+                            Log.d(TAG, "AuthFailure error: " + error.toString());
+                        } else if (error instanceof ServerError) {
+                            Log.d(TAG, "Server error: " + error.toString());
+                        } else if (error instanceof NetworkError) {
+                            Log.d(TAG, "Network error: " + error.toString());
+                        } else if (error instanceof ParseError) {
+                            Log.d(TAG, "Parse error: " + error.toString());
+                        }
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put(KEY_PASSWORD, password);
+                params.put(KEY_EMAIL, email);
+                params.put(KEY_GRANT_TYPE, "password");
+                Log.d("Params", "params: " + params.toString());
+                return params;
+
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=utf-8";
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+        Log.d(TAG, jsonObjectRequest.toString());
+
     }
+
     //retrieves the intent from RegisterActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
+        if (requestCode == REQUEST_REGISTER) {
             if (resultCode == RESULT_OK) {
                 String name = data.getStringExtra("Name");
                 // TODO: Implement successful register logic here
@@ -126,21 +216,28 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
     // If login is successful call the LandingActivity class
-    public void onLoginSuccess(String name) {
+    public void onLoginSuccess(String token) {
         _loginButton.setEnabled(true);
+        //TODO: save token in shared prefs
+        SharedPreferences sharedPref = getBaseContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.access_token), token);
+        editor.commit();
+
         //Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
 
-        intent.putExtra("Username", name);
 
+       // intent.putExtra("Username", name);
         startActivity(intent);
         //finish();
     }
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
+        return;
+
     }
     // checks if fields match required rules
     public boolean validate() {

@@ -6,6 +6,7 @@ package com.pk.tagger.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -158,6 +159,12 @@ public class HomeFragment extends Fragment {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
+
+        //Test to see if access token is accessible from shared prefs
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        String defaultValue = getResources().getString(R.string.access_token);
+        String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+        Log.d(TAG, "Access token: " + access_token);
     }
 
     private void onClickedStartService() {

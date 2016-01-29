@@ -50,7 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     // temporary string to show the parsed response
     private String jsonResponse;
-    private String jsonError;
 
     //@Bind(R.id.input_name) EditText _nameText;
     @Bind(R.id.input_email) EditText _emailText;
@@ -169,16 +168,6 @@ public class RegisterActivity extends AppCompatActivity {
                 return headers;
             }
 
-/*
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                //params.put(KEY_USERNAME,username);
-                params.put(KEY_PASSWORD, password);
-                params.put(KEY_EMAIL, email);
-                return params;
-            }
-*/
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -191,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
                         // On complete call either onRegisterSuccess or onRegisterFailed
                         // depending on success
                         onRegisterSuccess();
-                        // onRegisterFailed();
+                        //onRegisterFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -203,8 +192,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         Intent resultIntent = new Intent();
         // TODO Add extras or a data URI to this intent as appropriate.
-        setResult(RESULT_OK, resultIntent);
 
+        setResult(RESULT_OK, resultIntent);
         finish();
     }
 
@@ -237,6 +226,7 @@ public class RegisterActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
+        //TODO: add error catching for uppercase, lowercase, and numerical character requirements
         if (password.isEmpty() || password.length() < 8 || password.length() > 100) {
             _passwordText.setError("Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase, and 1 number");
             Log.d(TAG, "Invalid password");
