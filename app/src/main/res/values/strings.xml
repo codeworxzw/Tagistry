@@ -30,6 +30,7 @@
     <string name="name">User Name</string>
     <string name="welcome">Welcome, </string>
     <string name="button">Search</string>
+    <string name="startservicebutton">Start Service</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

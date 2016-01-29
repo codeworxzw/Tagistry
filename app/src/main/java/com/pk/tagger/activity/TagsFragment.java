@@ -16,6 +16,7 @@ import com.pk.tagger.realm.TagDataAdapter;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 
@@ -30,6 +31,7 @@ public class TagsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //resetRealm();
 
     }
 
@@ -51,6 +53,14 @@ public class TagsFragment extends Fragment {
         return rootView;
     }
 
+
+    private void resetRealm() {
+        RealmConfiguration realmConfig = new RealmConfiguration
+                .Builder(getContext())
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.deleteRealm(realmConfig);
+    }
 
 
     @Override

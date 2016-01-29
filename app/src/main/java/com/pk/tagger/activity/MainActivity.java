@@ -17,9 +17,12 @@ import android.widget.Toast;
 
 import com.pk.tagger.R;
 
+import io.realm.Realm;
+
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
     private FragmentDrawer drawerFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //inflate the drawerFragment using the recyclerview fragment
         drawerFragment = (FragmentDrawer)

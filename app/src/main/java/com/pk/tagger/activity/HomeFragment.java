@@ -5,7 +5,10 @@ package com.pk.tagger.activity;
  */
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.pk.tagger.services.DatabaseSyncService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +44,10 @@ public class HomeFragment extends Fragment {
     TextView _textviewusername;
     @Bind(R.id.btnArrayRequest)
     Button _btnMakeArrayRequest;
+    @Bind(R.id.btnStartService)
+    Button _btnStartService;
+    @Bind(R.id.TVusername2)
+    TextView _textviewusername2;
 
     private static String TAG = MainActivity.class.getSimpleName();
 
@@ -50,6 +58,8 @@ public class HomeFragment extends Fragment {
     private String jsonResponse;
 
     private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure";
+
+    Handler handler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +82,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        _btnStartService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickedStartService();
+            }
+        });
+
         pDialog = new ProgressDialog(getContext());
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
@@ -81,7 +98,9 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onAttach( Context context) { super.onAttach(context); }
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     @Override
     public void onDetach() {
@@ -141,13 +160,62 @@ public class HomeFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(req);
     }
 
-    private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+    private void onClickedStartService() {
+        Intent i = new Intent(getContext(), DatabaseSyncService.class);
+        i.putExtra(DatabaseSyncService.RESULT_RECEIVER_NAME, syncResultReceiver);
+        getContext().startService(i);
+        onServiceStarted();
     }
 
-    private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+
+
+    final ResultReceiver syncResultReceiver = new ResultReceiver(handler) {
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            if (resultCode == DatabaseSyncService.DATA) {
+                String result = resultData.getString("result");
+                Toast.makeText(getContext(),
+                        result,
+                        Toast.LENGTH_LONG).show();
+            } else if (resultCode == DatabaseSyncService.FINISHED) {
+                String result = resultData.getString("result");
+                Toast.makeText(getContext(),
+                        result,
+                        Toast.LENGTH_LONG).show();
+                onServiceFinished();
+            } else if (resultCode == DatabaseSyncService.JSONSENT) {
+                String result = resultData.getString("result");
+                Toast.makeText(getContext(),
+                        result,
+                        Toast.LENGTH_LONG).show();
+                onJSONReceived(result);
+            }
+        }
+        }
+
+        ;
+
+        private void onServiceStarted() {
+            _btnStartService.setEnabled(false);
+        }
+
+        private void onServiceFinished() {
+            _btnStartService.setEnabled(true);
+        }
+
+    private void onJSONReceived(String result) {
+        _textviewusername2.setText(result);
     }
-}
+
+        private void showpDialog() {
+            if (!pDialog.isShowing())
+                pDialog.show();
+        }
+
+        private void hidepDialog() {
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+        }
+    }
+
+
