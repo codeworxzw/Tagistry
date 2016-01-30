@@ -114,7 +114,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             makeMarker(latitude, longitude);
         }
 
-        googleMap.setOnMapLongClickListener(this);
+        //googleMap.setOnMapLongClickListener(this);
         // Set a listener for info window events.
 
     }
@@ -144,7 +144,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onMapLongClick(LatLng latLng) {
 
         //display in short period of time
-        Toast.makeText(getActivity(), "msg msg", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Insert Event", Toast.LENGTH_SHORT).show();
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(latLng.toString()));
