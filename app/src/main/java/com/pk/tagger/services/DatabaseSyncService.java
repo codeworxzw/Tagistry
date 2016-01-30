@@ -23,7 +23,7 @@ public class DatabaseSyncService extends IntentService {
     // temporary string to show the parsed response
     private String jsonResponse;
 
-    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure";
+    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/events";
 
     public static final String RESULT_RECEIVER_NAME = "DatabaseSyncReceiver";
 
@@ -61,12 +61,14 @@ public class DatabaseSyncService extends IntentService {
                                 JSONObject person = (JSONObject) response
                                         .get(i);
 
-                                String message = person.getString("message");
+                                jsonResponse = person.toString();
+
+                                //String message = person.getString("message");
                                 //String email = person.getString("email");
                                 //JSONObject phone = person
-                                //      .getJSONObject("phone");
+                                  //    .getJSONObject("phone");
 
-                                jsonResponse += "Message: " + message + "\n\n";
+                                //jsonResponse += "Message: " + message + "\n\n";
                                 //jsonResponse += "Email: " + email + "\n\n";
                             }
 

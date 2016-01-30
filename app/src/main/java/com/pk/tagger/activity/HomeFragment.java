@@ -181,18 +181,18 @@ public class HomeFragment extends Fragment {
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             if (resultCode == DatabaseSyncService.DATA) {
                 String result = resultData.getString("result");
-                Toast.makeText(getContext(),
+                Toast.makeText(getActivity(),
                         result,
                         Toast.LENGTH_LONG).show();
             } else if (resultCode == DatabaseSyncService.FINISHED) {
                 String result = resultData.getString("result");
-                Toast.makeText(getContext(),
+                Toast.makeText(getActivity(),
                         result,
                         Toast.LENGTH_LONG).show();
                 onServiceFinished();
             } else if (resultCode == DatabaseSyncService.JSONSENT) {
                 String result = resultData.getString("result");
-                Toast.makeText(getContext(),
+                Toast.makeText(getActivity(),
                         result,
                         Toast.LENGTH_LONG).show();
                 onJSONReceived(result);

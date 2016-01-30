@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_GRANT_TYPE = "grant_type";
 
+
     // temporary string to show the parsed response
     private String jsonResponse;
 
@@ -104,13 +105,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
         //ensures that fields are correct by calling validate method
         Toast.makeText(getApplicationContext(), "Will make login POST request soon!", Toast.LENGTH_SHORT).show();
-        if (!validate()) {
-            onLoginFailed();
-            return;
-
-        }
-
-        _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme);
@@ -118,11 +112,21 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
+        if (!validate()) {
+            onLoginFailed(progressDialog);
+            return;
+
+        }
+
+        _loginButton.setEnabled(false);
+
+
+
         // get fields and TODO: insert into HTTP POST request below
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
         // TODO: Implement your own authentication logic here. (make HTTP POST request to <server>/oauth/token)
-        // JSON {"username":"bob@email.com", "password":"hunter2"}
+        // JSON {"username":"bob@email.com", "password":"hunter2" or "Bob12345"}
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 new Response.Listener<String>() {
@@ -150,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "Error Response: " + error.toString());
-                        onLoginFailed();
+                        onLoginFailed(progressDialog);
 
                         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                             Log.d(TAG, "Timeout/no connection error: " + error.toString());
@@ -233,9 +237,10 @@ public class LoginActivity extends AppCompatActivity {
         //finish();
     }
 
-    public void onLoginFailed() {
+    public void onLoginFailed(ProgressDialog progressDialog) {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
+        progressDialog.hide();
         return;
 
     }
