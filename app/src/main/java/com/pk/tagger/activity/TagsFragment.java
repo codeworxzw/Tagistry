@@ -31,7 +31,7 @@ public class TagsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //resetRealm();
+       // resetRealm();
 
     }
 
@@ -46,7 +46,7 @@ public class TagsFragment extends Fragment {
                 .findAll();
         TagDataAdapter toDoRealmAdapter =
                 new TagDataAdapter(getContext(), toDoItems, true, true);
-        RealmRecyclerView realmRecyclerView =
+       RealmRecyclerView realmRecyclerView =
                 (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(toDoRealmAdapter);
 
@@ -70,6 +70,7 @@ public class TagsFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        myRealm.close();
         super.onDetach();
     }
 }
