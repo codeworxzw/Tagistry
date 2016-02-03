@@ -9,15 +9,40 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <!-- navigation drawer item labels  -->
     <string name="nav_item_home">Home</string>
     <string name="nav_item_tags">Tags</string>
     <string name="nav_item_map">Map</string>
 
-    <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_item_home</item>
         <item>@string/nav_item_tags</item>
         <item>@string/nav_item_map</item>
+    </string-array>
+
+    <!-- homefragment category labels -->
+    <string name="category_alternative">Alternative</string>
+    <string name="category_blues_jazz">Blues &amp; Jazz</string>
+    <string name="category_classical">Classical</string>
+    <string name="category_country">Country</string>
+    <string name="category_cultural">Cultural</string>
+    <string name="category_edm_electronic">EDM/Electronic</string>
+    <string name="category_folk">Folk</string>
+    <string name="category_hiphop_rap">Hip-Hop/Rap</string>
+    <string name="category_indie">Indie</string>
+    <string name="category_latin">Latin</string>
+
+    <string-array name="categories_labels">
+        <item>@string/category_alternative</item>
+        <item>@string/category_blues_jazz</item>
+        <item>@string/category_classical</item>
+        <item>@string/category_country</item>
+        <item>@string/category_cultural</item>
+        <item>@string/category_edm_electronic</item>
+        <item>@string/category_folk</item>
+        <item>@string/category_hiphop_rap</item>
+        <item>@string/category_indie</item>
+        <item>@string/category_latin</item>
     </string-array>
 
     <string name="title_map">Map</string>
@@ -33,7 +58,4 @@
     <string name="startservicebutton">Start Service</string>
 
     <string name="access_token">token</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

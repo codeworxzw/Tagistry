@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.pk.tagger.AppController;
 import com.pk.tagger.R;
 import com.android.volley.Response;
@@ -30,6 +31,9 @@ import com.pk.tagger.services.DatabaseSyncService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,8 +63,16 @@ public class HomeFragment extends Fragment {
     private String jsonResponse;
 
     private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure";
+    private static final String USER_EMAIL_URL = "http://52.31.31.106:9000/apisecure/email";
 
     Handler handler = new Handler();
+
+    SharedPreferences sharedPref;
+
+    //Test to see if access token is accessible from shared prefs
+//    SharedPreferences sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+//    String defaultValue = getResources().getString(R.string.access_token);
+//    String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,13 +85,16 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
+        sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+
+
         String username = "Username";
         _textviewusername.setText(username);
 
         _btnMakeArrayRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeJsonArrayRequest();
+                getUserEmail();
             }
         });
 
@@ -108,11 +123,11 @@ public class HomeFragment extends Fragment {
         super.onDetach();
     }
 
-    private void makeJsonArrayRequest() {
+    private void getUserEmail() {
 
         showpDialog();
 
-        JsonArrayRequest req = new JsonArrayRequest(QUERY_URL,
+        JsonArrayRequest req = new JsonArrayRequest(USER_EMAIL_URL,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -127,12 +142,12 @@ public class HomeFragment extends Fragment {
                                 JSONObject person = (JSONObject) response
                                         .get(i);
 
-                                String message = person.getString("message");
+                                String userEmail = person.getString("email");
                                 //String email = person.getString("email");
                                 //JSONObject phone = person
                                 //      .getJSONObject("phone");
 
-                                jsonResponse += "Message: " + message + "\n\n";
+                                jsonResponse += "Hello: " + userEmail + "\n\n";
                                 //jsonResponse += "Email: " + email + "\n\n";
                             }
 
@@ -155,16 +170,23 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 hidepDialog();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String defaultValue = getResources().getString(R.string.access_token);
+                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+
+                headers.put("Authorization", "Bearer " + access_token);
+                Log.d(TAG, headers.toString());
+                return headers;
+            }
+        };
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
 
-        //Test to see if access token is accessible from shared prefs
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
-        String defaultValue = getResources().getString(R.string.access_token);
-        String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
-        Log.d(TAG, "Access token: " + access_token);
     }
 
     private void onClickedStartService() {

@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
+<!--    <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
         android:id="@+id/realm_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:rrvLayoutType="LinearLayout"
-        app:rrvSwipeToDelete="true"
         app:rrvEmptyLayoutId="@layout/to_do_empty_view"
         />
+-->
 </FrameLayout>
