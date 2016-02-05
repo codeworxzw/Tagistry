@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.pk.tagger.realm.TagData;
 import com.pk.tagger.services.DatabaseSyncService;
 
 import org.json.JSONArray;
@@ -37,6 +38,8 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class HomeFragment extends Fragment {
@@ -67,12 +70,9 @@ public class HomeFragment extends Fragment {
 
     Handler handler = new Handler();
 
-    SharedPreferences sharedPref;
+    private Realm myRealm;
 
-    //Test to see if access token is accessible from shared prefs
-//    SharedPreferences sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
-//    String defaultValue = getResources().getString(R.string.access_token);
-//    String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+    SharedPreferences sharedPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,16 +139,11 @@ public class HomeFragment extends Fragment {
                             jsonResponse = "";
                             for (int i = 0; i < response.length(); i++) {
 
-                                JSONObject person = (JSONObject) response
-                                        .get(i);
+                                JSONObject person = (JSONObject) response.get(i);
 
                                 String userEmail = person.getString("email");
-                                //String email = person.getString("email");
-                                //JSONObject phone = person
-                                //      .getJSONObject("phone");
 
                                 jsonResponse += "Hello: " + userEmail + "\n\n";
-                                //jsonResponse += "Email: " + email + "\n\n";
                             }
 
                             Log.d(TAG, jsonResponse);
@@ -208,32 +203,44 @@ public class HomeFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             } else if (resultCode == DatabaseSyncService.FINISHED) {
                 String result = resultData.getString("result");
-                Toast.makeText(getActivity(),
-                        result,
-                        Toast.LENGTH_LONG).show();
+                //throws a nullpointerexception if another fragment is switched to before the syncservice completes
+                //Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
                 onServiceFinished();
             } else if (resultCode == DatabaseSyncService.JSONSENT) {
                 String result = resultData.getString("result");
-                Toast.makeText(getActivity(),
-                        result,
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
                 onJSONReceived(result);
             }
         }
-        }
+    };
 
-        ;
-
-        private void onServiceStarted() {
+    private void onServiceStarted() {
             _btnStartService.setEnabled(false);
         }
 
-        private void onServiceFinished() {
+    private void onServiceFinished() {
             _btnStartService.setEnabled(true);
         }
 
     private void onJSONReceived(String result) {
-        _textviewusername2.setText(result);
+        myRealm = Realm.getInstance(getContext());
+        RealmResults<TagData> results1 =
+                myRealm.where(TagData.class).equalTo("eventID", "20724259819").findAll();
+
+        for(TagData c:results1) {
+            Log.d("Realm EventIDs: ", c.getEventID());
+            Log.d("Realm EventName: ", c.getEventName());
+            // test to see if the objects have been saved to realm ok
+            try {
+                String eventName = c.getEventVenue().getEventVenue_Name();
+                _textviewusername2.setText(eventName);
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
+
+        }
+
+        myRealm.close();
     }
 
         private void showpDialog() {
@@ -245,6 +252,6 @@ public class HomeFragment extends Fragment {
             if (pDialog.isShowing())
                 pDialog.dismiss();
         }
-    }
+}
 
 

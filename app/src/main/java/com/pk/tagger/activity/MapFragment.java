@@ -107,12 +107,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         RealmResults<TagData> results1 =
                myRealm.where(TagData.class).findAll();
 
-        for(TagData c:results1) {
-          //  Log.d("results1", c.getLatLng());
-            double latitude = c.getEventLatitude();
-           double longitude = c.getEventLongitude();
-            makeMarker(latitude, longitude);
-        }
+//        for(TagData c:results1) {
+//          //  Log.d("results1", c.getLatLng());
+//            double latitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLat();
+//            double longitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLng();
+//            makeMarker(latitude, longitude);
+//        }
 
         //googleMap.setOnMapLongClickListener(this);
         // Set a listener for info window events.
@@ -149,19 +149,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 .position(latLng)
                 .title(latLng.toString()));
 
-        //Realm myRealm = Realm.getInstance(getContext());
-
-      //  myRealm.beginTransaction();
-
-        // Create an object
-     //   TagData Tag1 = myRealm.createObject(TagData.class);
-
-        // Set its fields
+//        Realm myRealm = Realm.getInstance(getContext());
+//
+//        myRealm.beginTransaction();
+//
+//        // Create an object
+//        TagData Tag1 = myRealm.createObject(TagData.class);
+//
+//        // Set its fields
 //        Tag1.setLatLng(latLng.toString());
-  //      Tag1.setLatitide(latLng.latitude);
-    //    Tag1.setLongitude(latLng.longitude);
-
-      //  myRealm.commitTransaction();
+//        Tag1.setLatitide(latLng.latitude);
+//        Tag1.setLongitude(latLng.longitude);
+//
+//        myRealm.commitTransaction();
 
     }
 

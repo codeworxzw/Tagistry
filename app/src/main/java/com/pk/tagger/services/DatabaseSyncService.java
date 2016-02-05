@@ -27,7 +27,7 @@ public class DatabaseSyncService extends IntentService {
 
     // temporary string to show the parsed response
     private String jsonResponse;
-   // private Realm myRealm;
+    private Realm myRealm;
 
     private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/events";
 
@@ -61,7 +61,7 @@ public class DatabaseSyncService extends IntentService {
                     public void onResponse(JSONArray response) {
                         Log.d("TAG", response.toString());
 
-                        Realm myRealm = Realm.getInstance(getApplicationContext());
+                        myRealm = Realm.getInstance(getApplicationContext());
 
                         try {
                             // Parsing json array response
@@ -73,14 +73,6 @@ public class DatabaseSyncService extends IntentService {
                                         .get(i);
 
                                 jsonResponse = event.toString();
-
-                                //String message = person.getString("message");
-                                //String email = person.getString("email");
-                                //JSONObject phone = person
-                                  //    .getJSONObject("phone");
-
-                                //jsonResponse += "Message: " + message + "\n\n";
-                                //jsonResponse += "Email: " + email + "\n\n";
 
                                 myRealm.beginTransaction();
                                 myRealm.createObjectFromJson(TagData.class, event);
@@ -99,9 +91,10 @@ public class DatabaseSyncService extends IntentService {
                                     myRealm.where(TagData.class).findAll();
 
                             for(TagData c:results1) {
-                                Log.d("results from realm: ", c.getEventID());    }
+                                Log.d("Realm EventIDs: ", c.getEventID());
+                            }
 
-                                myRealm.close();
+                            myRealm.close();
 
 
                         } catch (JSONException e) {
@@ -128,9 +121,6 @@ public class DatabaseSyncService extends IntentService {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
         }
-
-
-
 
         Bundle resultFinished = new Bundle();
         resultFinished.putString("result", "Service finished");

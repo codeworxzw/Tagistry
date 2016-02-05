@@ -1,7 +1,5 @@
 package com.pk.tagger.realm;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -12,41 +10,92 @@ import io.realm.annotations.PrimaryKey;
  */
 public class TagData extends RealmObject {
 
+    private String eventName;
+    private String eventDescription;
     @PrimaryKey
     private String eventID;
-
-    private String eventTitle;
-    private String eventDescription;
-    private String eventCategory;
+    private String eventURL;
+    private String eventImageURL;
     private String eventPostedBy;
 
-    private Date eventDate;
-    private Date eventLastUpdate;
+    private Date eventCreated;
+    private Date eventLastUpdated;
 
     private double eventPrice;
 
 
+    private EventCategory eventCategory;
+    private EventSubCategory eventSubCategory;
+    private EventVenue eventVenue;
+    private EventOrganizer eventOrganizer;
+    private EventStartTime eventStartTime;
+    private EventEndTime eventEndTime;
 
-    private double eventLatitude;
-    private double eventLongitude;
 
     public TagData() { }
 
 
-    public String getEventID() {
-        return eventID;
+    public EventCategory getEventCategory() {
+        return eventCategory;
     }
+
+    public void setEventCategory(EventCategory eventCategory) {
+        this.eventCategory = eventCategory;
+    }
+
+    public EventSubCategory getEventSubCategory() {
+        return eventSubCategory;
+    }
+
+    public void setEventSubCategory(EventSubCategory eventSubCategory) {
+        this.eventSubCategory = eventSubCategory;
+    }
+
+    public EventVenue getEventVenue() {
+        return eventVenue;
+    }
+
+    public void setEventVenue(EventVenue eventVenue) {
+        this.eventVenue = eventVenue;
+    }
+
+    public EventOrganizer getEventOrganizer() {
+        return eventOrganizer;
+    }
+
+    public void setEventOrganizer(EventOrganizer eventOrganizer) {
+        this.eventOrganizer = eventOrganizer;
+    }
+
+    public EventStartTime getEventStartTime() {
+        return eventStartTime;
+    }
+
+    public void setEventStartTime(EventStartTime eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public EventEndTime getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(EventEndTime eventEndTime) {
+        this.eventEndTime = eventEndTime;
+    }
+
+
+    public String getEventID() { return eventID; }
 
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
 
-    public String getEventTitle() {
-        return eventTitle;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setEventTitle(String eventTitle) {
-        this.eventTitle = eventTitle;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public String getEventDescription() {
@@ -57,14 +106,6 @@ public class TagData extends RealmObject {
         this.eventDescription = eventDescription;
     }
 
-    public String getEventCategory() {
-        return eventCategory;
-    }
-
-    public void setEventCategory(String eventCategory) {
-        this.eventCategory = eventCategory;
-    }
-
     public String getEventPostedBy() {
         return eventPostedBy;
     }
@@ -73,20 +114,12 @@ public class TagData extends RealmObject {
         this.eventPostedBy = eventPostedBy;
     }
 
-    public Date getEventDate() {
-        return eventDate;
+    public Date getEventLastUpdated() {
+        return eventLastUpdated;
     }
 
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public Date getEventLastUpdate() {
-        return eventLastUpdate;
-    }
-
-    public void setEventLastUpdate(Date eventLastUpdate) {
-        this.eventLastUpdate = eventLastUpdate;
+    public void setEventLastUpdated(Date eventLastUpdated) {
+        this.eventLastUpdated = eventLastUpdated;
     }
 
     public double getEventPrice() {
@@ -97,19 +130,29 @@ public class TagData extends RealmObject {
         this.eventPrice = eventPrice;
     }
 
-    public double getEventLatitude() {
-        return eventLatitude;
+    public String getEventImageURL() {
+        return eventImageURL;
     }
 
-    public void setEventLatitude(double eventLatitude) {
-        this.eventLatitude = eventLatitude;
+    public void setEventImageURL(String eventImageURL) {
+        this.eventImageURL = eventImageURL;
     }
 
-    public double getEventLongitude() {
-        return eventLongitude;
+    public String getEventURL() {
+        return eventURL;
     }
 
-    public void setEventLongitude(double eventLongitude) {
-        this.eventLongitude = eventLongitude;
+    public void setEventURL(String eventURL) {
+        this.eventURL = eventURL;
+    }
+
+    public Date getEventCreated() {
+        return eventCreated;
+    }
+
+    public void setEventCreated(Date eventCreated) {
+        this.eventCreated = eventCreated;
     }
 }
+
+
