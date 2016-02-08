@@ -38,11 +38,11 @@ public class EventVenue_Location extends RealmObject {
         Address_1 = address_1;
     }
 
-    public com.pk.tagger.realm.LngLat getLngLat() {
+    public LngLat getLngLat() {
         return LngLat;
     }
 
-    public void setLngLat(com.pk.tagger.realm.LngLat lngLat) {
+    public void setLngLat(LngLat lngLat) {
         LngLat = lngLat;
     }
 

@@ -21,7 +21,7 @@ public class TagData extends RealmObject {
     private Date eventCreated;
     private Date eventLastUpdated;
 
-    private double eventPrice;
+    private boolean eventPrivate;
 
 
     private EventCategory eventCategory;
@@ -122,12 +122,12 @@ public class TagData extends RealmObject {
         this.eventLastUpdated = eventLastUpdated;
     }
 
-    public double getEventPrice() {
-        return eventPrice;
+    public boolean getEventPrivate() {
+        return eventPrivate;
     }
 
-    public void setEventPrice(double eventPrice) {
-        this.eventPrice = eventPrice;
+    public void setEventPrivate(boolean eventPrivate) {
+        this.eventPrivate = eventPrivate;
     }
 
     public String getEventImageURL() {
