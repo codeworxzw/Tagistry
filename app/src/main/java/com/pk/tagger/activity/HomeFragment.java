@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.pk.tagger.adapter.CategoriesAdapter;
 import com.pk.tagger.realm.TagData;
 import com.pk.tagger.services.DatabaseSyncService;
 
@@ -56,6 +59,8 @@ public class HomeFragment extends Fragment {
     Button _btnStartService;
     @Bind(R.id.TVusername2)
     TextView _textviewusername2;
+    @Bind(R.id.gridview_categories)
+    GridView _categories;
 
     private static String TAG = MainActivity.class.getSimpleName();
 
@@ -108,6 +113,25 @@ public class HomeFragment extends Fragment {
         pDialog = new ProgressDialog(getContext());
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
+
+        _categories.setAdapter(new CategoriesAdapter(getActivity()));
+
+        _categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Toast.makeText(getActivity(), "" + position,
+                        Toast.LENGTH_SHORT).show();
+
+                //Placeholder intent to handle item clicks
+            /*    // Send intent to SingleViewActivity
+                Intent i = new Intent(getActivity(), SingleViewActivity.class);
+
+                // Pass image index
+                i.putExtra("id", position);
+                startActivity(i);
+            */
+            }
+        });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -232,7 +256,7 @@ public class HomeFragment extends Fragment {
             Log.d("Realm EventName: ", c.getEventName());
             // test to see if the objects have been saved to realm ok
             try {
-                String eventName = c.getEventVenue().getEventVenue_Name();
+                String eventName = c.getEventName();
                 _textviewusername2.setText(eventName);
             } catch (Exception e) {
                 Log.d(TAG, e.toString());

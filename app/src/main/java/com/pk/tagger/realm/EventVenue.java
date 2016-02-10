@@ -8,7 +8,7 @@ import io.realm.RealmObject;
 public class EventVenue extends RealmObject{
 
     private String eventVenue_Name;
-    public String eventVenue_ID;
+    private String eventVenue_ID;
 
     private EventVenue_Location eventVenue_Location;
 
