@@ -7,23 +7,23 @@ import io.realm.RealmObject;
  */
 public class LngLat extends RealmObject {
 
-    private long lat;
-    private long lng;
+    private double lat;
+    private double lng;
 
     public LngLat(){}
-    public long getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(long lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public long getLng() {
+    public double getLng() {
         return lng;
     }
 
-    public void setLng(long lng) {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 

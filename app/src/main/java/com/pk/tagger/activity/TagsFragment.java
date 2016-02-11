@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 
 import com.pk.tagger.R;
 import com.pk.tagger.realm.TagData;
+import com.pk.tagger.realm.TagDataAdapter;
 //import com.pk.tagger.realm.TagDataAdapter;
 
 //import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
+import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -44,12 +46,12 @@ public class TagsFragment extends Fragment {
         RealmResults<TagData> toDoItems = myRealm
                 .where(TagData.class)
                 .findAll();
-/*         TagDataAdapter toDoRealmAdapter =
+        TagDataAdapter toDoRealmAdapter =
                 new TagDataAdapter(getContext(), toDoItems, true, true);
-       RealmRecyclerView realmRecyclerView =
+        RealmRecyclerView realmRecyclerView =
                 (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(toDoRealmAdapter);
-*/
+
 
         return rootView;
     }

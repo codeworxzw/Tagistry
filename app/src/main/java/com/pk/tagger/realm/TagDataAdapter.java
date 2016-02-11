@@ -5,7 +5,7 @@ package com.pk.tagger.realm;
 /**
  * Created by PK on 17/01/2016.
  */
-/*
+
  import android.content.Context;
  import android.view.View;
 import android.view.ViewGroup;
@@ -53,4 +53,4 @@ public class TagDataAdapter
 
     }
 }
-*/
+

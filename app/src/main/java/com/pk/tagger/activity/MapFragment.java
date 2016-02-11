@@ -27,6 +27,8 @@ import io.realm.RealmResults;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickListener {
 
+    private static String TAG = MainActivity.class.getSimpleName();
+
     MapView mMapView;
     private GoogleMap googleMap;
     private int zoomLevel = 10;
@@ -72,7 +74,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
 
 
-        myRealm = Realm.getInstance(getContext());
+        myRealm = Realm.getInstance(getActivity());
 
         //myRealm.setDefaultConfiguration(mRealmConfig);
         setUpMap();
@@ -101,31 +103,36 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
           //      .deleteRealmIfMigrationNeeded()
             //    .build();
 
-       // Realm myRealm = Realm.getInstance();
-
 
         RealmResults<TagData> results1 =
                myRealm.where(TagData.class).findAll();
 
-//        for(TagData c:results1) {
-//          //  Log.d("results1", c.getLatLng());
-//            double latitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLat();
-//            double longitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLng();
-//            makeMarker(latitude, longitude);
-//        }
+        try {
+            for(TagData c:results1) {
+                //  Log.d("results1", c.getLatLng());
+                double latitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLat();
+                double longitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLng();
+                String title = c.getEventName();
+                String venue = c.getEventVenue().getEventVenue_Name();
+                makeMarker(latitude, longitude, title, venue);
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
 
         //googleMap.setOnMapLongClickListener(this);
         // Set a listener for info window events.
 
     }
 
-    public void makeMarker(double latitude, double longitude) {
+    public void makeMarker(double latitude, double longitude,String name, String address) {
 
         LatLng latlng = new LatLng(latitude, longitude);
 
         googleMap.addMarker(new MarkerOptions()
                 .position(latlng)
-                .title(latlng.toString()));
+                .title(name)
+                .snippet(address));
 
     }
 

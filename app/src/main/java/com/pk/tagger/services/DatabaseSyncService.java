@@ -46,7 +46,6 @@ public class DatabaseSyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-
         resetRealm();
 
         resultReceiver = intent.getParcelableExtra(RESULT_RECEIVER_NAME);
@@ -91,7 +90,7 @@ public class DatabaseSyncService extends IntentService {
                                     myRealm.where(TagData.class).findAll();
 
                             for(TagData c:results1) {
-                                Log.d("Realm EventIDs: ", c.getEventID());
+                                Log.d("Realm EventLngLats: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
                             }
 
                             myRealm.close();
