@@ -1,5 +1,7 @@
 package com.pk.tagger.activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +19,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
@@ -24,6 +30,7 @@ import com.pk.tagger.realm.ResetRealm;
 import com.pk.tagger.realm.TagData;
 import com.pk.tagger.services.DatabaseStartService;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,13 +42,19 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     SharedPreferences sharedPreferences;
 
+    // Widget GUI
+    Button btnCalendar, btnTimePicker;
+    EditText txtDate, txtTime;
+
+    // Variable for storing current date and time
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
 
         if (sharedPreferences.contains("time")) {
 
@@ -94,7 +107,29 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         if(id == R.id.action_calendar){
-            Toast.makeText(getApplicationContext(), "Date action is selected!", Toast.LENGTH_SHORT).show();
+
+
+            // Process to get Current Date
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            // Launch Date Picker Dialog
+            DatePickerDialog dpd = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                           
+
+                        }
+                    }, mYear, mMonth, mDay);
+            dpd.show();
+
+
             return true;
         }
 
