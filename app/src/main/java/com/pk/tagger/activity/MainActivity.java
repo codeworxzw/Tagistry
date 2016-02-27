@@ -1,6 +1,9 @@
 package com.pk.tagger.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,12 +13,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
+import com.pk.tagger.realm.ResetRealm;
+import com.pk.tagger.realm.TagData;
+import com.pk.tagger.services.DatabaseStartService;
+
+import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 
@@ -23,11 +33,30 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     private FragmentDrawer drawerFragment;
 
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
+
+        if (sharedPreferences.contains("time")) {
+
+            Date myDate = new Date(sharedPreferences.getLong("time", 0));
+
+            Log.d("Date in Mainactivity", myDate.toString());
+           // DatabaseStartService.startActionDownload(this, "hello", "hello");
+
+    }
+
+        else {
+
+          //  DatabaseStartService.startActionBaz(this, "hello", "hello");
+
+        }
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,7 +108,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        if(id == R.id.action_clear_cache){
+
+
+
+            return false;
+        }
+
+        if(id == R.id.action_sync){
+
+            DatabaseStartService.startActionDownload(this, "hello", "hello");
+            return true;
+        }
+
+        return false;
+        //return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -110,12 +153,25 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.replace(R.id.container_body, fragment, title);
+            fragmentTransaction.addToBackStack(title);
             fragmentTransaction.commit();
 
             // set the toolbar title
             getSupportActionBar().setTitle(title);
         }
+    }
+
+    public Fragment getVisibleFragment(){
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
     }
 
 }

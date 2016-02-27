@@ -49,7 +49,9 @@ public class TagDataAdapter
     @Override
     public void onBindRealmViewHolder(ViewHolder viewHolder, int position) {
         final TagData toDoItem = realmResults.get(position);
-        viewHolder.todoTextView.setText(toDoItem.toString());
+        viewHolder.todoTextView.setText("Event: " + toDoItem.getEventName().toString() +
+        " Event Start Time: " + toDoItem.getEventStartTime().getLocal().toString() +
+                " Event Venue: " + toDoItem.getEventVenue().getEventVenue_Name().toString());
 
     }
 }

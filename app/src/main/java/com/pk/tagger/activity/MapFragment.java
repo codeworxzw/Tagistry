@@ -18,7 +18,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 import com.pk.tagger.R;
+import com.pk.tagger.maps.ClusterMapRender;
+import com.pk.tagger.maps.ClusterMarkerLocation;
 import com.pk.tagger.realm.TagData;
 
 import io.realm.Realm;
@@ -86,16 +89,25 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void setUpMap() {
 
 
-        LatLng kingston = new LatLng(51.413861, -0.299936);
-        googleMap.addMarker(new MarkerOptions()
-                .position(kingston)
-                .title("muppet"));
+        ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
 
-        LatLng streatham = new LatLng(51.419959, -0.128017);
-        googleMap.addMarker(new MarkerOptions()
+
+        clusterManager.setRenderer(new ClusterMapRender(getContext(), googleMap, clusterManager));
+        googleMap.setOnCameraChangeListener(clusterManager);
+        LatLng kingston = new LatLng(51.413861, -0.299936);
+      /*  googleMap.addMarker(new MarkerOptions()
+                .position(kingston)
+                .title("muppet")); */
+
+      //  clusterManager.addItem(new ClusterMarkerLocation(kingston));
+
+                LatLng streatham = new LatLng(51.419959, -0.128017);
+      /*  googleMap.addMarker(new MarkerOptions()
                 .position(streatham)
                 .title("Super cool guy")
-                .snippet("I'm so ronery"));
+                .snippet("I'm so ronery")); */
+
+        //clusterManager.addItem(new ClusterMarkerLocation(streatham));
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(streatham, zoomLevel));
 
@@ -114,7 +126,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 double longitude = c.getEventVenue().getEventVenue_Location().getLngLat().getLng();
                 String title = c.getEventName();
                 String venue = c.getEventVenue().getEventVenue_Name();
-                makeMarker(latitude, longitude, title, venue);
+                //makeMarker(latitude, longitude, title, venue);
+                LatLng adder = new LatLng( latitude, longitude );
+                clusterManager.addItem( new ClusterMarkerLocation( adder, title, venue ));
+
             }
         } catch (Exception e){
             Log.d(TAG, e.toString());
@@ -123,7 +138,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         //googleMap.setOnMapLongClickListener(this);
         // Set a listener for info window events.
 
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterMarkerLocation>() {
+            @Override
+            public boolean onClusterItemClick(ClusterMarkerLocation clusterMarkerLocation) {
+                Toast.makeText(getContext(), "Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+
+        });
+
     }
+
+
 
     public void makeMarker(double latitude, double longitude,String name, String address) {
 
@@ -143,8 +170,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     @Override
     public void onDetach() {
-        myRealm.close();
+
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroyView() {
+        myRealm.close();
+        super.onDestroyView();
     }
 
     @Override

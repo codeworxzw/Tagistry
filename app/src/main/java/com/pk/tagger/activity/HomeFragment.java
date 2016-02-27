@@ -11,8 +11,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,20 +34,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.pk.tagger.RecyclerView.Genre;
+import com.pk.tagger.RecyclerView.GenreAdapter;
 import com.pk.tagger.adapter.CategoriesAdapter;
 import com.pk.tagger.realm.TagData;
 import com.pk.tagger.services.DatabaseSyncService;
+import com.tonicartos.superslim.LayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 
@@ -51,16 +62,20 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Bind(R.id.TVusername)
-    TextView _textviewusername;
-    @Bind(R.id.btnArrayRequest)
-    Button _btnMakeArrayRequest;
-    @Bind(R.id.btnStartService)
-    Button _btnStartService;
-    @Bind(R.id.TVusername2)
-    TextView _textviewusername2;
-    @Bind(R.id.gridview_categories)
-    GridView _categories;
+
+
+ //   @Bind(R.id.TVusername)
+ //   TextView _textviewusername;
+   // @Bind(R.id.btnArrayRequest)
+   // Button _btnMakeArrayRequest;
+   // @Bind(R.id.btnStartService)
+   // Button _btnStartService;
+   // @Bind(R.id.btnClearRealm)
+   // Button _btnClearRealm;
+   // @Bind(R.id.TVusername2)
+  //  TextView _textviewusername2;
+   // @Bind(R.id.gridview_categories)
+   // GridView _categories;
 
     private static String TAG = MainActivity.class.getSimpleName();
 
@@ -77,11 +92,15 @@ public class HomeFragment extends Fragment {
 
     private Realm myRealm;
 
+    ArrayList<Genre> genres;
+
     SharedPreferences sharedPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -90,37 +109,54 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
+        RecyclerView rvGenres = (RecyclerView) rootView.findViewById(R.id.rvGenres);
+        genres = getSampleArrayList();
+
+        GenreAdapter adapter = new GenreAdapter(genres);
+
+        rvGenres.setAdapter(adapter);
+
+        rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2 ));
+
         sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
 
-        String username = "Username";
-        _textviewusername.setText(username);
 
-        _btnMakeArrayRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getUserEmail();
-            }
-        });
+//        String username = "Username";
+  //      _textviewusername.setText(username);
 
-        _btnStartService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickedStartService();
-            }
-        });
+     //   _btnMakeArrayRequest.setOnClickListener(new View.OnClickListener() {
+     //       @Override
+       //     public void onClick(View v) {
+         //       getUserEmail();
+        //    }
+      //  });
+
+   //     _btnStartService.setOnClickListener(new View.OnClickListener() {
+     //       @Override
+       //     public void onClick(View v) {
+         //       onClickedStartService();
+           // }
+      //  });
+
+     //   _btnClearRealm.setOnClickListener(new View.OnClickListener() {
+       //     @Override
+         //   public void onClick(View v) {
+         //       onClickedClearRealm();
+        //    }
+      //  });
 
         pDialog = new ProgressDialog(getContext());
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
 
-        _categories.setAdapter(new CategoriesAdapter(getActivity()));
+   //     _categories.setAdapter(new CategoriesAdapter(getActivity()));
 
-        _categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+     //   _categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+       //     public void onItemClick(AdapterView<?> parent, View v,
+         //                           int position, long id) {
+           //     Toast.makeText(getActivity(), "" + position,
+             //           Toast.LENGTH_SHORT).show();
 
                 //Placeholder intent to handle item clicks
             /*    // Send intent to SingleViewActivity
@@ -130,8 +166,8 @@ public class HomeFragment extends Fragment {
                 i.putExtra("id", position);
                 startActivity(i);
             */
-            }
-        });
+//            }
+  //      });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -147,7 +183,42 @@ public class HomeFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getUserEmail() {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
+        // Do something that differs the Activity's menu here
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()) {
+
+
+
+
+            case R.id.action_clear_cache:
+                myRealm = Realm.getInstance(getContext());
+                myRealm.beginTransaction();
+                myRealm.clear(TagData.class);
+                myRealm.commitTransaction();
+                myRealm.close();
+
+                return true;
+
+            default:
+                return false;
+            // /return super.onOptionsItemSelected(item);
+        }
+    }
+
+ /*   private void getUserEmail() {
 
         showpDialog();
 
@@ -171,7 +242,7 @@ public class HomeFragment extends Fragment {
                             }
 
                             Log.d(TAG, jsonResponse);
-                            _textviewusername.setText(jsonResponse);
+                           // _textviewusername.setText(jsonResponse);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -206,48 +277,51 @@ public class HomeFragment extends Fragment {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
 
-    }
+    } */
 
-    private void onClickedStartService() {
+  /*  private void onClickedStartService() {
         Intent i = new Intent(getContext(), DatabaseSyncService.class);
         i.putExtra(DatabaseSyncService.RESULT_RECEIVER_NAME, syncResultReceiver);
         getContext().startService(i);
         onServiceStarted();
-    }
+    } */
 
+  //  private void onClickedClearRealm() {
+    // resetRealm();
+  //  }
 
 
     final ResultReceiver syncResultReceiver = new ResultReceiver(handler) {
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             if (resultCode == DatabaseSyncService.DATA) {
-                String result = resultData.getString("result");
-                Toast.makeText(getActivity(),
+                //String result = resultData.getString("result");
+               /* Toast.makeText(getActivity(),
                         result,
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_LONG).show(); */
             } else if (resultCode == DatabaseSyncService.FINISHED) {
-                String result = resultData.getString("result");
+                //String result = resultData.getString("result");
                 //throws a nullpointerexception if another fragment is switched to before the syncservice completes
                 //Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
-                onServiceFinished();
+                //onServiceFinished();
             } else if (resultCode == DatabaseSyncService.JSONSENT) {
-                String result = resultData.getString("result");
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-                onJSONReceived(result);
+               // String result = resultData.getString("result");
+               // Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+               // onJSONReceived(result);
             }
         }
     };
 
-    private void onServiceStarted() {
-            _btnStartService.setEnabled(false);
-        }
+  //  private void onServiceStarted() {
+    //        _btnStartService.setEnabled(false);
+      //  }
 
-    private void onServiceFinished() {
-            _btnStartService.setEnabled(true);
-        }
+  //  private void onServiceFinished() {
+    //        _btnStartService.setEnabled(true);
+      //  }
 
     private void onJSONReceived(String result) {
-        myRealm = Realm.getInstance(getContext());
+       /* myRealm = Realm.getInstance(getContext());
         RealmResults<TagData> results1 =
                 myRealm.where(TagData.class).equalTo("eventID", "20724259819").findAll();
 
@@ -263,7 +337,7 @@ public class HomeFragment extends Fragment {
 
         }
 
-        myRealm.close();
+        myRealm.close(); */
     }
 
         private void showpDialog() {
@@ -275,6 +349,29 @@ public class HomeFragment extends Fragment {
             if (pDialog.isShowing())
                 pDialog.dismiss();
         }
+
+ /*   private void resetRealm() {
+        RealmConfiguration realmConfig = new RealmConfiguration
+                .Builder(getActivity())
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.deleteRealm(realmConfig);
+    } */
+
+    private ArrayList<Genre> getSampleArrayList() {
+
+        ArrayList<Genre> items = new ArrayList<>();
+
+        items.add(new Genre("POP"));
+        items.add(new Genre("ROCK"));
+        items.add(new Genre("R&B"));
+        items.add(new Genre("RAP"));
+        items.add(new Genre("ELECTRONIC"));
+        items.add(new Genre("CLASSICAL"));
+        return items;
+
+    };
+
 }
 
 

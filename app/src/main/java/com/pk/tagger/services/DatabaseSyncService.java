@@ -3,6 +3,7 @@ package com.pk.tagger.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -12,13 +13,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.pk.tagger.AppController;
+import com.pk.tagger.RestClient.EventRestClient;
 import com.pk.tagger.realm.TagData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
+import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -29,7 +37,7 @@ public class DatabaseSyncService extends IntentService {
     private String jsonResponse;
     private Realm myRealm;
 
-    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/events";
+    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/";
 
     public static final String RESULT_RECEIVER_NAME = "DatabaseSyncReceiver";
 
@@ -54,11 +62,23 @@ public class DatabaseSyncService extends IntentService {
         resultStarted.putString("result", "Service started");
         resultReceiver.send(DATA, resultStarted);
 
-        JsonArrayRequest req = new JsonArrayRequest(QUERY_URL,
+        SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
+        Date date = new Date(System.currentTimeMillis());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("time", date.getTime());
+        editor.commit();
+
+        Date myDate = new Date(sharedPreferences.getLong("time", 0));
+
+        Log.d("Date in DSyncService", myDate.toString());
+
+
+
+      /*  JsonArrayRequest req = new JsonArrayRequest(QUERY_URL,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d("TAG", response.toString());
+                      //  Log.d("TAG", response.toString());
 
                         myRealm = Realm.getInstance(getApplicationContext());
 
@@ -73,24 +93,32 @@ public class DatabaseSyncService extends IntentService {
 
                                 jsonResponse = event.toString();
 
+
                                 myRealm.beginTransaction();
                                 myRealm.createObjectFromJson(TagData.class, event);
                                 myRealm.commitTransaction();
+                                // we are already in a separate thread here, so we can do some long operation
+
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                }
+
 
                             }
 
 
-                            Log.d("TAG service", jsonResponse);
-                            Bundle getFinished = new Bundle();
-                            getFinished.putString("result", jsonResponse);
-                            resultReceiver.send(JSONSENT, getFinished);
+                           // Log.d("TAG service", jsonResponse);
+                          //  Bundle getFinished = new Bundle();
+                          //  getFinished.putString("result", jsonResponse);
+                          //  resultReceiver.send(JSONSENT, getFinished);
 
 
                             RealmResults<TagData> results1 =
                                     myRealm.where(TagData.class).findAll();
 
                             for(TagData c:results1) {
-                                Log.d("Realm EventLngLats: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
+                               Log.d("Realm EventLngLats: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
                             }
 
                             myRealm.close();
@@ -115,11 +143,86 @@ public class DatabaseSyncService extends IntentService {
         AppController.getInstance().addToRequestQueue(req);
 
 
-        // we are already in a separate thread here, so we can do some long operation
+
+
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
         }
+        */
+
+
+        EventRestClient.get("", null, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                Log.d("JSONObject", response.toString());
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray data) {
+
+               // Log.d("JSONArray", data.toString());
+
+                myRealm = Realm.getInstance(getApplicationContext());
+
+                try {
+                    // Parsing json array response
+                    // loop through each json object
+                    jsonResponse = "";
+                    for (int i = 0; i < data.length(); i++) {
+
+                        JSONObject event = (JSONObject) data
+                                .get(i);
+
+                        jsonResponse = event.toString();
+
+                        //Log.d("jsonResponse", jsonResponse);
+                        myRealm.beginTransaction();
+                        myRealm.createObjectFromJson(TagData.class, event);
+                        myRealm.commitTransaction();
+                        // we are already in a separate thread here, so we can do some long operation
+
+                        //try {
+                          //  Thread.sleep(50);
+                       // } catch (InterruptedException e) {
+                       // }
+
+
+                    }
+
+
+                    // Log.d("TAG service", jsonResponse);
+                    //  Bundle getFinished = new Bundle();
+                    //  getFinished.putString("result", jsonResponse);
+                    //  resultReceiver.send(JSONSENT, getFinished);
+
+
+/*                   RealmResults<TagData> results1 =
+                           myRealm.where(TagData.class).findAll();
+
+                   for(TagData c:results1) {
+                       Log.d("Realm EventLngLats: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
+                       Log.d("Realm EventVenueName: ", c.getEventVenue().getEventVenue_Name().toString());
+                       Log.d("Realm EventName: ", c.getEventName().toString());
+                       Log.d("Realm EventStartTime: ", c.getEventStartTime().toString());
+                       Log.d("Realm EventID: ", c.getEventID().toString());
+                   } */
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+        myRealm.close();
+
 
         Bundle resultFinished = new Bundle();
         resultFinished.putString("result", "Service finished");
