@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         if(id == R.id.action_search){
-            Toast.makeText(getApplicationContext(), "Search action is selected!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+            startActivity(intent);
             return true;
         }
 

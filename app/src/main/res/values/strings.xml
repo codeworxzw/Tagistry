@@ -61,4 +61,6 @@
     <string name="access_token">token</string>
     <string name="clearrealmbutton">Clear Realm</string>
     <string name="action_clear_cache">Clear Cache</string>
+    <string name="title_activity_popup">PopUp</string>
+    <string name="hello_world">hello world</string>
 </resources>

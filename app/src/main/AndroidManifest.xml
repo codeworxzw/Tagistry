@@ -36,6 +36,11 @@
         </activity>
         <activity android:name=".activity.RegisterActivity" />
 
+        <activity
+            android:name=".activity.PopupActivity"
+            android:label="@string/title_activity_popup"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+
         <service
             android:name=".services.DatabaseSyncService"
             android:exported="false" />
