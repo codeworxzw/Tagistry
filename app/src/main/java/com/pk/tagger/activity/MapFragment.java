@@ -4,6 +4,7 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,6 +25,8 @@ import com.pk.tagger.maps.ClusterMapRender;
 import com.pk.tagger.maps.ClusterMarkerLocation;
 import com.pk.tagger.realm.TagData;
 
+import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -35,6 +38,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     MapView mMapView;
     private GoogleMap googleMap;
     private int zoomLevel = 10;
+    SharedPreferences sharedPreferencesDate;
     //private static RealmConfiguration mRealmConfig;
 
     private Realm myRealm;
@@ -115,9 +119,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
           //      .deleteRealmIfMigrationNeeded()
             //    .build();
 
+        sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
+
+        Date date = new Date(sharedPreferencesDate.getLong("Date", 0));
 
         RealmResults<TagData> results1 =
-               myRealm.where(TagData.class).findAll();
+               myRealm.where(TagData.class)
+                       .greaterThan("eventStartTime.local", date)
+                       .findAll();
 
         try {
             for(TagData c:results1) {

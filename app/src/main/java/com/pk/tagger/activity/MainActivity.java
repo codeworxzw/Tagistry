@@ -32,7 +32,9 @@ import com.pk.tagger.services.DatabaseStartService;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import io.realm.Realm;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private FragmentDrawer drawerFragment;
 
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferencesDate;
 
     // Widget GUI
     Button btnCalendar, btnTimePicker;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     // Variable for storing current date and time
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private Calendar date1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +113,31 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(id == R.id.action_calendar){
 
 
-            // Process to get Current Date
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            sharedPreferencesDate = getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+
+            if (sharedPreferencesDate.contains("Date")) {
+
+                Calendar calendar = new GregorianCalendar();
+
+                calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
+
+                mYear = calendar.get(Calendar.YEAR);
+                mMonth = calendar.get(Calendar.MONTH);
+                mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+                Log.d("Hello yes", calendar.getTime().toString());
+
+            } else {
+
+                // Process to get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                Log.d("Hello no", c.toString());
+
+            };
 
             // Launch Date Picker Dialog
             DatePickerDialog dpd = new DatePickerDialog(this,
@@ -123,10 +147,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
 
-                           
+                                mYear = year;
+                                mMonth = monthOfYear;
+                                mDay = dayOfMonth;
+
+                            sharedPreferencesDate = getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+
+                            Calendar calendarDate = new GregorianCalendar();
+                            calendarDate.set(mYear, mMonth, mDay);
+                            SharedPreferences.Editor editor = sharedPreferencesDate.edit();
+                            editor.putLong("Date", calendarDate.getTimeInMillis());
+                            editor.commit();
+
+                            Calendar calendar = new GregorianCalendar();
+                            calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
+
+                            Log.d("Date in Set Date", calendar.getTime().toString());
 
                         }
-                    }, mYear, mMonth, mDay);
+                    },   mYear, mMonth, mDay);
+
+            //dpd.updateDate(mYear, mMonth, mDay);
             dpd.show();
 
 

@@ -4,6 +4,8 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +25,10 @@ import com.pk.tagger.realm.TagDataAdapter;
 //import com.pk.tagger.realm.TagDataAdapter;
 
 //import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -32,6 +38,8 @@ import io.realm.RealmResults;
 public class TagsFragment extends Fragment {
 
     private Realm myRealm;
+
+    SharedPreferences sharedPreferencesDate;
 
     public TagsFragment() {
         // Required empty public constructor
@@ -51,15 +59,22 @@ public class TagsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_tags, container, false);
         Log.d("Realm Tag onCV", "open");
 
+        sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
+
+        Date date = new Date(sharedPreferencesDate.getLong("Date", 0));
+
         myRealm = Realm.getInstance(getContext());
         RealmResults<TagData> toDoItems = myRealm
                 .where(TagData.class)
+                .greaterThan("eventStartTime.local", date)
                 .findAll();
         TagDataAdapter toDoRealmAdapter =
                 new TagDataAdapter(getContext(), toDoItems, true, true);
         RealmRecyclerView realmRecyclerView =
                 (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(toDoRealmAdapter);
+
+        Log.d("date", date.toString());
 
         return rootView;
     }
