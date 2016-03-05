@@ -46,13 +46,20 @@
         <item>@string/category_latin</item>
     </string-array>
 
-    <string name="title_map">Map</string>
-    <string name="title_tags">Tags</string>
+    <string name="title_map">Events Map</string>
+    <string name="title_tags">Event Listings</string>
     <string name="title_home">Home</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirmpassword">Enter Password Again</string>
+    <string name="link_login"><u>Already a member? Login</u></string>
+    <string name="link_register"><u>No account yet? Register</u></string>
+    <string name="skip_login"><u>Browse as guest</u></string>
+    <string name="create_account">Create Account</string>
+    <string name="login">Login</string>
+
+
     <string name="name">User Name</string>
     <string name="welcome">Welcome, </string>
     <string name="button">Search</string>
@@ -63,4 +70,7 @@
     <string name="action_clear_cache">Clear Cache</string>
     <string name="title_activity_popup">PopUp</string>
     <string name="hello_world">hello world</string>
+
+    <string name="buy_tickets"><u>Buy Tickets</u></string>
+
 </resources>

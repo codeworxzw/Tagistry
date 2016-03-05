@@ -23,29 +23,29 @@
             android:value="AIzaSyAqQyr73YgkDUDs4dKF5OUYjj--jvw4zoo" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".Activity2.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".Activity2.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".Activity2.RegisterActivity" />
 
         <activity
-            android:name=".activity.PopupActivity"
+            android:name=".Activity2.EventDetailActivity"
             android:label="@string/title_activity_popup"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
         <service
-            android:name=".services.DatabaseSyncService"
+            android:name=".Services2.DatabaseSyncService"
             android:exported="false" />
         <service
-            android:name=".services.DatabaseStartService"
+            android:name=".Services2.DatabaseStartService"
             android:exported="false"></service>
     </application>
 
