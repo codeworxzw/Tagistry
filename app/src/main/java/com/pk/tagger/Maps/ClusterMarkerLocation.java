@@ -1,4 +1,4 @@
-package com.pk.tagger.Maps2;
+package com.pk.tagger.Maps;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;

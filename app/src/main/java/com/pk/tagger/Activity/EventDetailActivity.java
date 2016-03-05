@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
-import com.pk.tagger.Realm2.Event;
+import com.pk.tagger.Realm.Event;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;

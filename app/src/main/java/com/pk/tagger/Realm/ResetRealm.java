@@ -1,4 +1,4 @@
-package com.pk.tagger.Realm2;
+package com.pk.tagger.Realm;
 
 import android.content.Context;
 

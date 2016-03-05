@@ -1,4 +1,4 @@
-package com.pk.tagger.Services2;
+package com.pk.tagger.Services;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.pk.tagger.RestClient.EventRestClient;
-import com.pk.tagger.Realm2.Event;
+import com.pk.tagger.Realm.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;

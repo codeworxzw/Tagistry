@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pk.tagger.R;
-import com.pk.tagger.Adapter2.NavigationDrawerAdapter;
-import com.pk.tagger.Model2.NavDrawerItem;
+import com.pk.tagger.Adapter.NavigationDrawerAdapter;
+import com.pk.tagger.Model.NavDrawerItem;
 
 import java.util.ArrayList;
 import java.util.List;

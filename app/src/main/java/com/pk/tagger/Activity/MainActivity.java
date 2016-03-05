@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
-import com.pk.tagger.Services2.DatabaseStartService;
+import com.pk.tagger.Services.DatabaseStartService;
 
 import java.util.Calendar;
 import java.util.Date;

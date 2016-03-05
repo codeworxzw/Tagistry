@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;

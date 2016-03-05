@@ -1,4 +1,4 @@
-package com.pk.tagger.Adapter2;
+package com.pk.tagger.Adapter;
 
 /**
  * Created by PK on 15/01/2016.
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pk.tagger.R;
-import com.pk.tagger.Model2.NavDrawerItem;
+import com.pk.tagger.Model.NavDrawerItem;
 
 import java.util.Collections;
 import java.util.List;

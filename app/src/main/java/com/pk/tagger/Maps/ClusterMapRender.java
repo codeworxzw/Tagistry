@@ -1,4 +1,4 @@
-package com.pk.tagger.Maps2;
+package com.pk.tagger.Maps;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.pk.tagger.Model2;
+package com.pk.tagger.Model;
 
 /**
  * Created by PK on 15/01/2016.

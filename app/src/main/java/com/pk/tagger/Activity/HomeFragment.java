@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 /**
  * Created by PK on 16/01/2016.
@@ -22,8 +22,8 @@ import android.view.ViewGroup;
 import com.pk.tagger.R;
 import com.pk.tagger.RecyclerView.Genre;
 import com.pk.tagger.RecyclerView.GenreAdapter;
-import com.pk.tagger.Realm2.Event;
-import com.pk.tagger.Services2.DatabaseSyncService;
+import com.pk.tagger.Realm.Event;
+import com.pk.tagger.Services.DatabaseSyncService;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.pk.tagger.Activity2;
+package com.pk.tagger.Activity;
 
 /**
  * Created by PK on 16/01/2016.
@@ -21,9 +21,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.pk.tagger.R;
-import com.pk.tagger.Maps2.ClusterMapRender;
-import com.pk.tagger.Maps2.ClusterMarkerLocation;
-import com.pk.tagger.Realm2.Event;
+import com.pk.tagger.Maps.ClusterMapRender;
+import com.pk.tagger.Maps.ClusterMarkerLocation;
+import com.pk.tagger.Realm.Event;
 
 import java.util.Date;
 

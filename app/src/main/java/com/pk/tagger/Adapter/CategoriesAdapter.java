@@ -1,4 +1,4 @@
-package com.pk.tagger.Adapter2;
+package com.pk.tagger.Adapter;
 
 import android.content.Context;
 import android.view.View;
