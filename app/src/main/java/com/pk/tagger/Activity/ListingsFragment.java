@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 
 import com.pk.tagger.R;
 import com.pk.tagger.Realm.Event;
-import com.pk.tagger.Realm.TagDataAdapter;
+import com.pk.tagger.Realm.ListingsAdapter;
 
 //import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import java.util.Date;
@@ -60,8 +60,8 @@ public class ListingsFragment extends Fragment {
                 .where(Event.class)
                 .greaterThan("eventStartTime.local", date)
                 .findAll();
-        TagDataAdapter toDoRealmAdapter =
-                new TagDataAdapter(getContext(), events, true, true, new TagDataAdapter.OnItemClickListener() {
+        ListingsAdapter toDoRealmAdapter =
+                new ListingsAdapter(getContext(), events, true, true, new ListingsAdapter.OnItemClickListener() {
                     @Override public void onItemClick(Event item) {
                         //Log.d("Popup event",item.getEventTickets().toString());
                         //Toast.makeText(getContext(), "Item: " + item.toString(), Toast.LENGTH_LONG).show();
