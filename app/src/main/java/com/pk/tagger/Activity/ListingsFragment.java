@@ -4,6 +4,7 @@ package com.pk.tagger.Activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,7 @@ import android.view.ViewGroup;
 
 import com.pk.tagger.R;
 import com.pk.tagger.Realm.Event;
-import com.pk.tagger.Realm.ListingsAdapter;
+import com.pk.tagger.Realm.TagDataAdapter;
 
 //import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import java.util.Date;
@@ -36,7 +37,6 @@ public class ListingsFragment extends Fragment {
     public ListingsFragment() {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +60,16 @@ public class ListingsFragment extends Fragment {
                 .where(Event.class)
                 .greaterThan("eventStartTime.local", date)
                 .findAll();
-        ListingsAdapter toDoRealmAdapter =
-                new ListingsAdapter(getContext(), events, true, true);
+        TagDataAdapter toDoRealmAdapter =
+                new TagDataAdapter(getContext(), events, true, true, new TagDataAdapter.OnItemClickListener() {
+                    @Override public void onItemClick(Event item) {
+                        //Log.d("Popup event",item.getEventTickets().toString());
+                        //Toast.makeText(getContext(), "Item: " + item.toString(), Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
+                        intent.putExtra("EventID", item.getEventID());
+                        startActivity(intent);
+                    }
+                });
         RealmRecyclerView realmRecyclerView =
                 (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(toDoRealmAdapter);

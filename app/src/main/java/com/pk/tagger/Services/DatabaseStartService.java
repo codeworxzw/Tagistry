@@ -162,8 +162,8 @@ public class DatabaseStartService extends IntentService {
                            myRealm.where(Event.class).findAll();
 
                    for(Event c:results1) {
-                       Log.d("Realm EventLngLats: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
-                       Log.d("Realm EventVenueName: ", c.getEventVenue().getEventVenue_Name().toString());
+                       Log.d("Realm EventLngLats: ", c.getEventVenue().getLocation().getLng_lat().toString());
+                       Log.d("Realm EventVenueName: ", c.getEventVenue().getName().toString());
                        Log.d("Realm EventName: ", c.getEventName().toString());
                        Log.d("Realm EventStartTime: ", c.getEventStartTime().toString());
                        Log.d("Realm EventID: ", c.getEventID().toString());

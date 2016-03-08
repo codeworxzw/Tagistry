@@ -54,22 +54,31 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         setContentView(R.layout.activity_event_detail);
 
         ButterKnife.bind(this);
-        Intent intent = getIntent();
-        String eventID = intent.getStringExtra("eventID");
+
+        Bundle extras = getIntent().getExtras();
+        String eventID = "1038341"; //default should return 'Katie Melua' event
+        if (extras != null) {
+            eventID = extras.getString("EventID");
+        }
 
         _baseLayout.setOnTouchListener(this);
 
         myRealm = Realm.getInstance(getApplicationContext());
         final Event event = myRealm
                 .where(Event.class)
-                .equalTo("eventID", "3080828")  //Should return 'Radical Face' event
+                .equalTo("eventID", eventID)
                 .findFirst();
-        Log.d("Popup: ",event.toString());
-        _event_title.setText(event.getEventName());
+        Log.d("Popup: ", event.toString());
+        _event_title.setText(event.getEventPerformer().getName());
         //TODO: should probably parse date properly not just truncate string lol
         _event_date.setText(event.getEventStartTime().getLocal().toString().substring(0, 16));
-        _event_venue.setText(event.getEventVenue().getEventVenue_Name());
-        _event_tickets_price.setText("Min. Ticket Price: TBD");
+        _event_venue.setText(event.getEventVenue().getName());
+        String tickets = "Tickets Unavailable";
+        if(event.getEventTickets().getLowest_price() != 0){
+            tickets = "Tickets from: £" + String.valueOf(event.getEventTickets().getLowest_price());
+        }
+        _event_tickets_price.setText(tickets);
+
         _event_tickets_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,11 +93,15 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
             }
         });
 
-        // String IMAGE_URL = "http://a.stwv.im/filestore/season/image/pinkpop_002474_1_mainpicture.jpg";
-        String IMAGE_URL = "https://chairnerd.global.ssl.fastly.net/images/performers-landscape/radical-face-a44d46/12082/huge.jpg";
+        String IMAGE_URL = "http://a.stwv.im/filestore/season/image/katie-melua_000158_1_mainpicture.jpg";
+        if(event.getEventImageURL() != null) {
+            IMAGE_URL = event.getEventImageURL();
+        } else if (event.getEventPerformer().getImage_URL() != null){
+            IMAGE_URL = event.getEventPerformer().getImage_URL();
+        }
         Picasso.with(getApplicationContext())
                 .load(IMAGE_URL)
-                .placeholder(R.drawable.jakebugg)
+                .placeholder(R.drawable.katie_melua)
                 .into(_event_image);
     }
 

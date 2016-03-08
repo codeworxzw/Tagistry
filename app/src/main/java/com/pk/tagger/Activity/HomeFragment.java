@@ -301,10 +301,10 @@ public class HomeFragment extends Fragment {
                 myRealm.where(Event.class).equalTo("eventID", "20724259819").findAll();
 
         for(Event c:results1) {
-            Log.d("Realm EventLatLng: ", c.getEventVenue().getEventVenue_Location().getLngLat().toString());
+            Log.d("Realm EventLatLng: ", c.getEventVenue().getLocation().getLng_lat().toString());
             // test to see if the objects have been saved to realm ok
             try {
-                String event = c.getEventVenue().getEventVenue_Location().getLngLat().toString();
+                String event = c.getEventVenue().getLocation().getLng_lat().toString();
                 _textviewusername2.setText(event);
             } catch (Exception e) {
                 Log.d(TAG, e.toString());

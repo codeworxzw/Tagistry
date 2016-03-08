@@ -10,46 +10,29 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Event extends RealmObject {
 
+
     private String eventName;
     private String eventDescription;
     @PrimaryKey
     private String eventID;
+    //private String[] eventTags;
     private String eventURL;
     private String eventImageURL;
-    private String eventPostedBy;
+    private String eventScore;
 
     private Date eventCreated;
     private Date eventLastUpdated;
 
     private boolean eventPrivate;
 
-
-    private EventCategory eventCategory;
-    private EventSubCategory eventSubCategory;
+    private EventPoster eventPoster;
+    private EventPerformer eventPerformer;
     private EventVenue eventVenue;
-    private EventOrganizer eventOrganizer;
     private EventStartTime eventStartTime;
     private EventEndTime eventEndTime;
-
+    private EventTickets eventTickets;
 
     public Event() { }
-
-
-    public EventCategory getEventCategory() {
-        return eventCategory;
-    }
-
-    public void setEventCategory(EventCategory eventCategory) {
-        this.eventCategory = eventCategory;
-    }
-
-    public EventSubCategory getEventSubCategory() {
-        return eventSubCategory;
-    }
-
-    public void setEventSubCategory(EventSubCategory eventSubCategory) {
-        this.eventSubCategory = eventSubCategory;
-    }
 
     public EventVenue getEventVenue() {
         return eventVenue;
@@ -59,13 +42,6 @@ public class Event extends RealmObject {
         this.eventVenue = eventVenue;
     }
 
-    public EventOrganizer getEventOrganizer() {
-        return eventOrganizer;
-    }
-
-    public void setEventOrganizer(EventOrganizer eventOrganizer) {
-        this.eventOrganizer = eventOrganizer;
-    }
 
     public EventStartTime getEventStartTime() {
         return eventStartTime;
@@ -106,15 +82,7 @@ public class Event extends RealmObject {
         this.eventDescription = eventDescription;
     }
 
-    public String getEventPostedBy() {
-        return eventPostedBy;
-    }
-
-    public void setEventPostedBy(String eventPostedBy) {
-        this.eventPostedBy = eventPostedBy;
-    }
-
-    public Date getEventLastUpdated() {
+     public Date getEventLastUpdated() {
         return eventLastUpdated;
     }
 
@@ -153,6 +121,52 @@ public class Event extends RealmObject {
     public void setEventCreated(Date eventCreated) {
         this.eventCreated = eventCreated;
     }
+
+//    public String[] getEventTags() {
+//        return eventTags;
+//    }
+//
+//    public void setEventTags(String[] eventTags) {
+//        this.eventTags = eventTags;
+//    }
+
+    public String getEventScore() {
+        return eventScore;
+    }
+
+    public void setEventScore(String eventScore) {
+        this.eventScore = eventScore;
+    }
+
+    public boolean isEventPrivate() {
+        return eventPrivate;
+    }
+
+    public EventPoster getEventPoster() {
+        return eventPoster;
+    }
+
+    public void setEventPoster(EventPoster eventPoster) {
+        this.eventPoster = eventPoster;
+    }
+
+    public EventPerformer getEventPerformer() {
+        return eventPerformer;
+    }
+
+    public void setEventPerformer(EventPerformer eventPerformer) {
+        this.eventPerformer = eventPerformer;
+    }
+
+    public EventTickets getEventTickets() {
+        return eventTickets;
+    }
+
+    public void setEventTickets(EventTickets eventTickets) {
+        this.eventTickets = eventTickets;
+    }
+
+
 }
 
 
