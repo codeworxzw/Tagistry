@@ -2,7 +2,9 @@ package com.pk.tagger.Activity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,9 +18,20 @@ import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.pk.tagger.AppController;
 import com.pk.tagger.R;
 import com.pk.tagger.Realm.Event;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +42,16 @@ import io.realm.Realm;
  */
 public class EventDetailActivity extends AppCompatActivity implements View.OnTouchListener{
 
+    private static String TAG = EventDetailActivity.class.getSimpleName();
+
     private Realm myRealm;
+    SharedPreferences sharedPref;
+
+
+    // temporary string to show the parsed response
+    private String jsonResponse;
+    private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/apiunsecure/event/";
+
 
     private int previousFingerPosition = 0;
     private int baseLayoutPosition = 0;
@@ -52,14 +74,19 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+        sharedPref = getApplicationContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getExtras();
+
         String eventID = "1038341"; //default should return 'Katie Melua' event
         if (extras != null) {
             eventID = extras.getString("EventID");
         }
+
+        //Make volley request to get full event data
+        getFullEvent(eventID);
 
         _baseLayout.setOnTouchListener(this);
 
@@ -68,40 +95,56 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                 .where(Event.class)
                 .equalTo("eventID", eventID)
                 .findFirst();
-        Log.d("Popup: ", event.toString());
+        Log.d("Event", event.getEventPerformer().getName());
+        Log.d("Partial Data", event.toString());
+
         _event_title.setText(event.getEventPerformer().getName());
         //TODO: should probably parse date properly not just truncate string lol
         _event_date.setText(event.getEventStartTime().getLocal().toString().substring(0, 16));
         _event_venue.setText(event.getEventVenue().getName());
+
         String tickets = "Tickets Unavailable";
-        if(event.getEventTickets().getLowest_price() != 0){
-            tickets = "Tickets from: £" + String.valueOf(event.getEventTickets().getLowest_price());
+        try {
+            if(event.getEventTickets().getPurchase_price()!=0){
+                tickets = "Tickets from: £" + String.valueOf(event.getEventTickets().getPurchase_price());
+            }
+        } catch(Exception e){
+            Log.d("Catch tickets", "No tickets");
         }
         _event_tickets_price.setText(tickets);
 
         _event_tickets_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (event.getEventURL() != null) {
-                    Toast.makeText(getApplicationContext(), "Buying Tickets!", Toast.LENGTH_SHORT).show();
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getEventURL()));
-                    startActivity(browserIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "No link avaliable :(", Toast.LENGTH_SHORT).show();
+                try{
+                    if (event.getEventURL() != null) {
+                        Toast.makeText(getApplicationContext(), "Show me dem tickets!", Toast.LENGTH_SHORT).show();
+                        Log.d("Buying", event.getEventURL());
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getEventURL()));
+                        startActivity(browserIntent);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No ticket link :(", Toast.LENGTH_SHORT).show();
+                        Log.d("Else", event.getEventURL());
+                    }
+                }catch(Exception e){
+                    Log.d("Catch", e.toString());
                 }
-
             }
         });
 
         String IMAGE_URL = "http://a.stwv.im/filestore/season/image/katie-melua_000158_1_mainpicture.jpg";
-        if(event.getEventImageURL() != null) {
-            IMAGE_URL = event.getEventImageURL();
-        } else if (event.getEventPerformer().getImage_URL() != null){
-            IMAGE_URL = event.getEventPerformer().getImage_URL();
+        try{
+            if(event.getEventImageURL() != null) {
+                IMAGE_URL = event.getEventImageURL();
+            } else if (event.getEventPerformer().getImage_URL() != null){
+                IMAGE_URL = event.getEventPerformer().getImage_URL();
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
         }
         Picasso.with(getApplicationContext())
                 .load(IMAGE_URL)
-                .placeholder(R.drawable.katie_melua)
+                .placeholder(R.drawable.note2)
                 .into(_event_image);
     }
 
@@ -268,4 +311,72 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         positionAnimator.start();
     }
 
+    private void getFullEvent(String id) {
+
+        //showpDialog();
+        final String eventID = id;
+        final String FULL_QUERY_URL = BASE_QUERY_URL + eventID;
+        Log.d("Querying", FULL_QUERY_URL);
+
+        JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
+
+                        try {
+                            myRealm = Realm.getInstance(getApplicationContext());
+
+                            myRealm.beginTransaction();
+                            myRealm.createOrUpdateObjectFromJson(Event.class, response);
+                            myRealm.commitTransaction();
+
+                            //update remaining data fields for event (i.e. data not already in Listings)
+                            updateData(eventID);
+
+                        } catch (Exception e) {
+                            Log.d("Error updating", e.toString());
+                        }
+
+                        //hidepDialog();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                //hidepDialog();
+            }
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String defaultValue = getResources().getString(R.string.access_token);
+                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+
+                headers.put("Authorization", "Bearer " + access_token);
+                Log.d("Headers", headers.toString());
+                return headers;
+            }
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(req);
+
+    }
+
+    public void updateData(String eventID){
+        final Event event = myRealm
+                .where(Event.class)
+                .equalTo("eventID", eventID)
+                .findFirst();
+        Log.d("Full Data", event.toString());
+
+        //update the remaining fields with the new volley data
+        //_event_title.setText("Test");
+
+    }
 }

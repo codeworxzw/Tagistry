@@ -20,7 +20,6 @@ import com.pk.tagger.R;
 import com.pk.tagger.Realm.Event;
 import com.pk.tagger.Realm.ListingsAdapter;
 
-//import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import java.util.Date;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -142,7 +141,6 @@ public class ListingsFragment extends Fragment {
                 // /return super.onOptionsItemSelected(item);
         }
     }
-
 
     @Override
     public void onStop() {

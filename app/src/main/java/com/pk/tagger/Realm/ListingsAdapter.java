@@ -6,33 +6,34 @@ package com.pk.tagger.Realm;
  * Created by PK on 17/01/2016.
  */
 
- import android.content.Context;
- import android.graphics.Color;
- import android.view.View;
- import android.view.ViewGroup;
- import android.widget.ImageView;
+import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import io.realm.RealmBasedRecyclerViewAdapter;
+import io.realm.RealmResults;
+import io.realm.RealmViewHolder;
 
- import android.widget.LinearLayout;
- import android.widget.TextView;
-
- import io.realm.RealmBasedRecyclerViewAdapter;
- import io.realm.RealmResults;
- import io.realm.RealmViewHolder;
-
- import com.pk.tagger.R;
- import com.squareup.picasso.Picasso;
+import com.pk.tagger.R;
+import com.squareup.picasso.Picasso;
 
 
 public class ListingsAdapter extends RealmBasedRecyclerViewAdapter<Event, ListingsAdapter.ViewHolder> {
     private Context context;
+    private static String TAG = ListingsAdapter.class.getSimpleName();
 
-  private final RealmResults<Event> items;
-  private OnItemClickListener listener;
+    private final RealmResults<Event> items;
 
-  public interface OnItemClickListener {
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
       void onItemClick(Event item);
-  }
+    }
 
     public class ViewHolder extends RealmViewHolder {
 
@@ -51,15 +52,19 @@ public class ListingsAdapter extends RealmBasedRecyclerViewAdapter<Event, Listin
             this.listingsTickets = (TextView) container.findViewById(R.id.textView_listings_tickets);
         }
 
-        public void bind(final Event eventItem, final OnItemClickListener listener) {
-            listingsTitle.setText(eventItem.getEventPerformer().getName());
+        public void bind(final Event event, final OnItemClickListener listener) {
+            listingsTitle.setText(event.getEventPerformer().getName());
             //TODO: should probably parse date properly not just truncate string lol
-            String date = eventItem.getEventStartTime().getLocal().toString().substring(0,16);
+            String date = event.getEventStartTime().getLocal().toString().substring(0,16);
             listingsDate.setText(date);
-            listingsVenue.setText(eventItem.getEventVenue().getName());
+            listingsVenue.setText(event.getEventVenue().getName());
             String tickets = "Tickets Unavailable";
-            if(eventItem.getEventTickets().getLowest_price() != 0){
-                tickets = "Tickets from: £" + String.valueOf(eventItem.getEventTickets().getLowest_price());
+            try {
+                if(event.getEventTickets().getPurchase_price()!=0){
+                    tickets = "Tickets from: £" + String.valueOf(event.getEventTickets().getPurchase_price());
+                }
+            } catch(Exception e){
+                Log.d(TAG, "No ticket price");
             }
 
             listingsTickets.setText(tickets);
@@ -68,19 +73,24 @@ public class ListingsAdapter extends RealmBasedRecyclerViewAdapter<Event, Listin
             String IMAGE_URL;
             IMAGE_URL = "http://a.stwv.im/filestore/season/image/pinkpop_002474_1_mainpicture.jpg";
 
-            if(eventItem.getEventImageURL() != null) {
-                IMAGE_URL = eventItem.getEventImageURL();
-            } else if (eventItem.getEventPerformer().getImage_URL() != null){
-                IMAGE_URL = eventItem.getEventPerformer().getImage_URL();
+            try{
+                if(event.getEventImageURL() != null) {
+                    IMAGE_URL = event.getEventImageURL();
+                } else if (event.getEventPerformer().getImage_URL() != null){
+                    IMAGE_URL = event.getEventPerformer().getImage_URL();
+                }
+            } catch (Exception e){
+                Log.d(TAG, e.toString());
             }
+
             Picasso.with(context)
                     .load(IMAGE_URL)
-                    .placeholder(R.drawable.katie_melua)
+                    .placeholder(R.drawable.note2)
                     .into(listingsImage);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(eventItem);
+                    listener.onItemClick(event);
                 }
             });
 

@@ -37,21 +37,6 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
- //   @Bind(R.id.TVusername)
- //   TextView _textviewusername;
-   // @Bind(R.id.btnArrayRequest)
-   // Button _btnMakeArrayRequest;
-   // @Bind(R.id.btnStartService)
-   // Button _btnStartService;
-   // @Bind(R.id.btnClearRealm)
-   // Button _btnClearRealm;
-   // @Bind(R.id.TVusername2)
-  //  TextView _textviewusername2;
-   // @Bind(R.id.gridview_categories)
-   // GridView _categories;
-
     private static String TAG = MainActivity.class.getSimpleName();
 
     // Progress dialog
@@ -75,7 +60,6 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
