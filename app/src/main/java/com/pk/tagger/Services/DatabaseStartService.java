@@ -115,14 +115,14 @@ public class DatabaseStartService extends IntentService {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                Log.d("JSONObject", response.toString());
+                Log.d("JSONObject", "JSONObject received");
 
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray data) {
 
-                // Log.d("JSONArray", data.toString());
+                Log.d("JSONArray", "JSONArray received");
 
                 myRealm = Realm.getInstance(getApplicationContext());
 
@@ -178,7 +178,7 @@ public class DatabaseStartService extends IntentService {
             }
         });
 
-        myRealm.close();
+//        myRealm.close();
 
     }
 

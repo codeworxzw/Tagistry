@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.pk.tagger.R;
 import com.pk.tagger.Services.DatabaseStartService;
+import com.pk.tagger.Services.DatabaseStartServicePaginated;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -178,7 +179,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_sync){
 
-            DatabaseStartService.startActionDownload(this, "hello", "hello");
+            DatabaseStartServicePaginated.startActionDownload(this, "hello", "hello");
+            Log.d("MainActivity", "Sync service started");
             return true;
         }
 
@@ -201,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 break;
             case 1:
                 fragment = new ListingsFragment();
-                title = getString(R.string.title_tags);
+                title = getString(R.string.title_listings);
                 break;
             case 2:
                 fragment = new MapFragment();

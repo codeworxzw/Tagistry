@@ -47,7 +47,7 @@
     </string-array>
 
     <string name="title_map">Events Map</string>
-    <string name="title_tags">Event Listings</string>
+    <string name="title_listings">Event Listings</string>
     <string name="title_home">Home</string>
 
     <string name="email">Email</string>

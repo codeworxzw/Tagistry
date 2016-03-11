@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -55,11 +56,13 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
 
     private int previousFingerPosition = 0;
     private int baseLayoutPosition = 0;
-    private int defaultViewHeight;
+    private int defaultViewWidth;
 
     private boolean isClosing = false;
-    private boolean isScrollingUp = false;
-    private boolean isScrollingDown = false;
+    private boolean isScrollingLeft = false;
+    private boolean isScrollingRight = false;
+
+    private float anchorLeft = 0;
 
     @Bind(R.id.base_popup_layout) LinearLayout _baseLayout;
     @Bind(R.id.imageView_event) ImageView _event_image;
@@ -89,6 +92,9 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         getFullEvent(eventID);
 
         _baseLayout.setOnTouchListener(this);
+
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) _baseLayout.getLayoutParams();
+        anchorLeft = _baseLayout.getLeft() + lp.leftMargin;
 
         myRealm = Realm.getInstance(getApplicationContext());
         final Event event = myRealm
@@ -144,7 +150,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         }
         Picasso.with(getApplicationContext())
                 .load(IMAGE_URL)
-                .placeholder(R.drawable.note2)
+                .placeholder(R.drawable.note_listings)
                 .into(_event_image);
     }
 
@@ -152,108 +158,96 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
     public boolean onTouch(View view, MotionEvent event) {
 
         // Get finger position on screen
-        final int Y = (int) event.getRawY();
+        final int X = (int) event.getRawX();
 
         // Switch on motion event type
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
             case MotionEvent.ACTION_DOWN:
                 // save default base layout height
-                defaultViewHeight = _baseLayout.getHeight();
+                defaultViewWidth = _baseLayout.getWidth();
 
                 // Init finger and view position
-                previousFingerPosition = Y;
-                baseLayoutPosition = (int) _baseLayout.getY();
+                previousFingerPosition = X;
+                baseLayoutPosition = (int) _baseLayout.getX();
                 break;
 
             case MotionEvent.ACTION_UP:
                 // If user was doing a scroll up
-                if(isScrollingUp){
+                if(isScrollingLeft){
                     // Reset baselayout position
-                    _baseLayout.setY(0);
+                    _baseLayout.setX(anchorLeft);
                     // We are not in scrolling up mode anymore
-                    isScrollingUp = false;
+                    isScrollingLeft = false;
                 }
 
                 // If user was doing a scroll down
-                if(isScrollingDown){
+                if(isScrollingRight){
                     // Reset baselayout position
-                    _baseLayout.setY(0);
+                    _baseLayout.setX(anchorLeft);
                     // Reset base layout size
-                    _baseLayout.getLayoutParams().height = defaultViewHeight;
-                    _baseLayout.requestLayout();
+                    //_baseLayout.getLayoutParams().width = defaultViewWidth;
+                    //_baseLayout.requestLayout();
                     // We are not in scrolling down mode anymore
-                    isScrollingDown = false;
+                    isScrollingRight = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(!isClosing){
-                    int currentYPosition = (int) _baseLayout.getY();
+                    int currentXPosition = (int) _baseLayout.getX();
 
                     // If we scroll up
-                    if(previousFingerPosition >Y){
+                    if(previousFingerPosition > X){
                         // First time android rise an event for "up" move
-                        if(!isScrollingUp){
-                            isScrollingUp = true;
-                        }
-
-                        // Has user scroll down before -> view is smaller than it's default size -> resize it instead of change it position
-                        if(_baseLayout.getHeight()<defaultViewHeight){
-                            _baseLayout.getLayoutParams().height = _baseLayout.getHeight() - (Y - previousFingerPosition);
-                            _baseLayout.requestLayout();
-                        }
-                        else {
+                        if(!isScrollingLeft){
+                            isScrollingLeft = true;
+                        } else {
                             // Has user scroll enough to "auto close" popup ?
-                            if ((baseLayoutPosition - currentYPosition) > defaultViewHeight / 4) {
-                                closeUpAndDismissDialog(currentYPosition);
+                            if ((baseLayoutPosition - currentXPosition) > defaultViewWidth / 2) {
+                                closeLeftAndDismissDialog(currentXPosition);
                                 return true;
                             }
 
-                            //
                         }
-                        _baseLayout.setY(_baseLayout.getY() + (Y - previousFingerPosition));
+                        _baseLayout.setX(_baseLayout.getX() + (X - previousFingerPosition));
 
                     }
                     // If we scroll down
-                    else{
+                    else if (previousFingerPosition < X){
 
                         // First time android rise an event for "down" move
-                        if(!isScrollingDown){
-                            isScrollingDown = true;
-                        }
-
-                        // Has user scroll enough to "auto close" popup ?
-                        if (Math.abs(baseLayoutPosition - currentYPosition) > defaultViewHeight / 2)
-                        {
-                            closeDownAndDismissDialog(currentYPosition);
-                            return true;
+                        if(!isScrollingRight){
+                            isScrollingRight = true;
+                        } else {
+                            // Has user scroll enough to "auto close" popup ?
+                            if ((currentXPosition - baseLayoutPosition) > defaultViewWidth / 2) {
+                                closeRightAndDismissDialog(currentXPosition);
+                                return true;
+                            }
                         }
 
                         // Change base layout size and position (must change position because view anchor is top left corner)
-                        _baseLayout.setY(_baseLayout.getY() + (Y - previousFingerPosition));
-                        _baseLayout.getLayoutParams().height = _baseLayout.getHeight() - (Y - previousFingerPosition);
-                        _baseLayout.requestLayout();
+                        _baseLayout.setX(_baseLayout.getX() + (X - previousFingerPosition));
+                        //_baseLayout.getLayoutParams().width = _baseLayout.getWidth() - (X - previousFingerPosition);
+                        //_baseLayout.requestLayout();
                     }
 
                     // Update position
-                    previousFingerPosition = Y;
+                    previousFingerPosition = X;
                 }
                 break;
         }
         return true;
     }
 
-    public void closeUpAndDismissDialog(int currentPosition){
+    public void closeLeftAndDismissDialog(int currentPosition){
         isClosing = true;
-        ObjectAnimator positionAnimator = ObjectAnimator.ofFloat(_baseLayout, "y", currentPosition, -_baseLayout.getHeight());
+        ObjectAnimator positionAnimator = ObjectAnimator.ofFloat(_baseLayout, "x", currentPosition, -_baseLayout.getWidth());
         positionAnimator.setDuration(300);
         positionAnimator.addListener(new Animator.AnimatorListener()
         {
-
             @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
+            public void onAnimationStart(Animator animation) {}
 
             @Override
             public void onAnimationEnd(Animator animator)
@@ -262,34 +256,28 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
+            public void onAnimationCancel(Animator animation) {}
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-
+            public void onAnimationRepeat(Animator animation) {}
         });
+
         positionAnimator.start();
     }
 
-    public void closeDownAndDismissDialog(int currentPosition){
+    public void closeRightAndDismissDialog(int currentPosition){
         isClosing = true;
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenHeight = size.y;
-        ObjectAnimator positionAnimator = ObjectAnimator.ofFloat(_baseLayout, "y", currentPosition, screenHeight + _baseLayout.getHeight());
+        //Display display = getWindowManager().getDefaultDisplay();
+        //Point size = new Point();
+        //display.getSize(size);
+        //int screenWidth = size.x;
+        //ObjectAnimator positionAnimator = ObjectAnimator.ofFloat(_baseLayout, "x", currentPosition, screenWidth + _baseLayout.getWidth());
+        ObjectAnimator positionAnimator = ObjectAnimator.ofFloat(_baseLayout, "x", currentPosition, _baseLayout.getWidth());
         positionAnimator.setDuration(300);
         positionAnimator.addListener(new Animator.AnimatorListener()
         {
-
             @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
+            public void onAnimationStart(Animator animation) {}
 
             @Override
             public void onAnimationEnd(Animator animator)
@@ -298,16 +286,12 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
+            public void onAnimationCancel(Animator animation) {}
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-
+            public void onAnimationRepeat(Animator animation) {}
         });
+
         positionAnimator.start();
     }
 

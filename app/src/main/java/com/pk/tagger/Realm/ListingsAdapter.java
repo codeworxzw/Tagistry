@@ -85,7 +85,7 @@ public class ListingsAdapter extends RealmBasedRecyclerViewAdapter<Event, Listin
 
             Picasso.with(context)
                     .load(IMAGE_URL)
-                    .placeholder(R.drawable.note2)
+                    .placeholder(R.drawable.note_listings)
                     .into(listingsImage);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

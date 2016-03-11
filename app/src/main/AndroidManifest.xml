@@ -46,6 +46,9 @@
         <service
             android:name=".Services.DatabaseStartService"
             android:exported="false"></service>
+        <service
+            android:name=".Services.DatabaseStartServicePaginated"
+            android:exported="false"></service>
     </application>
 
 </manifest>

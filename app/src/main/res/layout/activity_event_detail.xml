@@ -15,9 +15,10 @@
     <ImageView
         android:id="@+id/imageView_event"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/note_listings"/>
 
     <LinearLayout
         android:layout_width="match_parent"
