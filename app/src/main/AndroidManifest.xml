@@ -23,7 +23,7 @@
             android:value="AIzaSyAqQyr73YgkDUDs4dKF5OUYjj--jvw4zoo" />
 
         <activity
-            android:name=".ActivityTemp.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
@@ -32,27 +32,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityTemp.LoginActivity"/>
-        <activity android:name=".ActivityTemp.RegisterActivity" />
+        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.RegisterActivity" />
         <activity
-            android:name=".ActivityTemp.FilterActivity"
+            android:name=".activity.FilterActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <!--android:theme="@style/Theme.AppCompat.Translucent"-->
 
         </activity>
         <activity
-            android:name=".ActivityTemp.EventDetailActivity"
+            android:name=".activity.EventDetailActivity"
             android:label="@string/title_event_detail"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
         <service
-            android:name=".ServicesTemp.DatabaseSyncService"
+            android:name=".services.DatabaseSyncService"
             android:exported="false" />
         <service
-            android:name=".ServicesTemp.DatabaseStartService"
+            android:name=".services.DatabaseStartService"
             android:exported="false"></service>
         <service
-            android:name=".ServicesTemp.DatabaseStartServicePaginated2"
+            android:name=".services.DatabaseStartServicePaginated2"
             android:exported="false"></service>
     </application>
 
