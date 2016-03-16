@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.pk.tagger.R;
 import com.pk.tagger.realm.Event;
-import com.pk.tagger.services.DatabaseStartServicePaginated2;
+import com.pk.tagger.services.DatabaseStartServicePaginated;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_sync){
 
-            DatabaseStartServicePaginated2.startActionDownload(this, "hello", "hello");
+            DatabaseStartServicePaginated.startActionDownload(this, "hello", "hello");
             Log.d("MainActivity", "Sync service started");
             return true;
         }
