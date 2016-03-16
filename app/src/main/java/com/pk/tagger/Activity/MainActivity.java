@@ -21,17 +21,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
-import com.pk.tagger.Services.DatabaseStartService;
-import com.pk.tagger.Services.DatabaseStartServicePaginated;
+import com.pk.tagger.Realm.Event;
+import com.pk.tagger.Services.DatabaseStartServicePaginated2;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import io.realm.Realm;
+
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
     private FragmentDrawer drawerFragment;
+    private Realm myRealm;
+
 
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferencesDate;
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
@@ -157,29 +162,36 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             //dpd.updateDate(mYear, mMonth, mDay);
             dpd.show();
 
-
             return true;
         }
 
         if(id == R.id.action_options){
-            Toast.makeText(getApplicationContext(), "Options action is selected!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
+            startActivity(intent);
+            Log.d("MainActivity", "options selected");
             return true;
         }
 
         if(id == R.id.action_search){
-            Intent intent = new Intent(getApplicationContext(), EventDetailActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(getApplicationContext(), EventDetailActivity.class);
+            //startActivity(intent);
+            Toast.makeText(getApplicationContext(), "Search action is selected!", Toast.LENGTH_SHORT).show();
+
             return true;
         }
 
         if(id == R.id.action_clear_cache){
-
-            return false;
+            myRealm = Realm.getInstance(getApplicationContext());
+            myRealm.beginTransaction();
+            myRealm.clear(Event.class);
+            myRealm.commitTransaction();
+            myRealm.close();
+            return true;
         }
 
         if(id == R.id.action_sync){
 
-            DatabaseStartServicePaginated.startActionDownload(this, "hello", "hello");
+            DatabaseStartServicePaginated2.startActionDownload(this, "hello", "hello");
             Log.d("MainActivity", "Sync service started");
             return true;
         }

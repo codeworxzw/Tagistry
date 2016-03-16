@@ -11,7 +11,7 @@ public class EventTickets extends RealmObject {
 
     private int lowest_price;
     private int commission;
-    private int purchase_price;
+    private int purchase_price = 0;
     private int face_value;
     private int ticket_count;
 

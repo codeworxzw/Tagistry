@@ -14,23 +14,26 @@ public class Event extends RealmObject {
     private String eventName;
     private String eventDescription;
     @PrimaryKey
-    private String eventID;
+    private String eventID;                 //have
     //private String[] eventTags;
     private String eventURL;
-    private String eventImageURL;
+    private String eventImageURL;           //have
     private String eventScore;
+
+    private int eventPurchasePrice;     //have
 
     private Date eventCreated;
     private Date eventLastUpdated;
+    private Date eventDate;             //have
 
     private boolean eventPrivate;
 
     private EventPoster eventPoster;
-    private EventPerformer eventPerformer;
-    private EventVenue eventVenue;
-    private EventStartTime eventStartTime;
+    private EventPerformer eventPerformer;  //have name, sw_genre_id
+    private EventVenue eventVenue;          //have id, name, location.post_code, location.lng_lat.lng, location.lng_lat.lat
+    private EventStartTime eventStartTime;  //have local
     private EventEndTime eventEndTime;
-    private EventTickets eventTickets;
+    private EventTickets eventTickets;      //have purchase_price
 
     public Event() { }
 
@@ -42,6 +45,20 @@ public class Event extends RealmObject {
         this.eventVenue = eventVenue;
     }
 
+    public int getEventPurchasePrice() {
+        return eventPurchasePrice;
+    }
+
+    public void setEventPurchasePrice(int eventPurchasePrice) {
+        this.eventPurchasePrice = eventPurchasePrice;
+    }
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
+    }
 
     public EventStartTime getEventStartTime() {
         return eventStartTime;
@@ -165,7 +182,13 @@ public class Event extends RealmObject {
     public void setEventTickets(EventTickets eventTickets) {
         this.eventTickets = eventTickets;
     }
-
+//    public Date getStartTime() {
+//        return startTime;
+//    }
+//
+//    public void setStartTime(Date startTime) {
+//        this.startTime = startTime;
+//    }
 
 }
 

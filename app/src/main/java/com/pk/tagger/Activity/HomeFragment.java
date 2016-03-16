@@ -156,21 +156,8 @@ public class HomeFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        super.onOptionsItemSelected(item);
         switch(item.getItemId()) {
-
-
-
-
-            case R.id.action_clear_cache:
-                myRealm = Realm.getInstance(getContext());
-                myRealm.beginTransaction();
-                myRealm.clear(Event.class);
-                myRealm.commitTransaction();
-                myRealm.close();
-
-                return true;
-
             default:
                 return false;
             // /return super.onOptionsItemSelected(item);

@@ -88,9 +88,6 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
             eventID = extras.getString("EventID");
         }
 
-        //Make volley request to get full event data
-        getFullEvent(eventID);
-
         _baseLayout.setOnTouchListener(this);
 
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) _baseLayout.getLayoutParams();
@@ -111,8 +108,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
 
         String tickets = "Tickets Unavailable";
         try {
-            if(event.getEventTickets().getPurchase_price()!=0){
-                tickets = "Tickets from: £" + String.valueOf(event.getEventTickets().getPurchase_price());
+            if(event.getEventTickets().getTicket_count()!=0){
+                tickets = "Tickets from: £" + String.valueOf(event.getEventPurchasePrice());
             }
         } catch(Exception e){
             Log.d("Catch tickets", "No tickets");
@@ -138,7 +135,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
             }
         });
 
-        String IMAGE_URL = "http://a.stwv.im/filestore/season/image/katie-melua_000158_1_mainpicture.jpg";
+        String IMAGE_URL = "";
         try{
             if(event.getEventImageURL() != null) {
                 IMAGE_URL = event.getEventImageURL();
@@ -152,6 +149,18 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                 .load(IMAGE_URL)
                 .placeholder(R.drawable.note_listings)
                 .into(_event_image);
+
+        //Check if realm already has full event data (via EventURL), if not, make volley request
+        try{
+            if(event.getEventURL()==null){
+                getFullEvent(eventID);
+                Log.d(TAG, "Requesting full data...");
+            } else {
+                Log.d(TAG, "Already has full data");
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
     }
 
 
@@ -203,7 +212,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                             isScrollingLeft = true;
                         } else {
                             // Has user scroll enough to "auto close" popup ?
-                            if ((baseLayoutPosition - currentXPosition) > defaultViewWidth / 2) {
+                            if ((baseLayoutPosition - currentXPosition) > defaultViewWidth / 4) {
                                 closeLeftAndDismissDialog(currentXPosition);
                                 return true;
                             }
@@ -220,7 +229,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                             isScrollingRight = true;
                         } else {
                             // Has user scroll enough to "auto close" popup ?
-                            if ((currentXPosition - baseLayoutPosition) > defaultViewWidth / 2) {
+                            if ((currentXPosition - baseLayoutPosition) > defaultViewWidth / 4) {
                                 closeRightAndDismissDialog(currentXPosition);
                                 return true;
                             }
@@ -357,7 +366,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                 .where(Event.class)
                 .equalTo("eventID", eventID)
                 .findFirst();
-        Log.d("Full Data", event.toString());
+        Log.d("Updated with full data", event.toString());
 
         //update the remaining fields with the new volley data
         //_event_title.setText("Test");

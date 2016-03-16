@@ -109,6 +109,9 @@ public class DatabaseStartService extends IntentService {
         Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DStartService", myDate.toString());
+        myRealm = Realm.getInstance(getApplicationContext());
+
+        myRealm.beginTransaction();
 
         EventRestClient.get("", null, new JsonHttpResponseHandler() {
 
@@ -124,23 +127,20 @@ public class DatabaseStartService extends IntentService {
 
                 Log.d("JSONArray", "JSONArray received");
 
-                myRealm = Realm.getInstance(getApplicationContext());
 
                 try {
                     // Parsing json array response
                     // loop through each json object
-                    jsonResponse = "";
+                    //jsonResponse = "";
                     for (int i = 0; i < data.length(); i++) {
 
                         JSONObject event = (JSONObject) data
                                 .get(i);
 
-                        jsonResponse = event.toString();
+                      //  jsonResponse = event.toString();
 
                         //Log.d("jsonResponse", jsonResponse);
-                        myRealm.beginTransaction();
                         myRealm.createObjectFromJson(Event.class, event);
-                        myRealm.commitTransaction();
                         // we are already in a separate thread here, so we can do some long operation
 
                         //try {
@@ -173,12 +173,12 @@ public class DatabaseStartService extends IntentService {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
 
 //        myRealm.close();
+        myRealm.commitTransaction();
+        Log.d("Service", "Finished");
 
     }
 
