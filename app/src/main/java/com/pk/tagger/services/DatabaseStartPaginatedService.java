@@ -27,7 +27,7 @@ import io.realm.RealmConfiguration;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class DatabaseStartServicePaginatedTemp extends IntentService {
+public class DatabaseStartPaginatedService extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_DOWNLOAD = "com.pk.tagger.services.action.FOO";
@@ -43,7 +43,7 @@ public class DatabaseStartServicePaginatedTemp extends IntentService {
 
     private int pageCount = 1;       //total page count (initialize as 1, then update from response)
 
-    public DatabaseStartServicePaginatedTemp() {
+    public DatabaseStartPaginatedService() {
         super("DatabaseStartService");
     }
 
@@ -55,7 +55,7 @@ public class DatabaseStartServicePaginatedTemp extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionDownload(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DatabaseStartServicePaginatedTemp.class);
+        Intent intent = new Intent(context, DatabaseStartPaginatedService.class);
         intent.setAction(ACTION_DOWNLOAD);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
@@ -71,7 +71,7 @@ public class DatabaseStartServicePaginatedTemp extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionUpdate(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DatabaseStartServicePaginatedTemp.class);
+        Intent intent = new Intent(context, DatabaseStartPaginatedService.class);
         intent.setAction(ACTION_UPDATE);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);

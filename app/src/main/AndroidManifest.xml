@@ -52,7 +52,7 @@
             android:name=".services.DatabaseStartService"
             android:exported="false"></service>
         <service
-            android:name=".services.DatabaseStartServicePaginatedTemp"
+            android:name=".services.DatabaseStartPaginatedService"
             android:exported="false"></service>
     </application>
 
