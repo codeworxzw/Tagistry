@@ -145,7 +145,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         }
         Picasso.with(getApplicationContext())
                 .load(IMAGE_URL)
-                .placeholder(R.drawable.note_listings)
+                .placeholder(R.drawable.ic_profile)
                 .into(_event_image);
 
         //Check if realm already has full event data (via EventURL), if not, make volley request

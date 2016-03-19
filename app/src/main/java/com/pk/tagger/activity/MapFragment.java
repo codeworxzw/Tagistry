@@ -4,6 +4,8 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,10 +23,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.pk.tagger.R;
+import com.pk.tagger.maps.ClusterMapInfoWindow;
 import com.pk.tagger.maps.ClusterMapRender;
 import com.pk.tagger.maps.ClusterMarkerLocation;
 import com.pk.tagger.realm.Event;
@@ -49,7 +55,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     //private static RealmConfiguration mRealmConfig;
 
     private Realm myRealm;
-
 
     public MapFragment() {
         // Required empty public constructor
@@ -77,22 +82,22 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         }
 
         googleMap = mMapView.getMap();
-
-        //myRealm = Realm.getInstance(getActivity());
-
         setUpMap();
-
         // Inflate the layout for this fragment
         return rootView;
     }
 
     public void setUpMap() {
 
-
-        ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
-
+        final ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
         clusterManager.setRenderer(new ClusterMapRender(getContext(), googleMap, clusterManager));
         googleMap.setOnCameraChangeListener(clusterManager);
+        googleMap.setOnMarkerClickListener(clusterManager);
+        googleMap.setOnInfoWindowClickListener(clusterManager);
+        googleMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
+        final ClusterMapInfoWindow clusterMapInfoWindow = new ClusterMapInfoWindow();
+
+        clusterManager.getClusterMarkerCollection().setOnInfoWindowAdapter(clusterMapInfoWindow);
 
         LatLng streatham = new LatLng(51.419959, -0.128017);
 //        googleMap.addMarker(new MarkerOptions()
@@ -124,26 +129,57 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 double longitude = c.getEventVenue().getLocation().getLng_lat().getLng();
                 String title = c.getEventPerformer().getName();
                 String venue = c.getEventVenue().getName();
+                String eventId = c.getEventID();
                 //makeMarker(latitude, longitude, title, venue);
                 LatLng adder = new LatLng( latitude, longitude );
-                clusterManager.addItem( new ClusterMarkerLocation( adder, title, venue ));
+                clusterManager.addItem( new ClusterMarkerLocation( adder, title, venue, eventId ));
 
             }
         } catch (Exception e){
             Log.d(TAG, e.toString());
         }
 
-        //googleMap.setOnMapLongClickListener(this);
-        // Set a listener for info window events.
+        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterMarkerLocation>() {
+            @Override
+            public boolean onClusterClick(Cluster<ClusterMarkerLocation> cluster) {
+                Toast.makeText(getContext(), "Multiple Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
+                clusterMapInfoWindow.setData(cluster);
+                clusterMapInfoWindow.setContext(getContext());
+                return false;
+            }
+        });
 
         clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterMarkerLocation>() {
             @Override
             public boolean onClusterItemClick(ClusterMarkerLocation clusterMarkerLocation) {
-                Toast.makeText(getContext(), "Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "1 Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
-    }
+
+        clusterManager.setOnClusterInfoWindowClickListener(new ClusterManager.OnClusterInfoWindowClickListener<ClusterMarkerLocation>() {
+
+            @Override
+            public void onClusterInfoWindowClick(Cluster<ClusterMarkerLocation> cluster) {
+                Toast.makeText(getContext(), "Cluster Window Clicked", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarkerLocation>() {
+
+            @Override
+            public void onClusterItemInfoWindowClick(ClusterMarkerLocation clusterMarkerLocation) {
+                Toast.makeText(getContext(), "1 Cluster Window Clicked", Toast.LENGTH_SHORT).show();
+                String ID = clusterMarkerLocation.getEventID();
+                Intent intent = new Intent(getContext(), EventDetailActivity.class);
+                intent.putExtra("EventID", ID);
+                startActivity(intent);
+            }
+        });
+        }
+
+
 
     public void makeMarker(double latitude, double longitude, String name, String address) {
 
@@ -206,7 +242,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem item=menu.findItem(R.id.action_sync);
+        MenuItem item= menu.findItem(R.id.action_sync);
         item.setVisible(false);
     }
 

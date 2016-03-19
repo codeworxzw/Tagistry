@@ -17,13 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
+        android:layout_weight=".50"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/note_listings"/>
+        android:src="@drawable/ic_profile"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="0.50">
 
         <TextView
             android:id="@+id/textView_event_title"

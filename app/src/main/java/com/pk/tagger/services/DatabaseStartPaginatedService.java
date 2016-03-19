@@ -41,6 +41,8 @@ public class DatabaseStartPaginatedService extends IntentService {
     private String jsonResponse;
     private Realm myRealm;
 
+
+
     private int pageCount = 1;       //total page count (initialize as 1, then update from response)
 
     public DatabaseStartPaginatedService() {
@@ -99,8 +101,8 @@ public class DatabaseStartPaginatedService extends IntentService {
      * parameters.
      */
     private void handleActionDownload(String param1, String param2) {
-
-        //resetRealm();
+        // this needs to be kept if new database schema is being used
+       // resetRealm();
 
         SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
         Date date = new Date(System.currentTimeMillis());

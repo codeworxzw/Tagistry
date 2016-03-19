@@ -44,14 +44,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     Button btnCalendar, btnTimePicker;
     EditText txtDate, txtTime;
 
-    // Variable for storing current date and time
-    private int mYear, mMonth, mDay, mHour, mMinute;
-    private Calendar date1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sharedPrefsCurrentFragment = getSharedPreferences("FragmentView", Context.MODE_PRIVATE);
 
         sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
 
@@ -67,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
           //  DatabaseStartService.startActionBaz(this, "hello", "hello");
         }
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -78,8 +76,18 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         drawerFragment.setDrawerListener(this);
 
+
+
+        int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
+        Log.d("Filter MainActivt Test", String.valueOf(test));
+
         // display the first navigation drawer view on app launch
-        displayView(0);
+        if (sharedPrefsCurrentFragment.contains("fragment")) {
+
+            displayView(sharedPrefsCurrentFragment.getInt("fragment", 0));
+        } else {
+            displayView(0);
+        }
     }
 
     @Override
@@ -97,88 +105,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+     /*   if (id == R.id.action_settings) {
 
             return true;
-        }
-
-        if(id == R.id.action_calendar){
-
-
-            sharedPreferencesDate = getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
-
-            if (sharedPreferencesDate.contains("Date")) {
-
-                Calendar calendar = new GregorianCalendar();
-
-                calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
-
-                mYear = calendar.get(Calendar.YEAR);
-                mMonth = calendar.get(Calendar.MONTH);
-                mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-                Log.d("Hello yes", calendar.getTime().toString());
-
-            } else {
-
-                // Process to get Current Date
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                Log.d("Hello no", c.toString());
-
-            };
-
-            // Launch Date Picker Dialog
-            DatePickerDialog dpd = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                                mYear = year;
-                                mMonth = monthOfYear;
-                                mDay = dayOfMonth;
-
-                            sharedPreferencesDate = getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
-
-                            Calendar calendarDate = new GregorianCalendar();
-                            calendarDate.set(mYear, mMonth, mDay);
-                            SharedPreferences.Editor editor = sharedPreferencesDate.edit();
-                            editor.putLong("Date", calendarDate.getTimeInMillis());
-                            editor.commit();
-
-                            Calendar calendar = new GregorianCalendar();
-                            calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
-
-                            Log.d("Date in Set Date", calendar.getTime().toString());
-
-                        }
-                    },   mYear, mMonth, mDay);
-
-            //dpd.updateDate(mYear, mMonth, mDay);
-            dpd.show();
-
-            return true;
-        }
+        }  */
 
         if(id == R.id.action_options){
             Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
+            intent.putExtra("TAG", getVisibleFragment().getTag());
             startActivity(intent);
             Log.d("MainActivity", "options selected");
+            Log.i("Open Fragment", getVisibleFragment().getTag());
             return true;
         }
 
-        if(id == R.id.action_search){
+  /*      if(id == R.id.action_search){
             //Intent intent = new Intent(getApplicationContext(), EventDetailActivity.class);
             //startActivity(intent);
             Toast.makeText(getApplicationContext(), "Search action is selected!", Toast.LENGTH_SHORT).show();
 
             return true;
-        }
+        } */
 
         if(id == R.id.action_clear_cache){
             myRealm = Realm.getInstance(getApplicationContext());
@@ -205,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         displayView(position);
     }
 
-    private void displayView(int position) {
+   final public void displayView(int position) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
@@ -233,11 +180,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             fragmentTransaction.commit();
 
             // set the toolbar title
-            getSupportActionBar().setTitle(title);
+            setActionBarTitle(title);
         }
     }
 
-    public Fragment getVisibleFragment(){
+    public final Fragment getVisibleFragment(){
         FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
         if(fragments != null){
@@ -247,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         }
         return null;
+    }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
     }
 
 }

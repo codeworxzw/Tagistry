@@ -146,6 +146,7 @@ public class ListingsFragment extends Fragment {
                         Intent intent = new Intent(getContext(), EventDetailActivity.class);
                         intent.putExtra("EventID", item.getEventID());
                         startActivity(intent);
+
                     }
                 });
         realmRecyclerView.setAdapter(eventsRealmAdapter);

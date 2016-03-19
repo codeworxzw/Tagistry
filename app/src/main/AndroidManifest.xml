@@ -44,7 +44,10 @@
             android:name=".activity.EventDetailActivity"
             android:label="@string/title_event_detail"
             android:theme="@style/Theme.AppCompat.Translucent"/>
-
+        <activity
+            android:name=".activity.ClusterInfoWindow"
+            android:label="@string/title_cluster_info_window"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
         <service
             android:name=".services.DatabaseSyncService"
             android:exported="false" />

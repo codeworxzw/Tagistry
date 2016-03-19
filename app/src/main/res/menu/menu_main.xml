@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.MainActivity">
 
-    <item
+ <!--   <item
         android:id="@+id/action_calendar"
         android:title="@string/action_calendar"
         android:orderInCategory="100"
         android:icon="@drawable/ic_calendar_action"
-        app:showAsAction="always" />
+        app:showAsAction="always" /> -->
 
     <item
         android:id="@+id/action_options"
@@ -17,12 +17,12 @@
         android:icon="@drawable/ic_settings_action"
         app:showAsAction="always" />
 
-    <item
+ <!--   <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:orderInCategory="100"
         android:icon="@drawable/ic_search_action"
-        app:showAsAction="always" />
+        app:showAsAction="always" />   -->
 
     <item
         android:id="@+id/action_sync"
@@ -37,11 +37,11 @@
         android:title="@string/action_clear_cache"
         app:showAsAction="never" />
 
-    <item
+ <!---   <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-
+-->
 
 </menu>

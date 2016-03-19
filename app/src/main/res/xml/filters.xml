@@ -36,5 +36,17 @@
         android:defaultValue="@array/genres_values"
         android:entries="@array/genres"
         android:entryValues="@array/genres_values"/>
+    <Preference
+        android:key="btnDateStartFilter"
+        android:summary="Start Date"
+        android:title="Start Date" />
+
+    <Preference
+        android:key="btnDateEndFilter"
+        android:summary="End Date"
+        android:title="End Date" />
+    <Preference android:title="Go!"
+        android:key="Close"
+        android:summary=""/>
 
 </PreferenceScreen>

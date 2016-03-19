@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pk.tagger.R;
 
@@ -17,16 +18,19 @@ import java.util.List;
  */
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(Genre mGenre, int position);
+    }
+
     private List<Genre> mGenres;
+    private final OnItemClickListener listener;
 
-    public GenreAdapter(List<Genre> genres) {
-
+    public GenreAdapter(List<Genre> genres, OnItemClickListener listener) {
+        this.listener = listener;
         mGenres = genres;
-
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
 
         public TextView nameTextView;
         public ImageView imageView;
@@ -36,6 +40,16 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
 
             nameTextView = (TextView) itemView.findViewById(R.id.genre_name);
             imageView = (ImageView) itemView.findViewById(R.id.genre_image);
+        }
+
+        public void bind(final Genre genre, final OnItemClickListener listener, final int position) {
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(genre, position);
+                }
+            });
         }
     }
 
@@ -55,14 +69,12 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     public void onBindViewHolder(GenreAdapter.ViewHolder viewHolder, int position) {
 
         Genre genre = mGenres.get(position);
-
         TextView textView = viewHolder.nameTextView;
-
         textView.setText(genre.getName());
-
-       ImageView imageView = viewHolder.imageView;
-
+        ImageView imageView = viewHolder.imageView;
         imageView.setImageResource(R.drawable.note2);
+
+        viewHolder.bind(mGenres.get(position), listener, position);
 
     }
 
