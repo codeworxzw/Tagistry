@@ -73,6 +73,7 @@ public class HomeFragment extends Fragment {
                 Log.d("Thing 1", genresValues[position].toString());
 
 
+
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
                 // Set title bar

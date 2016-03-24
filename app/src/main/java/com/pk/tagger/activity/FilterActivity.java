@@ -1,5 +1,6 @@
 package com.pk.tagger.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.nfc.Tag;
 import android.support.v4.app.Fragment;
@@ -93,10 +94,20 @@ public class FilterActivity extends PreferenceActivity{
                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
 
                     Calendar calendarDate = new GregorianCalendar();
+
                     calendarDate.set(mYear, mMonth, mDay);
                     SharedPreferences.Editor editor = sharedPreferencesDate.edit();
-                    editor.putLong("Date", calendarDate.getTimeInMillis());
-                    editor.commit();
+                    if (sharedPreferencesDate.contains("DateEnd")) {
+                        if ((sharedPreferencesDate.getLong("DateEnd", 0))>(calendarDate.getTimeInMillis())) {
+                            editor.putLong("Date", calendarDate.getTimeInMillis());
+                            editor.commit();
+                        } else {
+                            new AlertDialog.Builder(getActivity()).setTitle("InValid Date").setMessage("Start Date must be before End Date").setNeutralButton("Close", null).show();
+                        }
+                    } else {
+                        editor.putLong("Date", calendarDate.getTimeInMillis());
+                        editor.commit();
+                    }
 
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
@@ -108,10 +119,35 @@ public class FilterActivity extends PreferenceActivity{
             final DatePickerDialog.OnDateSetListener mDateEnd = new DatePickerDialog.OnDateSetListener() {
 
                 @Override
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                public void onDateSet(DatePicker view, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
 
-                    GregorianCalendar calendar = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                    Log.i("dasd", calendar.toString());
+                    int mYearEnd = yearEnd;
+                    int mMonthEnd = monthOfYearEnd;
+                    int mDayEnd = dayOfMonthEnd;
+
+                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+
+                    Calendar calendarDate = new GregorianCalendar();
+                    calendarDate.set(mYearEnd, mMonthEnd, mDayEnd);
+
+                    SharedPreferences.Editor editor = sharedPreferencesDate.edit();
+
+                    if (sharedPreferencesDate.contains("Date")) {
+                        if ((sharedPreferencesDate.getLong("Date", 0))<(calendarDate.getTimeInMillis())) {
+                            editor.putLong("DateEnd", calendarDate.getTimeInMillis());
+                            editor.commit();
+                        } else {
+                            new AlertDialog.Builder(getActivity()).setTitle("InValid Date").setMessage("End Date must be after Start Date").setNeutralButton("Close", null).show();
+                        }
+                    } else {
+                        editor.putLong("DateEnd", calendarDate.getTimeInMillis());
+                        editor.commit();
+                    }
+
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTimeInMillis(sharedPreferencesDate.getLong("DateEnd", 0));
+
+                    Log.d("Date in Set Date1", calendar.getTime().toString());
 
                 }
             };
@@ -154,17 +190,40 @@ public class FilterActivity extends PreferenceActivity{
             });
 
             Preference btnDateEndFilter = (Preference) findPreference("btnDateEndFilter");
-            btnDateEndFilter.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                //@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            btnDateEndFilter.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+
+            {
+
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    // Use the current date as the default date in the picker
-                    final Calendar c = Calendar.getInstance();
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH);
-                    int day = c.get(Calendar.DAY_OF_MONTH);
-                    new DatePickerDialog(getActivity(), mDateEnd, year, month, day).show();
-                    return false;
+
+                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+                    int mYearEnd, mMonthEnd, mDayEnd;
+                    if (sharedPreferencesDate.contains("DateEnd")) {
+
+                        Calendar calendar = new GregorianCalendar();
+
+                        calendar.setTimeInMillis(sharedPreferencesDate.getLong("DateEnd", 0));
+
+                        mYearEnd = calendar.get(Calendar.YEAR);
+                        mMonthEnd = calendar.get(Calendar.MONTH);
+                        mDayEnd = calendar.get(Calendar.DAY_OF_MONTH);
+
+                        Log.d("Hello yes", calendar.getTime().toString());
+
+                    } else {
+
+                        // Process to get Current Date
+                        final Calendar c = Calendar.getInstance();
+                        mYearEnd = c.get(Calendar.YEAR);
+                        mMonthEnd = c.get(Calendar.MONTH);
+                        mDayEnd = c.get(Calendar.DAY_OF_MONTH);
+
+                        Log.d("Hello no", c.toString());
+
+                    }
+                    new DatePickerDialog(getActivity(), mDateEnd, mYearEnd, mMonthEnd, mDayEnd).show();
+                        return false;
                 }
             });
 

@@ -31,6 +31,7 @@ import io.realm.RealmResults;
 public class ListingsFragment extends Fragment {
 
     private Date date;
+    private Date endDate;
     private EventsAdapter eventsRealmAdapter;
     private RealmRecyclerView realmRecyclerView;
 
@@ -125,6 +126,7 @@ public class ListingsFragment extends Fragment {
     public void getListings(){
         sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
         date = new Date(sharedPreferencesDate.getLong("Date", 0));
+        endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String searchArtistVenue = prefs.getString("search_artist_venue", "");
@@ -135,7 +137,8 @@ public class ListingsFragment extends Fragment {
         int ticketMax = 1000;
         int ticketMin = 1;
 
-        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date);
+        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+
         RealmResults events = events2.getResults();
         long count = events2.getCount();
         Log.d("No. Events Found", String.valueOf(count));

@@ -109,7 +109,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
         sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
         Date date = new Date(sharedPreferencesDate.getLong("Date", 0));
-
+        Date endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String searchArtistVenue = prefs.getString("search_artist_venue", "");
         Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
@@ -119,7 +119,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         int ticketMax = 1000;
         int ticketMin = 1;
 
-        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date);
+        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
         RealmResults <Event> events = events2.getResults();
 
         try {

@@ -24,10 +24,11 @@ public class MyRealmResults {
     private String searchArtistVenue;
     private int ticketMin, ticketMax;
     private Date startDate;
+    private Date endDate;
     private boolean ticketsAvailable;
     private String[] searchGenres;
 
-    public MyRealmResults(Context context, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate){
+    public MyRealmResults(Context context, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate, Date endDate){
 
         this.context = context;
         this.searchArtistVenue = searchArtistVenue;
@@ -36,13 +37,16 @@ public class MyRealmResults {
         this.ticketMin = ticketMin;
         this.ticketMax = ticketMax;
         this.startDate = startDate;
+        this.endDate = endDate;
 
         myRealm = Realm.getInstance(context);
+
     }
 
     public RealmResults getResults(){
 
         Log.d("SearchDate", startDate.toString());
+        Log.d("EndDate", endDate.toString());
         Log.d("SearchArtist/Venue", searchArtistVenue);
         Log.d("TicketsAvailable", String.valueOf(ticketsAvailable));
         Log.d("Ticket Range", ticketMin + " to " + ticketMax);
@@ -83,6 +87,7 @@ public class MyRealmResults {
 
         query.beginGroup()
                 .greaterThan("eventDate", startDate)
+                .lessThan("eventDate", endDate)
                 .greaterThanOrEqualTo("eventPurchasePrice", ticketCheck)
                         //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                         //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
@@ -93,8 +98,25 @@ public class MyRealmResults {
                     .endGroup()
                 .endGroup();
 
-        RealmResults<Event> events = query.findAllSorted(sortField, asc);
+        if (searchGenres.length!=0) {
+            query.beginGroup();
+            if (searchGenres.length==1) {
+                query.equalTo("eventPerformer.sw_genre_id", searchGenres[0]);
+            }
+            else {
+                for (int i = 0; i < searchGenres.length; i++) {
+                    query.or().equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                    //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                }
+            }
+            query.endGroup();
+        }
+        else {
+            query = query.equalTo("eventPerformer.sw_genre_id", "10000");
+        }
 
+        RealmResults<Event> events = query.findAllSorted(sortField, asc);
+        //RealmResults<Event> events = query.findAll();
         return events;
     }
 
@@ -132,6 +154,7 @@ public class MyRealmResults {
 
         query.beginGroup()
                 .greaterThan("eventDate", startDate)
+                .lessThan("eventDate", endDate)
                 .greaterThanOrEqualTo("eventPurchasePrice", ticketCheck)
                 //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                 //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
@@ -141,6 +164,23 @@ public class MyRealmResults {
                     .contains("eventVenue.name", searchArtistVenue, Case.INSENSITIVE)
                     .endGroup()
             .endGroup();
+
+        if (searchGenres.length!=0) {
+            query.beginGroup();
+            if (searchGenres.length==1) {
+                query.equalTo("eventPerformer.sw_genre_id", searchGenres[0]);
+            }
+            else {
+                for (int i = 0; i < searchGenres.length; i++) {
+                    query.or().equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                    //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                }
+            }
+            query.endGroup();
+        }
+        else {
+            query = query.equalTo("eventPerformer.sw_genre_id", "10000");
+        }
 
         long count = query.count();
 
