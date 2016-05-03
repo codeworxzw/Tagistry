@@ -1,85 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/base_popup_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="4dp"
     android:background="@android:color/white"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="20dp">
-
-    <ImageView
-        android:id="@+id/imageView_event"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:clickable="true"
+            android:onClick="toggle_summary"
+            android:id="@+id/tab_summary"
+            android:text="Summary"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:background="#cccccc"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:clickable="true"
+            android:onClick="toggle_artist"
+            android:id="@+id/tab_artist"
+            android:text="Artist"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:clickable="true"
+            android:onClick="toggle_venue"
+            android:id="@+id/tab_venue"
+            android:text="Venue"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:layout_weight=".50"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_profile"/>
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp">
+        <LinearLayout
+            android:id="@+id/base_popup_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_profile"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#cccccc">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_access_time_black_24dp"/>
+                    <TextView
+                        android:id="@+id/textView_event_title"
+                        android:text="Title: "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:clickable="true"
+                        android:onClick="toggle_description"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="description"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#e6e6e6">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_date_range_black_24dp"/>
+                    <TextView
+                        android:id="@+id/textView_event_date"
+                        android:text="Date: "
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#cccccc">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_place_black_24dp"/>
+                    <TextView
+                        android:id="@+id/textView_event_venue"
+                        android:text="Venue: "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#e6e6e6">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_local_activity_black_24dp"/>
+                    <TextView
+                        android:id="@+id/textView_event_tickets_price"
+                        android:text="Tickets: "
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:maxLines="1"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"/>
+                    <TextView
+                        android:id="@+id/textView_event_tickets_buy"
+                        android:text="@string/buy_tickets"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:maxLines="1"
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="0.50">
-
-        <TextView
-            android:id="@+id/textView_event_title"
-            android:text="Title: "
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:id="@+id/imageButton_close"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            android:background="#e6e6e6"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"/>
-
-        <TextView
-            android:id="@+id/textView_event_date"
-            android:text="Date: "
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#cccccc"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"/>
-
-        <TextView
-            android:id="@+id/textView_event_venue"
-            android:text="Venue: "
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#e6e6e6"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/textView_event_tickets_price"
-                android:text="Tickets: "
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#cccccc"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"/>
-            <TextView
-                android:id="@+id/textView_event_tickets_buy"
-                android:text="@string/buy_tickets"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#cccccc"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="24sp"/>
-        </LinearLayout>
-
+            android:layout_height="40dp"
+            android:src="@drawable/ic_close_black_18dp"/>
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

@@ -1,4 +1,7 @@
-package com.pk.tagger.realm;
+package com.pk.tagger.realm.event;
+
+import com.pk.tagger.realm.artist.EventPerformer;
+import com.pk.tagger.realm.venue.EventVenue;
 
 import java.util.Date;
 

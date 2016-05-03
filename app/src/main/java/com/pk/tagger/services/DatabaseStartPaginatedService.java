@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.restclient.EventRestClient;
 
 import org.json.JSONArray;
@@ -137,6 +137,7 @@ public class DatabaseStartPaginatedService extends IntentService {
                         Log.d("Page Count", Integer.toString(pageCount));
 
                         JSONArray docs = (JSONArray) response.get("docs");
+                        Log.d("Docs", docs.get(2).toString());
 
                         for (int i = 0; i < docs.length(); i++) {
 

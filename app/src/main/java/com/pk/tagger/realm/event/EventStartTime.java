@@ -1,4 +1,4 @@
-package com.pk.tagger.realm;
+package com.pk.tagger.realm.event;
 
 import java.util.Date;
 

@@ -18,8 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pk.tagger.R;
-import com.pk.tagger.realm.Event;
-import com.pk.tagger.realm.EventsAdapter;
+import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.event.EventsAdapter;
 
 import java.util.Date;
 import java.util.Set;

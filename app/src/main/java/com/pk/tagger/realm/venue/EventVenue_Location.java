@@ -1,4 +1,4 @@
-package com.pk.tagger.realm;
+package com.pk.tagger.realm.venue;
 
 import io.realm.RealmObject;
 

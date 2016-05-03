@@ -3,7 +3,7 @@ package com.pk.tagger.activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 
 import java.util.Arrays;
 import java.util.Date;

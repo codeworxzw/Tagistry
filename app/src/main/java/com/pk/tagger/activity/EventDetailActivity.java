@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -23,8 +25,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.pk.tagger.AppController;
+import com.pk.tagger.Fx;
 import com.pk.tagger.R;
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -39,7 +42,8 @@ import io.realm.Realm;
 /**
  * Created by PK on 29/02/2016.
  */
-public class EventDetailActivity extends AppCompatActivity implements View.OnTouchListener{
+//public class EventDetailActivity extends AppCompatActivity implements View.OnTouchListener{
+public class EventDetailActivity extends AppCompatActivity {
 
     private static String TAG = EventDetailActivity.class.getSimpleName();
 
@@ -65,10 +69,17 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
     @Bind(R.id.base_popup_layout) LinearLayout _baseLayout;
     @Bind(R.id.imageView_event) ImageView _event_image;
     @Bind(R.id.textView_event_title) TextView _event_title;
+    @Bind(R.id.textView_description) TextView _event_description;
     @Bind(R.id.textView_event_date) TextView _event_date;
     @Bind(R.id.textView_event_venue) TextView _event_venue;
     @Bind(R.id.textView_event_tickets_price) TextView _event_tickets_price;
     @Bind(R.id.textView_event_tickets_buy) TextView _event_tickets_buy;
+    @Bind(R.id.imageButton_close) ImageButton _close;
+    @Bind(R.id.tab_summary) TextView _tab_summary;
+    @Bind(R.id.tab_artist) TextView _tab_artist;
+    @Bind(R.id.tab_venue) TextView _tab_venue;
+
+
 
 
     @Override
@@ -85,11 +96,12 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         if (extras != null) {
             eventID = extras.getString("EventID");
         }
+       // _tab_summary.setBackgroundColor(Color.parseColor("#e6e6e6"));
 
-        _baseLayout.setOnTouchListener(this);
+//        _baseLayout.setOnTouchListener(this);
 
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) _baseLayout.getLayoutParams();
-        anchorLeft = _baseLayout.getLeft() + lp.leftMargin;
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) _baseLayout.getLayoutParams();
+//        anchorLeft = _baseLayout.getLeft() + lp.leftMargin;
 
         myRealm = Realm.getInstance(getApplicationContext());
         final Event event = myRealm
@@ -100,6 +112,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         Log.d("Partial Data", event.toString());
 
         _event_title.setText(event.getEventPerformer().getName());
+        _event_description.setVisibility(View.GONE);
+        _event_description.setText("The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.");
         //TODO: should probably parse date properly not just truncate string lol
         _event_date.setText(event.getEventStartTime().getLocal().toString().substring(0, 16));
         _event_venue.setText(event.getEventVenue().getName());
@@ -159,9 +173,47 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         } catch (Exception e){
             Log.d(TAG, e.toString());
         }
+
+        _close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
+    public void toggle_description(View v){
+        if(_event_description.isShown()){
+            Fx.slide_up(this, _event_description);              //slide up animation not working
+            _event_description.setVisibility(View.GONE);
+        }
+        else{
+            _event_description.setVisibility(View.VISIBLE);
+            Fx.slide_down(this, _event_description);
+        }
+    }
 
+    public void toggle_summary(View v) {
+        //Toast.makeText(this, "Summary selected", Toast.LENGTH_SHORT).show();
+        _tab_summary.setBackgroundColor(Color.parseColor("#cccccc"));
+        _tab_artist.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _tab_venue.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+    }
+    public void toggle_artist(View v) {
+       //Toast.makeText(this, "Artist selected", Toast.LENGTH_SHORT).show();
+        _tab_summary.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _tab_artist.setBackgroundColor(Color.parseColor("#cccccc"));
+        _tab_venue.setBackgroundColor(Color.parseColor("#FFFFFF"));
+    }
+    public void toggle_venue(View v) {
+        //Toast.makeText(this, "Venue selected", Toast.LENGTH_SHORT).show();
+        _tab_summary.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _tab_artist.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _tab_venue.setBackgroundColor(Color.parseColor("#cccccc"));
+    }
+/*
     public boolean onTouch(View view, MotionEvent event) {
 
         // Get finger position on screen
@@ -245,6 +297,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                 break;
         }
         return true;
+
     }
 
     public void closeLeftAndDismissDialog(int currentPosition){
@@ -300,8 +353,9 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
         });
 
         positionAnimator.start();
-    }
 
+    }
+*/
     private void getFullEvent(String id) {
 
         //showpDialog();
@@ -316,7 +370,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnTou
                         Log.d("Response", response.toString());
 
                         try {
-                            myRealm = Realm.getInstance(getApplicationContext());
+                           // myRealm = Realm.getInstance(getApplicationContext());
 
                             myRealm.beginTransaction();
                             myRealm.createOrUpdateObjectFromJson(Event.class, response);

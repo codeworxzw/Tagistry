@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.pk.tagger.restclient.EventRestClient;
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +21,7 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.exceptions.RealmException;
 
 public class DatabaseSyncService extends IntentService {
 
@@ -28,7 +29,7 @@ public class DatabaseSyncService extends IntentService {
     private String jsonResponse;
     private Realm myRealm;
 
-    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/";
+    private static final String QUERY_URL = "http://52.31.31.106:9000/apiunsecure/events";
 
     public static final String RESULT_RECEIVER_NAME = "DatabaseSyncReceiver";
 
@@ -171,9 +172,15 @@ public class DatabaseSyncService extends IntentService {
                         jsonResponse = event.toString();
 
                         //Log.d("jsonResponse", jsonResponse);
-                        myRealm.beginTransaction();
-                        myRealm.createObjectFromJson(Event.class, event);
-                        myRealm.commitTransaction();
+                        try{
+                            myRealm.beginTransaction();
+                            myRealm.createOrUpdateObjectFromJson(Event.class, event);
+                            myRealm.commitTransaction();
+                        } catch (RealmException e) {
+                            e.printStackTrace();
+                            myRealm.cancelTransaction();
+                        }
+
                         // we are already in a separate thread here, so we can do some long operation
 
                         //try {

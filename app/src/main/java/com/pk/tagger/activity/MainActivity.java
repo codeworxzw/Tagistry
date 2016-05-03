@@ -1,6 +1,5 @@
 package com.pk.tagger.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,17 +15,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.pk.tagger.R;
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.services.DatabaseStartPaginatedService;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.realm.Realm;

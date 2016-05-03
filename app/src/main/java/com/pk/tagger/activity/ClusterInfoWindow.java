@@ -2,29 +2,18 @@ package com.pk.tagger.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pk.tagger.R;
-import com.pk.tagger.realm.Event;
-import com.pk.tagger.realm.EventsAdapter;
-import com.squareup.picasso.Picasso;
+import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.event.EventsAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;

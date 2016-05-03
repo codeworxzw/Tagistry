@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.pk.tagger.restclient.EventRestClient;
-import com.pk.tagger.realm.Event;
+import com.pk.tagger.realm.event.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;
