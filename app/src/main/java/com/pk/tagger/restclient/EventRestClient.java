@@ -10,7 +10,7 @@ import com.loopj.android.http.SyncHttpClient;
  */
 public class EventRestClient {
 
-    private static final String BASE_URL = "http://52.31.31.106:9000/apiunsecure/events";
+    private static final String BASE_URL = "http://52.31.31.106:9000/api/events";
 
     private static AsyncHttpClient client = new SyncHttpClient();
 
