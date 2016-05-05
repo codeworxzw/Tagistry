@@ -1,7 +1,5 @@
 package com.pk.tagger.activity;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,9 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -108,20 +104,20 @@ public class EventDetailActivity extends AppCompatActivity {
                 .where(Event.class)
                 .equalTo("eventID", eventID)
                 .findFirst();
-        Log.d("Event", event.getEventPerformer().getName());
+        Log.d("Event", event.getArtist().getName());
         Log.d("Partial Data", event.toString());
 
-        _event_title.setText(event.getEventPerformer().getName());
+        _event_title.setText(event.getArtist().getName());
         _event_description.setVisibility(View.GONE);
         _event_description.setText("The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.");
         //TODO: should probably parse date properly not just truncate string lol
-        _event_date.setText(event.getEventStartTime().getLocal().toString().substring(0, 16));
-        _event_venue.setText(event.getEventVenue().getName());
+        _event_date.setText(event.getStartTime().getLocal().toString().substring(0, 16));
+        _event_venue.setText(event.getVenue().getName());
 
         String tickets = "Tickets Unavailable";
         try {
-            if(event.getEventTickets().getTicket_count()!=0){
-                tickets = "Tickets from: £" + String.valueOf(event.getEventPurchasePrice());
+            if(event.getTickets().getTicket_count()!=0){
+                tickets = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
             }
         } catch(Exception e){
             Log.d("Catch tickets", "No tickets");
@@ -132,14 +128,14 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    if (event.getEventURL() != null) {
+                    if (event.getUrl() != null) {
                         Toast.makeText(getApplicationContext(), "Show me dem tickets!", Toast.LENGTH_SHORT).show();
-                        Log.d("Buying", event.getEventURL());
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getEventURL()));
+                        Log.d("Buying", event.getUrl());
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getUrl()));
                         startActivity(browserIntent);
                     } else {
                         Toast.makeText(getApplicationContext(), "No ticket link :(", Toast.LENGTH_SHORT).show();
-                        Log.d("Else", event.getEventURL());
+                        Log.d("Else", event.getUrl());
                     }
                 }catch(Exception e){
                     Log.d("Catch", e.toString());
@@ -149,10 +145,10 @@ public class EventDetailActivity extends AppCompatActivity {
 
         String IMAGE_URL = "";
         try{
-            if(event.getEventImageURL() != null) {
-                IMAGE_URL = event.getEventImageURL();
-            } else if (event.getEventPerformer().getImage_URL() != null){
-                IMAGE_URL = event.getEventPerformer().getImage_URL();
+            if(event.getImage_URL() != null) {
+                IMAGE_URL = event.getImage_URL();
+            } else if (event.getArtist().getImage_URL() != null){
+                IMAGE_URL = event.getArtist().getImage_URL();
             }
         } catch (Exception e){
             Log.d(TAG, e.toString());
@@ -164,7 +160,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         //Check if realm already has full event data (via EventURL), if not, make volley request
         try{
-            if(event.getEventURL()==null){
+            if(event.getUrl()==null){
                 getFullEvent(eventID);
                 Log.d(TAG, "Requesting full data...");
             } else {

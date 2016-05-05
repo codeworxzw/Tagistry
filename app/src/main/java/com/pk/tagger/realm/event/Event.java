@@ -1,7 +1,7 @@
 package com.pk.tagger.realm.event;
 
-import com.pk.tagger.realm.artist.EventPerformer;
-import com.pk.tagger.realm.venue.EventVenue;
+import com.pk.tagger.realm.artist.Artist;
+import com.pk.tagger.realm.venue.Venue;
 
 import java.util.Date;
 
@@ -14,132 +14,140 @@ import io.realm.annotations.PrimaryKey;
 public class Event extends RealmObject {
 
 
-    private String eventName;
-    private String eventDescription;
+    private String name;
+    private String description;
     @PrimaryKey
-    private String eventID;                 //have
+    private String id;                 //have
     //private String[] eventTags;
-    private String eventURL;
-    private String eventImageURL;           //have
-    private String eventScore;
+    private String url;
+    private String image_URL;           //have
+    private String score;
 
-    private int eventPurchasePrice;     //have
+    private int purchasePrice;     //have
 
-    private Date eventCreated;
-    private Date eventLastUpdated;
-    private Date eventDate;             //have
+    private Date created;
+    private Date lastUpdated;
+    private Date date;             //have
 
     private boolean eventPrivate;
+    private boolean validated;
 
-    private EventPoster eventPoster;
-    private EventPerformer eventPerformer;  //have name, sw_genre_id
-    private EventVenue eventVenue;          //have id, name, location.post_code, location.lng_lat.lng, location.lng_lat.lat
-    private EventStartTime eventStartTime;  //have local
-    private EventEndTime eventEndTime;
-    private EventTickets eventTickets;      //have purchase_price
+    private EventPoster poster;
+    private Artist artist;  //have name, sw_genre_id
+    private Venue venue;          //have id, name, location.post_code, location.lng_lat.lng, location.lng_lat.lat
+    private EventStartTime startTime;  //have local
+    private EventEndTime endTime;
+    private EventTickets tickets;      //have purchase_price
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
 
     public Event() { }
 
-    public EventVenue getEventVenue() {
-        return eventVenue;
+    public Venue getVenue() {
+        return venue;
     }
 
-    public void setEventVenue(EventVenue eventVenue) {
-        this.eventVenue = eventVenue;
+    public void setVenue(Venue venue) {
+        this.venue = venue;
     }
 
-    public int getEventPurchasePrice() {
-        return eventPurchasePrice;
+    public int getPurchasePrice() {
+        return purchasePrice;
     }
 
-    public void setEventPurchasePrice(int eventPurchasePrice) {
-        this.eventPurchasePrice = eventPurchasePrice;
+    public void setPurchasePrice(int purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
-    public Date getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
+    public Date getDate() {
+        return date;
     }
 
-    public EventStartTime getEventStartTime() {
-        return eventStartTime;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public void setEventStartTime(EventStartTime eventStartTime) {
-        this.eventStartTime = eventStartTime;
+    public EventStartTime getStartTime() {
+        return startTime;
     }
 
-    public EventEndTime getEventEndTime() {
-        return eventEndTime;
+    public void setStartTime(EventStartTime startTime) {
+        this.startTime = startTime;
     }
 
-    public void setEventEndTime(EventEndTime eventEndTime) {
-        this.eventEndTime = eventEndTime;
+    public EventEndTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(EventEndTime endTime) {
+        this.endTime = endTime;
     }
 
 
-    public String getEventID() { return eventID; }
+    public String getId() { return id; }
 
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getName() {
+        return name;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getEventDescription() {
-        return eventDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-     public Date getEventLastUpdated() {
-        return eventLastUpdated;
+     public Date getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setEventLastUpdated(Date eventLastUpdated) {
-        this.eventLastUpdated = eventLastUpdated;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public boolean getEventPrivate() {
+    public boolean isEventPrivate() {
         return eventPrivate;
     }
 
     public void setEventPrivate(boolean eventPrivate) {
         this.eventPrivate = eventPrivate;
     }
-
-    public String getEventImageURL() {
-        return eventImageURL;
+    public String getImage_URL() {
+        return image_URL;
     }
 
-    public void setEventImageURL(String eventImageURL) {
-        this.eventImageURL = eventImageURL;
+    public void setImage_URL(String image_URL) {
+        this.image_URL = image_URL;
     }
 
-    public String getEventURL() {
-        return eventURL;
+    public String getUrl() {
+        return url;
     }
 
-    public void setEventURL(String eventURL) {
-        this.eventURL = eventURL;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Date getEventCreated() {
-        return eventCreated;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setEventCreated(Date eventCreated) {
-        this.eventCreated = eventCreated;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
 //    public String[] getEventTags() {
@@ -150,40 +158,37 @@ public class Event extends RealmObject {
 //        this.eventTags = eventTags;
 //    }
 
-    public String getEventScore() {
-        return eventScore;
+    public String getScore() {
+        return score;
     }
 
-    public void setEventScore(String eventScore) {
-        this.eventScore = eventScore;
+    public void setScore(String score) {
+        this.score = score;
     }
 
-    public boolean isEventPrivate() {
-        return eventPrivate;
+
+    public EventPoster getPoster() {
+        return poster;
     }
 
-    public EventPoster getEventPoster() {
-        return eventPoster;
+    public void setPoster(EventPoster poster) {
+        this.poster = poster;
     }
 
-    public void setEventPoster(EventPoster eventPoster) {
-        this.eventPoster = eventPoster;
+    public Artist getArtist() {
+        return artist;
     }
 
-    public EventPerformer getEventPerformer() {
-        return eventPerformer;
+    public void setArtist(Artist artist) {
+        this.artist = artist;
     }
 
-    public void setEventPerformer(EventPerformer eventPerformer) {
-        this.eventPerformer = eventPerformer;
+    public EventTickets getTickets() {
+        return tickets;
     }
 
-    public EventTickets getEventTickets() {
-        return eventTickets;
-    }
-
-    public void setEventTickets(EventTickets eventTickets) {
-        this.eventTickets = eventTickets;
+    public void setTickets(EventTickets tickets) {
+        this.tickets = tickets;
     }
 //    public Date getStartTime() {
 //        return startTime;

@@ -122,11 +122,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         try {
             for(Event c:events) {
                 //  Log.d("results1", c.getLatLng());
-                double latitude = c.getEventVenue().getLocation().getLng_lat().getLat();
-                double longitude = c.getEventVenue().getLocation().getLng_lat().getLng();
-                String title = c.getEventPerformer().getName();
-                String venue = c.getEventVenue().getName();
-                String eventId = c.getEventID();
+                double latitude = c.getVenue().getLocation().getLng_lat().getLat();
+                double longitude = c.getVenue().getLocation().getLng_lat().getLng();
+                String title = c.getArtist().getName();
+                String venue = c.getVenue().getName();
+                String eventId = c.getId();
                 //makeMarker(latitude, longitude, title, venue);
                 LatLng adder = new LatLng( latitude, longitude );
                 clusterManager.addItem( new ClusterMarkerLocation( adder, title, venue, eventId ));

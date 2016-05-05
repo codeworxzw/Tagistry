@@ -56,7 +56,7 @@ public class MyRealmResults {
             ticketCheck = 1;
         }
 
-        String sortField = "eventDate";     //placeholder to allow sorting by other fields later
+        String sortField = "date";     //placeholder to allow sorting by other fields later
         Sort asc = Sort.ASCENDING;
         Sort des = Sort.DESCENDING;
 
@@ -86,33 +86,33 @@ public class MyRealmResults {
 //        }
 
         query.beginGroup()
-                .greaterThan("eventDate", startDate)
-                .lessThan("eventDate", endDate)
-                .greaterThanOrEqualTo("eventPurchasePrice", ticketCheck)
+                .greaterThan("date", startDate)
+                .lessThan("date", endDate)
+                .greaterThanOrEqualTo("purchasePrice", ticketCheck)
                         //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                         //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
-                    .contains("eventPerformer.name", searchArtistVenue, Case.INSENSITIVE)
+                    .contains("artist.name", searchArtistVenue, Case.INSENSITIVE)
                     .or()
-                    .contains("eventVenue.name", searchArtistVenue, Case.INSENSITIVE)
+                    .contains("venue.name", searchArtistVenue, Case.INSENSITIVE)
                     .endGroup()
                 .endGroup();
 
         if (searchGenres.length!=0) {
             query.beginGroup();
             if (searchGenres.length==1) {
-                query.equalTo("eventPerformer.sw_genre_id", searchGenres[0]);
+                query.equalTo("artist.sw_genre_id", searchGenres[0]);
             }
             else {
                 for (int i = 0; i < searchGenres.length; i++) {
-                    query.or().equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                    query.or().equalTo("artist.sw_genre_id", searchGenres[i]);
                     //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
                 }
             }
             query.endGroup();
         }
         else {
-            query = query.equalTo("eventPerformer.sw_genre_id", "10000");
+            query = query.equalTo("artist.sw_genre_id", "10000");
         }
 
         RealmResults<Event> events = query.findAllSorted(sortField, asc);
@@ -153,33 +153,33 @@ public class MyRealmResults {
 //        }
 
         query.beginGroup()
-                .greaterThan("eventDate", startDate)
-                .lessThan("eventDate", endDate)
-                .greaterThanOrEqualTo("eventPurchasePrice", ticketCheck)
+                .greaterThan("date", startDate)
+                .lessThan("date", endDate)
+                .greaterThanOrEqualTo("purchasePrice", ticketCheck)
                 //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                 //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
-                    .contains("eventPerformer.name", searchArtistVenue, Case.INSENSITIVE)
+                    .contains("artist.name", searchArtistVenue, Case.INSENSITIVE)
                     .or()
-                    .contains("eventVenue.name", searchArtistVenue, Case.INSENSITIVE)
+                    .contains("venue.name", searchArtistVenue, Case.INSENSITIVE)
                     .endGroup()
             .endGroup();
 
         if (searchGenres.length!=0) {
             query.beginGroup();
             if (searchGenres.length==1) {
-                query.equalTo("eventPerformer.sw_genre_id", searchGenres[0]);
+                query.equalTo("artist.sw_genre_id", searchGenres[0]);
             }
             else {
                 for (int i = 0; i < searchGenres.length; i++) {
-                    query.or().equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
+                    query.or().equalTo("artist.sw_genre_id", searchGenres[i]);
                     //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
                 }
             }
             query.endGroup();
         }
         else {
-            query = query.equalTo("eventPerformer.sw_genre_id", "10000");
+            query = query.equalTo("artist.sw_genre_id", "10000");
         }
 
         long count = query.count();

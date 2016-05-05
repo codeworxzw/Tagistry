@@ -5,16 +5,15 @@ import io.realm.RealmObject;
 /**
  * Created by uk on 05/02/2016.
  */
-public class EventVenue_Location extends RealmObject {
+public class VenueLocation extends RealmObject {
     private String post_code;
     private String city;
     private String address_1;
-
     private String address_2;
 
     private LngLat lng_lat;
 
-    public EventVenue_Location(){}
+    public VenueLocation(){}
 
     public String getPost_code() {
         return post_code;

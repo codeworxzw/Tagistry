@@ -53,15 +53,15 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         }
 
         public void bind(final Event event, final OnItemClickListener listener) {
-            listingsTitle.setText(event.getEventPerformer().getName());
+            listingsTitle.setText(event.getArtist().getName());
             //TODO: should probably parse date properly not just truncate string lol
-            String date = event.getEventStartTime().getLocal().toString().substring(0,16);
+            String date = event.getStartTime().getLocal().toString().substring(0,16);
             listingsDate.setText(date);
-            listingsVenue.setText(event.getEventVenue().getName());
+            listingsVenue.setText(event.getVenue().getName());
             String tickets = "Tickets Unavailable";
             try {
-                if(event.getEventTickets().getTicket_count()!=0){
-                    tickets = "Tickets from: £" + String.valueOf(event.getEventPurchasePrice());
+                if(event.getTickets().getTicket_count()!=0){
+                    tickets = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
                 }
             } catch(Exception e){
                 //Log.d(TAG, "No ticket price");
@@ -74,10 +74,10 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             IMAGE_URL = "http://a.stwv.im/filestore/season/image/pinkpop_002474_1_mainpicture.jpg";
 
             try{
-                if(event.getEventImageURL() != null) {
-                    IMAGE_URL = event.getEventImageURL();
-                } else if (event.getEventPerformer().getImage_URL() != null){
-                    IMAGE_URL = event.getEventPerformer().getImage_URL();
+                if(event.getImage_URL() != null) {
+                    IMAGE_URL = event.getImage_URL();
+                } else if (event.getArtist().getImage_URL() != null){
+                    IMAGE_URL = event.getArtist().getImage_URL();
                 }
             } catch (Exception e){
                 Log.d(TAG, e.toString());

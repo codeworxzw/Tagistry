@@ -5,24 +5,69 @@ import io.realm.RealmObject;
 /**
  * Created by uk on 05/02/2016.
  */
-public class EventPerformer extends RealmObject {
+public class Artist extends RealmObject {
 
     private String id;
     private String name;
+    private String description;
     private String image_URL;
-    //private String[] sw_genre;
+    private String sw_genre;
     private String sw_genre_id;
     private String sw_website;
     //private String[] tags;
-    private String website;
+    private ArtistWebsite website;
     private String spotify_id;
     //private String[] spotify_genre;
 
     private int spotify_popularity;
 
+    //private String[] currentEvents;
+
+    private boolean validated;
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSw_genre() {
+        return sw_genre;
+    }
+
+    public void setSw_genre(String sw_genre) {
+        this.sw_genre = sw_genre;
+    }
+
+    public ArtistWebsite getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(ArtistWebsite website) {
+        this.website = website;
+    }
+
+//    public String[] getCurrentEvents() {
+//        return currentEvents;
+//    }
+//
+//    public void setCurrentEvents(String[] currentEvents) {
+//        this.currentEvents = currentEvents;
+//    }
+
     //private SimilarArtist<RealmList> similarArtists;
 
-    public EventPerformer(){
+    public Artist(){
     };
 
     public String getId() {
@@ -49,13 +94,6 @@ public class EventPerformer extends RealmObject {
         this.image_URL = image_URL;
     }
 
-//    public String[] getSw_genre() {
-//        return sw_genre;
-//    }
-//
-//    public void setSw_genre(String[] sw_genre) {
-//        this.sw_genre = sw_genre;
-//    }
 
     public String getSw_genre_id() {
         return sw_genre_id;
@@ -73,21 +111,6 @@ public class EventPerformer extends RealmObject {
         this.sw_website = sw_website;
     }
 
-//    public String[] getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(String[] tags) {
-//        this.tags = tags;
-//    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
 
     public String getSpotify_id() {
         return spotify_id;
@@ -97,14 +120,6 @@ public class EventPerformer extends RealmObject {
         this.spotify_id = spotify_id;
     }
 
-//    public String[] getSpotify_genre() {
-//        return spotify_genre;
-//    }
-//
-//    public void setSpotify_genre(String[] spotify_genre) {
-//        this.spotify_genre = spotify_genre;
-//    }
-
     public int getSpotify_popularity() {
         return spotify_popularity;
     }
@@ -112,16 +127,5 @@ public class EventPerformer extends RealmObject {
     public void setSpotify_popularity(int spotify_popularity) {
         this.spotify_popularity = spotify_popularity;
     }
-
-//    public SimilarArtist getSimilarArtists() {
-//        return similarArtists;
-//    }
-//
-//    public void setSimilarArtists(SimilarArtist similarArtists) {
-//        this.similarArtists = similarArtists;
-//    }
-
-
-
 
 }

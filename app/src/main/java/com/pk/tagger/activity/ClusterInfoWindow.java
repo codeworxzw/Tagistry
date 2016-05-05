@@ -82,7 +82,7 @@ public class ClusterInfoWindow extends AppCompatActivity {
                 new EventsAdapter(context, events, true, true, new EventsAdapter.OnItemClickListener() {
                     @Override public void onItemClick(Event item) {
                         Intent intent = new Intent(context, EventDetailActivity.class);
-                        intent.putExtra("EventID", item.getEventID());
+                        intent.putExtra("EventID", item.getId());
                         startActivity(intent);
 
                     }

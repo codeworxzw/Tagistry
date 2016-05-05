@@ -5,17 +5,36 @@ import io.realm.RealmObject;
 /**
  * Created by Kobi on 08/02/2016.
  */
-public class EventVenue extends RealmObject{
+public class Venue extends RealmObject{
 
     private String name;
     private String id;
     private String website;
     private String sw_website;
     private String image_URL;
+//    private String[] currentEvents;
 
-    private EventVenue_Location location;
+    private boolean validated;
 
-    public EventVenue(){};
+    private VenueLocation location;
+
+//    public String[] getCurrentEvents() {
+//        return currentEvents;
+//    }
+//
+//    public void setCurrentEvents(String[] currentEvents) {
+//        this.currentEvents = currentEvents;
+//    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
+    public Venue(){};
 
     public String getName() {
         return name;
@@ -57,11 +76,11 @@ public class EventVenue extends RealmObject{
         this.image_URL = image_URL;
     }
 
-    public EventVenue_Location getLocation() {
+    public VenueLocation getLocation() {
         return location;
     }
 
-    public void setLocation(EventVenue_Location location) {
+    public void setLocation(VenueLocation location) {
         this.location = location;
     }
 
