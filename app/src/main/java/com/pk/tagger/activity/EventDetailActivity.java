@@ -48,13 +48,11 @@ public class EventDetailActivity extends AppCompatActivity {
     private Realm myRealm;
     SharedPreferences sharedPref;
 
-
     // temporary string to show the parsed response
     private String jsonResponse;
     private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/api/event/";
     private static final String BASE_QUERY_URL_ARTIST = "http://52.31.31.106:9000/api/artist/";
     private static final String BASE_QUERY_URL_VENUE = "http://52.31.31.106:9000/api/venue/";
-
 
     private int previousFingerPosition = 0;
     private int baseLayoutPosition = 0;

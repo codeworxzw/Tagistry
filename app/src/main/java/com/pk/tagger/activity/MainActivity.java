@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
         int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
-        Log.d("Filter MainActivt Test", String.valueOf(test));
+        Log.d("Filter MainActivty Test", String.valueOf(test));
 
         // display the first navigation drawer view on app launch
         if (sharedPrefsCurrentFragment.contains("fragment")) {

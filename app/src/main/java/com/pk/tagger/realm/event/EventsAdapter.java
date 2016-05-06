@@ -61,7 +61,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             String tickets = "Tickets Unavailable";
             try {
                 if(event.getTickets().getTicket_count()!=0){
-                    tickets = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
+                    tickets = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
                 }
             } catch(Exception e){
                 //Log.d(TAG, "No ticket price");
