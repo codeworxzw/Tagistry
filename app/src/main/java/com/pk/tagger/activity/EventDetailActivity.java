@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.pk.tagger.AppController;
 import com.pk.tagger.Fx;
 import com.pk.tagger.R;
+import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.squareup.picasso.Picasso;
 
@@ -49,7 +50,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     // temporary string to show the parsed response
     private String jsonResponse;
-    private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/apiunsecure/event/";
+    private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/api/event/";
 
 
     private int previousFingerPosition = 0;
@@ -90,7 +91,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         String eventID = "1038341"; //default should return 'Katie Melua' event
         if (extras != null) {
-            eventID = extras.getString("EventID");
+            eventID = extras.getString("id");
         }
        // _tab_summary.setBackgroundColor(Color.parseColor("#e6e6e6"));
 
@@ -102,14 +103,21 @@ public class EventDetailActivity extends AppCompatActivity {
         myRealm = Realm.getInstance(getApplicationContext());
         final Event event = myRealm
                 .where(Event.class)
-                .equalTo("eventID", eventID)
+                .equalTo("id", eventID)
                 .findFirst();
+        final Artist artist = myRealm
+                .where(Artist.class)
+                .equalTo("id", event.getArtist().getId())
+                .findFirst();
+
         Log.d("Event", event.getArtist().getName());
         Log.d("Partial Data", event.toString());
 
         _event_title.setText(event.getArtist().getName());
         _event_description.setVisibility(View.GONE);
-        _event_description.setText("The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.");
+        String description = "The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.";
+//        description = artist.getDescription();        //add back in when full artist data request has been added
+        _event_description.setText(description);
         //TODO: should probably parse date properly not just truncate string lol
         _event_date.setText(event.getStartTime().getLocal().toString().substring(0, 16));
         _event_venue.setText(event.getVenue().getName());
@@ -117,7 +125,7 @@ public class EventDetailActivity extends AppCompatActivity {
         String tickets = "Tickets Unavailable";
         try {
             if(event.getTickets().getTicket_count()!=0){
-                tickets = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
+                tickets = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
             }
         } catch(Exception e){
             Log.d("Catch tickets", "No tickets");
@@ -412,7 +420,7 @@ public class EventDetailActivity extends AppCompatActivity {
     public void updateData(String eventID){
         final Event event = myRealm
                 .where(Event.class)
-                .equalTo("eventID", eventID)
+                .equalTo("id", eventID)
                 .findFirst();
         Log.d("Updated with full data", event.toString());
 

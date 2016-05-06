@@ -19,6 +19,7 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -166,16 +167,16 @@ public class DatabaseStartPaginatedService extends IntentService {
                         //  resultReceiver.send(JSONSENT, getFinished);
 
 
-/*                   RealmResults<Event> results1 =
-                           myRealm.where(Event.class).findAll();
-
-                   for(Event c:results1) {
-                       Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
-                       Log.d("Realm EventVenueName: ", c.getVenue().getName().toString());
-                       Log.d("Realm EventName: ", c.getName().toString());
-                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
-                       Log.d("Realm EventID: ", c.getId().toString());
-                   } */
+//                   RealmResults<Event> results1 =
+//                           myRealm.where(Event.class).findAll();
+//
+//                   for(Event c:results1) {
+//                       Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
+//                       Log.d("Realm EventVenueName: ", c.getVenue().getName().toString());
+//                       //Log.d("Realm EventName: ", c.getName().toString());
+//                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
+//                       Log.d("Realm EventID: ", c.getId().toString());
+//                   }
 
 
                     } catch (JSONException e) {

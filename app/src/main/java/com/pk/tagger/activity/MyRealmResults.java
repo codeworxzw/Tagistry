@@ -60,35 +60,13 @@ public class MyRealmResults {
         Sort asc = Sort.ASCENDING;
         Sort des = Sort.DESCENDING;
 
-//        RealmResults<Event> events = myRealm
-//                .where(Event.class)
-//                .greaterThan("eventDate", startDate)
-//                .greaterThanOrEqualTo("eventPurchasePrice", ticketCheck)
-//                //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
-//                //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
-//                    .beginGroup()
-//                    .contains("eventPerformer.name", searchArtistVenue, Case.INSENSITIVE)
-//                    .or()
-//                    .contains("eventVenue.name", searchArtistVenue, Case.INSENSITIVE)
-//                    .endGroup()
-//                .findAllSorted(sortField, asc);
-
         //RealmResults<Event> events = null;
         RealmQuery<Event> query = myRealm.where(Event.class);
 
- //       query.equalTo("eventPerformer.sw_genre_id", "");
-
-//        if(searchGenres.length!=0){
-//            for(int i = 0; i<searchGenres.length-1; i++) {
-//                query.or().contains("eventPerformer.sw_genre_id", searchGenres[i]);
-//            }
-//            query.or().contains("eventPerformer.sw_genre_id", searchGenres[searchGenres.length-1]);
-//        }
-
         query.beginGroup()
-                .greaterThan("date", startDate)
-                .lessThan("date", endDate)
-                .greaterThanOrEqualTo("purchasePrice", ticketCheck)
+                .greaterThan("startTime.local", startDate)
+                .lessThan("startTime.local", endDate)
+                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)       //temp disabled coz no purchase price on api
                         //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                         //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
@@ -127,35 +105,13 @@ public class MyRealmResults {
             ticketCheck = 1;
         }
 
-//        long count = myRealm
-//                .where(Event.class)
-//                .greaterThan("eventDate", startDate)
-//                .greaterThanOrEqualTo("eventTickets.ticket_count", check)
-//                //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
-//                //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
-//                    .beginGroup()
-//                    .contains("eventPerformer.name", searchArtistVenue, Case.INSENSITIVE)
-//                    .or()
-//                    .contains("eventVenue.name", searchArtistVenue, Case.INSENSITIVE)
-//                    .endGroup()
-//                .count();
-
         RealmQuery<Event> query = myRealm
                 .where(Event.class);
 
-//        query.equalTo("eventPerformer.sw_genre_id", "");
-
-//        if(searchGenres.length!=0){
-//            for(int i = 0; i<searchGenres.length-1; i++) {
-//                query.or().contains("eventPerformer.sw_genre_id", searchGenres[i]);
-//            }
-//            query.or().contains("eventPerformer.sw_genre_id", searchGenres[searchGenres.length-1]);
-//        }
-
         query.beginGroup()
-                .greaterThan("date", startDate)
-                .lessThan("date", endDate)
-                .greaterThanOrEqualTo("purchasePrice", ticketCheck)
+                .greaterThan("startTime.local", startDate)
+                .lessThan("startTime.local", endDate)
+                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)       //temp disabled coz no purchase price on api
                 //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                 //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
