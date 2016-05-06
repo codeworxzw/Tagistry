@@ -147,7 +147,7 @@ public class ListingsFragment extends Fragment {
                 new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
                     @Override public void onItemClick(Event item) {
                         Intent intent = new Intent(getContext(), EventDetailActivity.class);
-                        intent.putExtra("id", item.getId());
+                        intent.putExtra("EventID", item.getId());
                         startActivity(intent);
 
                     }

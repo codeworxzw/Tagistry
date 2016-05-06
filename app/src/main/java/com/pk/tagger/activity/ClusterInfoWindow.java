@@ -58,7 +58,7 @@ public class ClusterInfoWindow extends AppCompatActivity {
         RealmQuery<Event> query = myRealm.where(Event.class).beginGroup();
 
         for (int i = 0; i < eSize; i++) {
-            query.or().equalTo("eventID", EventIDs.get(i));
+            query.or().equalTo("id", EventIDs.get(i));
         }
         // Execute the query:
         RealmResults<Event> events = query.endGroup().findAll();

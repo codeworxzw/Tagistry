@@ -94,7 +94,7 @@ public class EventDetailActivity extends AppCompatActivity {
         String artistID = "";
         String venueID = "";
         if (extras != null) {
-            eventID = extras.getString("id");
+            eventID = extras.getString("EventID");
         }
        // _tab_summary.setBackgroundColor(Color.parseColor("#e6e6e6"));
 
