@@ -1,14 +1,16 @@
 package com.pk.tagger.realm.venue;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Kobi on 08/02/2016.
  */
 public class Venue extends RealmObject{
 
-    private String name;
+    @PrimaryKey
     private String id;
+    private String name;
     private String website;
     private String sw_website;
     private String image_URL;

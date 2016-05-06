@@ -148,7 +148,7 @@ public class DatabaseStartPaginatedService extends IntentService {
 
                             //Log.d("jsonResponse", jsonResponse);
                            // myRealm.beginTransaction();
-                            myRealm.createObjectFromJson(Event.class, event);
+                            myRealm.createOrUpdateObjectFromJson(Event.class, event);
                            // myRealm.commitTransaction();
 
                             // we are already in a separate thread here, so we can do some long operation

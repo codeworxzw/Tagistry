@@ -18,7 +18,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pk.tagger.R;
+import com.pk.tagger.realm.ResetRealm;
+import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedService;
 
 import java.util.Date;
@@ -126,8 +129,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             myRealm = Realm.getInstance(getApplicationContext());
             myRealm.beginTransaction();
             myRealm.clear(Event.class);
+            myRealm.clear(Artist.class);
+            myRealm.clear(Venue.class);
             myRealm.commitTransaction();
             myRealm.close();
+//            ResetRealm.resetRealm(this);
             return true;
         }
 

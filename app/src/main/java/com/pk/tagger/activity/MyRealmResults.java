@@ -66,7 +66,7 @@ public class MyRealmResults {
         query.beginGroup()
                 .greaterThan("startTime.local", startDate)
                 .lessThan("startTime.local", endDate)
-                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)       //temp disabled coz no purchase price on api
+                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)
                         //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                         //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
@@ -84,7 +84,6 @@ public class MyRealmResults {
             else {
                 for (int i = 0; i < searchGenres.length; i++) {
                     query.or().equalTo("artist.sw_genre_id", searchGenres[i]);
-                    //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
                 }
             }
             query.endGroup();
@@ -111,7 +110,7 @@ public class MyRealmResults {
         query.beginGroup()
                 .greaterThan("startTime.local", startDate)
                 .lessThan("startTime.local", endDate)
-                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)       //temp disabled coz no purchase price on api
+                .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)
                 //.greaterThanOrEqualTo("eventPurchasePrice", ticketMin)
                 //.lessThanOrEqualTo("eventPurchasePrice", ticketMax)
                     .beginGroup()
@@ -129,7 +128,6 @@ public class MyRealmResults {
             else {
                 for (int i = 0; i < searchGenres.length; i++) {
                     query.or().equalTo("artist.sw_genre_id", searchGenres[i]);
-                    //query = query.equalTo("eventPerformer.sw_genre_id", searchGenres[i]);
                 }
             }
             query.endGroup();

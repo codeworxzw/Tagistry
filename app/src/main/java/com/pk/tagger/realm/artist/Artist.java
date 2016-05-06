@@ -1,12 +1,14 @@
 package com.pk.tagger.realm.artist;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by uk on 05/02/2016.
  */
 public class Artist extends RealmObject {
 
+    @PrimaryKey
     private String id;
     private String name;
     private String description;

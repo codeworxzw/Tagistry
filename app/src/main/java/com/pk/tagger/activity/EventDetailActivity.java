@@ -25,6 +25,7 @@ import com.pk.tagger.Fx;
 import com.pk.tagger.R;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.venue.Venue;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -51,6 +52,8 @@ public class EventDetailActivity extends AppCompatActivity {
     // temporary string to show the parsed response
     private String jsonResponse;
     private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/api/event/";
+    private static final String BASE_QUERY_URL_ARTIST = "http://52.31.31.106:9000/api/artist/";
+    private static final String BASE_QUERY_URL_VENUE = "http://52.31.31.106:9000/api/venue/";
 
 
     private int previousFingerPosition = 0;
@@ -90,6 +93,8 @@ public class EventDetailActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         String eventID = "1038341"; //default should return 'Katie Melua' event
+        String artistID = "";
+        String venueID = "";
         if (extras != null) {
             eventID = extras.getString("id");
         }
@@ -105,18 +110,28 @@ public class EventDetailActivity extends AppCompatActivity {
                 .where(Event.class)
                 .equalTo("id", eventID)
                 .findFirst();
+
         final Artist artist = myRealm
                 .where(Artist.class)
                 .equalTo("id", event.getArtist().getId())
                 .findFirst();
+        Log.d("Artist", artist.toString());
+        final Venue venue = myRealm
+                .where(Venue.class)
+                .equalTo("id", event.getVenue().getId())
+                .findFirst();
+        Log.d("Venue", venue.toString());
+
+        artistID = artist.getId();
+        venueID = venue.getId();
 
         Log.d("Event", event.getArtist().getName());
         Log.d("Partial Data", event.toString());
 
         _event_title.setText(event.getArtist().getName());
         _event_description.setVisibility(View.GONE);
-        String description = "The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.The value is an integer so that other applications can programmatically evaluate it, for example to check an upgrade or downgrade relationship. You can set the value to any integer you want, however you should make sure that each successive release of your application uses a greater value. The system does not enforce this behavior, but increasing the value with successive releases is normative.";
-//        description = artist.getDescription();        //add back in when full artist data request has been added
+        String description = "";
+        description = artist.getDescription();        //add back in when full artist data request has been added
         _event_description.setText(description);
         //TODO: should probably parse date properly not just truncate string lol
         _event_date.setText(event.getStartTime().getLocal().toString().substring(0, 16));
@@ -168,11 +183,33 @@ public class EventDetailActivity extends AppCompatActivity {
 
         //Check if realm already has full event data (via EventURL), if not, make volley request
         try{
-            if(event.getUrl()==null){
+            if(event.getUrl()==null){           //TODO: needs to update to get latest ticket info, maybe a timestamp check to be added/separate api route for ticket info
                 getFullEvent(eventID);
                 Log.d(TAG, "Requesting full data...");
             } else {
                 Log.d(TAG, "Already has full data");
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
+        try{
+            if(event.getArtist().getDescription()==null){         //check if full artist data already in realm
+                getFullArtist(artistID);
+                Log.d(TAG, "Requesting full artist data...");
+            } else {
+                Log.d(TAG, "Already has full artist data");
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
+        try{
+            if(event.getVenue().getSw_website()==null){         //check if full venue data already in realm
+                getFullVenue(venueID);
+                Log.d(TAG, "Requesting full venue data...");
+            } else {
+                Log.d(TAG, "Already has full venue data");
             }
         } catch (Exception e){
             Log.d(TAG, e.toString());
@@ -409,12 +446,120 @@ public class EventDetailActivity extends AppCompatActivity {
                 Log.d("Headers", headers.toString());
                 return headers;
             }
-
         };
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
+    }
 
+    private void getFullArtist (String id) {
+
+        //showpDialog();
+        final String artistID = id;
+        final String FULL_QUERY_URL = BASE_QUERY_URL_ARTIST + artistID;
+        Log.d("Querying", FULL_QUERY_URL);
+
+        JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
+
+                        try {
+                            // myRealm = Realm.getInstance(getApplicationContext());
+
+                            myRealm.beginTransaction();
+                            myRealm.createOrUpdateObjectFromJson(Artist.class, response);
+                            myRealm.commitTransaction();
+
+                            //update remaining data fields for event (i.e. data not already in Listings)
+                            updateData(artistID);
+
+                        } catch (Exception e) {
+                            Log.d("Error updating", e.toString());
+                        }
+
+                        //hidepDialog();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                //hidepDialog();
+            }
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String defaultValue = getResources().getString(R.string.access_token);
+                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+
+                headers.put("Authorization", "Bearer " + access_token);
+                Log.d("Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    private void getFullVenue (String id) {
+
+        //showpDialog();
+        final String venueID = id;
+        final String FULL_QUERY_URL = BASE_QUERY_URL_VENUE + venueID;
+        Log.d("Querying", FULL_QUERY_URL);
+
+        JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
+
+                        try {
+                            // myRealm = Realm.getInstance(getApplicationContext());
+
+                            myRealm.beginTransaction();
+                            myRealm.createOrUpdateObjectFromJson(Venue.class, response);
+                            myRealm.commitTransaction();
+
+                            //update remaining data fields for event (i.e. data not already in Listings)
+                            updateData(venueID);
+
+                        } catch (Exception e) {
+                            Log.d("Error updating", e.toString());
+                        }
+
+                        //hidepDialog();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                //hidepDialog();
+            }
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String defaultValue = getResources().getString(R.string.access_token);
+                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
+
+                headers.put("Authorization", "Bearer " + access_token);
+                Log.d("Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(req);
     }
 
     public void updateData(String eventID){
