@@ -212,7 +212,11 @@ public class LoginActivity extends AppCompatActivity {
                 // TODO: Implement successful register logic here
                 // By default we just finish the Activity and log them in automatically
                 //this.finish();
-                onLoginSuccess();
+                HashMap<String, String> user = session.getRegistrationDetails();
+                 _emailText.setText(user.get(SessionManager.KEY_EMAIL));
+                 _passwordText.setText(user.get(SessionManager.KEY_PASSWORD));
+                session.clearRegistrationDetails();
+                login();
             }
         }
     }

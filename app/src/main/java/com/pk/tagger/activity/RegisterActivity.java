@@ -1,13 +1,16 @@
 package com.pk.tagger.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,11 +58,14 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.link_login) TextView _loginLink;
     @Bind(R.id.link_skiplogin) TextView _skiploginLink;
 
+    SessionManager session;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
+        session = new SessionManager(getApplicationContext());
         //intialise buttons below
         _registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,11 +103,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         _registerButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
-                R.style.AppTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+//        final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
+//                R.style.AppTheme);
+//
+//        progressDialog.setMessage("Creating Account...");
+//        progressDialog.show();
+//
+//        Runnable progressRunnable = new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                progressDialog.cancel();
+//            }
+//        };
+//
+//        Handler pdCanceller = new Handler();
+//        pdCanceller.postDelayed(progressRunnable, 3000);
+
         // get fields and TODO: insert into HTTP POST request below
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
@@ -128,11 +146,12 @@ public class RegisterActivity extends AppCompatActivity {
                             jsonResponse = "";
                             String email = response.getString("email");
                             jsonResponse += "User registered: " + email + "\n\n";
-
+                            session.createRegisterSession(email, password);
                             Log.d(TAG, jsonResponse);
-
+                            onRegisterSuccess();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            onRegisterFailed();
                         }
                     }
                 },
@@ -154,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
                         } else if (error instanceof ParseError) {
                             Log.d(TAG, "Parse error: " + error.toString());
                         }
+                        onRegisterFailed();
                     }
                 }){
 
@@ -170,22 +190,22 @@ public class RegisterActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
         Log.d(TAG, "POSTing: " + jsonObjectRequest.toString());
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onRegisterSuccess or onRegisterFailed
-                        // depending on success
-                        onRegisterSuccess();
-                        //onRegisterFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onRegisterSuccess or onRegisterFailed
+//                        // depending on success
+//                        //onRegisterSuccess();
+//                        //onRegisterFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     };
     // finish() closes register activity and calls LoginActivity and puts name data into intent
     public void onRegisterSuccess() {
         _registerButton.setEnabled(true);
         //String name = _nameText.getText().toString();
-
+        Toast.makeText(getBaseContext(), "Registration succeeded", Toast.LENGTH_LONG).show();
         Intent resultIntent = new Intent();
         // TODO Add extras or a data URI to this intent as appropriate.
 

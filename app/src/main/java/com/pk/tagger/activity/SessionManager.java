@@ -24,9 +24,10 @@ public class SessionManager {
 
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
-    // Email address (make variable public to access from outside)
+    // Token (make variable public to access from outside)
     public static final String KEY_TOKEN = "token";
-
+    // Password - only used in Registration Process
+    public static final String KEY_PASSWORD = "password";
     // Constructor
     public SessionManager(Context context) {
         this.prefContext = context;
@@ -48,17 +49,48 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void createRegisterSession(String email, String password) {
+
+        // Storing email in pref
+        editor.putString(KEY_EMAIL, email);
+
+        // Storing password in pref
+        editor.putString(KEY_PASSWORD, password);
+
+        // commit changes
+        editor.commit();
+    }
+
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
 
         // user email id
         user.put(KEY_EMAIL, sharedPref.getString(KEY_EMAIL, null));
 
-        // user email id
+        // user token
         user.put(KEY_TOKEN, sharedPref.getString(KEY_TOKEN, null));
 
         // return user
         return user;
+    }
+
+    public HashMap<String, String> getRegistrationDetails() {
+        HashMap<String, String> user = new HashMap<String, String>();
+
+        // user email id
+        user.put(KEY_EMAIL, sharedPref.getString(KEY_EMAIL, null));
+
+        // user password
+        user.put(KEY_PASSWORD, sharedPref.getString(KEY_PASSWORD, null));
+
+        // return user
+        return user;
+    }
+
+    public void clearRegistrationDetails() {
+        // Clearing all data from Shared Preferences
+        editor.clear();
+        editor.commit();
     }
 
     public void checkLogin() {
