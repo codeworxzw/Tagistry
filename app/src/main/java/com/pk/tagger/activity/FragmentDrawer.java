@@ -34,6 +34,10 @@ public class FragmentDrawer extends Fragment {
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
 
+    private int logindrawer;
+
+    SessionManager session;
+
     public FragmentDrawer() {
 
     }
@@ -42,12 +46,13 @@ public class FragmentDrawer extends Fragment {
         this.drawerListener = listener;
     }
 
-    public static List<NavDrawerItem> getData() {
+    public static List<NavDrawerItem> getData(int logindrawer) {
         List<NavDrawerItem> data = new ArrayList<>();
-
-
+        NavDrawerItem navItem1 = new NavDrawerItem();
+        navItem1.setTitle(titles[logindrawer]);
+        data.add(navItem1);
         // preparing navigation drawer items
-        for (int i = 0; i < titles.length; i++) {
+        for (int i = 2; i < titles.length; i++) {
             NavDrawerItem navItem = new NavDrawerItem();
             navItem.setTitle(titles[i]);
             data.add(navItem);
@@ -61,6 +66,7 @@ public class FragmentDrawer extends Fragment {
 
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+
     }
 
     @Override
@@ -70,7 +76,13 @@ public class FragmentDrawer extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
 
-        adapter = new NavigationDrawerAdapter(getActivity(), getData());
+        session = new SessionManager(getContext());
+        if (session.isLoggedIn()) {
+            logindrawer = 1;
+        } else {
+            logindrawer = 0;
+        }
+        adapter = new NavigationDrawerAdapter(getActivity(), getData(logindrawer));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {

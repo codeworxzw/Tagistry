@@ -11,16 +11,21 @@
     <string name="drawer_close">Close</string>
 
     <!-- navigation drawer item labels  -->
+    <string name="nav_item_login">Login</string>
+    <string name="nav_item_account">Account</string>
     <string name="nav_item_home">Home</string>
-    <string name="nav_item_tags">Tags</string>
+    <string name="nav_item_listings">Event Listings</string>
     <string name="nav_item_map">Map</string>
 
     <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_login</item>
+        <item>@string/nav_item_account</item>
         <item>@string/nav_item_home</item>
-        <item>@string/nav_item_tags</item>
+        <item>@string/nav_item_listings</item>
         <item>@string/nav_item_map</item>
     </string-array>
 
+    <string name="title_login">Login</string>
     <string name="title_map">Events Map</string>
     <string name="title_listings">Event Listings</string>
     <string name="title_home">Home</string>

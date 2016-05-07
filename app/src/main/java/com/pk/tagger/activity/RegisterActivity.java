@@ -223,7 +223,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         //TODO: add error catching for uppercase, lowercase, and numerical character requirements
-        if (password.isEmpty() || password.length() < 8 || password.length() > 100) {
+        if (password.isEmpty() || password.length() < 8 || password.length() > 10 || password.equals(password.toLowerCase())
+                || !password.matches(".*\\d+.*")) {
             _passwordText.setError("Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase, and 1 number");
             Log.d(TAG, "Invalid password");
             valid = false;

@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
 
     //called on Login page
+    SessionManager session;
 
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_REGISTER = 0;
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        session = new SessionManager(getApplicationContext());
 
         //initialise login button below
         _loginButton.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "Login");
         //ensures that fields are correct by calling validate method
-        Toast.makeText(getApplicationContext(), "Will make login POST request soon!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Will make login POST request soon!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme);
@@ -131,7 +135,6 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(LoginActivity.this,response.toString(),Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Valid Response: " + response.toString());
 
                         try {
@@ -141,7 +144,8 @@ public class LoginActivity extends AppCompatActivity {
                             String token = j.getString("access_token");
                             jsonResponse += "Access token: " + token + "\n\n";
                             Log.d(TAG, jsonResponse);
-                            onLoginSuccess(token);
+                            session.createLoginSession(email, token);
+                            onLoginSuccess();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -208,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                 // TODO: Implement successful register logic here
                 // By default we just finish the Activity and log them in automatically
                 //this.finish();
-                onLoginSuccess(name);
+                onLoginSuccess();
             }
         }
     }
@@ -219,13 +223,13 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
     // If login is successful call the LandingActivity class
-    public void onLoginSuccess(String token) {
+    public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         //TODO: save token in shared prefs
-        SharedPreferences sharedPref = getBaseContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.access_token), token);
-        editor.commit();
+        //SharedPreferences sharedPref = getBaseContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+       // SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putString(getString(R.string.access_token), token);
+        //editor.commit();
 
         //Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -257,8 +261,9 @@ public class LoginActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 8 || password.length() > 10) {
-            _passwordText.setError("between 8 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 100 || password.equals(password.toLowerCase())
+                || !password.matches(".*\\d+.*"))  {
+            _passwordText.setError("Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase, and 1 number");
             valid = false;
         } else {
             _passwordText.setError(null);

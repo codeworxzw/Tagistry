@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferencesDate;
 
+    // Session Manager Class
+    SessionManager session;
+
     // Widget GUI
     Button btnCalendar, btnTimePicker;
     EditText txtDate, txtTime;
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
 
+        // Session class instance
+        session = new SessionManager(getApplicationContext());
+        //session.checkLogin();
         if (sharedPreferences.contains("time")) {
 
             Date myDate = new Date(sharedPreferences.getLong("time", 0));
@@ -158,14 +164,22 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
+                if (session.isLoggedIn()) {
+                    Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            case 1:
                 fragment = new HomeFragment();
                 title = getString(R.string.title_home);
                 break;
-            case 1:
+            case 2:
                 fragment = new ListingsFragment();
                 title = getString(R.string.title_listings);
                 break;
-            case 2:
+            case 3:
                 fragment = new MapFragment();
                 title = getString(R.string.title_map);
                 break;
