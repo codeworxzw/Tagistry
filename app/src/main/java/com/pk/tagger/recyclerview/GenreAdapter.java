@@ -21,7 +21,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     public interface OnItemClickListener {
         void onItemClick(Genre mGenre, int position);
     }
-
+    // instantiate genres and listener
     private List<Genre> mGenres;
     private final OnItemClickListener listener;
 
@@ -29,7 +29,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         this.listener = listener;
         mGenres = genres;
     }
-
+    // Create empty adapter and holder here
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nameTextView;
@@ -52,7 +52,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
             });
         }
     }
-
+    // return the holder after inflating the item_genre xml
     @Override
     public GenreAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -64,7 +64,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         ViewHolder viewHolder = new ViewHolder(genreView);
         return viewHolder;
     }
-
+    // populate data into the item using viewholder
     @Override
     public void onBindViewHolder(GenreAdapter.ViewHolder viewHolder, int position) {
 
