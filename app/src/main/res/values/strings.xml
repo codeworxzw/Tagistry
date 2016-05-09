@@ -55,6 +55,15 @@
     <string name="buy_tickets"><u>Buy Tickets</u></string>
     <string-array name="empty_array"/>
 
+    <string-array name="homepage">
+        <item>This Week</item>
+        <item>This Month</item>
+        <item>Tenner or Less</item>
+        <item>Festivals</item>
+        <item>Search by Genres</item>
+        <item>Your Favourites</item>
+    </string-array>
+
     <string-array name="genres">
         <item>Blues</item>
         <item>Cantautores</item>

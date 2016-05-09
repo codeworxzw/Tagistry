@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.pk.tagger.R;
 import com.pk.tagger.adapter.NavigationDrawerAdapter;
+import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.model.NavDrawerItem;
 
 import java.util.ArrayList;

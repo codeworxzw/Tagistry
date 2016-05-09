@@ -84,7 +84,7 @@ public class EventDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
-        sharedPref = getApplicationContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        sharedPref = getApplicationContext().getSharedPreferences("PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
         ButterKnife.bind(this);
 

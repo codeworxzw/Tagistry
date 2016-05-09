@@ -129,6 +129,8 @@ public class ListingsFragment extends Fragment {
         endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = prefs.edit();
+
         String searchArtistVenue = prefs.getString("search_artist_venue", "");
         Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);

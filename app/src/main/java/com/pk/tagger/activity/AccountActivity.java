@@ -5,10 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.SessionManager;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package com.pk.tagger.activity;
+package com.pk.tagger.managers;
 
 /**
  * Created by pk on 06/05/16.
@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
+
+import com.pk.tagger.activity.LoginActivity;
 
 import java.util.HashMap;
 

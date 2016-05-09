@@ -1,9 +1,7 @@
 package com.pk.tagger.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.pk.tagger.R;
+import com.pk.tagger.managers.SessionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

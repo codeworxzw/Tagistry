@@ -1,8 +1,5 @@
 package com.pk.tagger.activity;
 
-/**
- * Created by PK on 16/01/2016.
- */
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -26,14 +23,16 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
+/**
+ * Created by pk on 09/05/16.
+ */
+public class GenreFragment extends Fragment {
 
-public class HomeFragment extends Fragment {
+public GenreFragment () {
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
+}
 
-    ArrayList<Genre> tiles;
+    ArrayList<Genre> genres;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,34 +47,27 @@ public class HomeFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         Resources res = getResources();
-        //final String[] genresValues = res.getStringArray(R.array.genres_values);
+        final String[] genresValues = res.getStringArray(R.array.genres_values);
 
         RecyclerView rvGenres = (RecyclerView) rootView.findViewById(R.id.rvGenres);
-        tiles = getSampleArrayList();
+        genres = getSampleArrayList();
 
-        GenreAdapter adapter = new GenreAdapter(tiles, new GenreAdapter.OnItemClickListener() {
+        GenreAdapter adapter = new GenreAdapter(genres, new GenreAdapter.OnItemClickListener() {
 
             @Override
             public void onItemClick(Genre mGenre, int position) {
-                Log.d("Tile: ", mGenre.getName());
-                Log.d("Tile Number: ", String.valueOf(position));
+                Log.d("Genre: ", mGenre.getName());
+                Log.d("Genre Position: ", genresValues[position].toString());
+
+
 
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                // Set title bar
+                ((MainActivity) getActivity())
+                        .setActionBarTitle("Event Listings");
+                ft.commit();
 
-                if (position == 4) {
-                    ft.replace(R.id.container_body, new GenreFragment(), "Genres");
-                    // Set title bar
-                    ((MainActivity) getActivity())
-                            .setActionBarTitle("Genres");
-                    ft.commit();
-                } else
-                {
-                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
-                    // Set title bar
-                    ((MainActivity) getActivity())
-                            .setActionBarTitle("Event Listings");
-                    ft.commit();
-                }
             }
         });
 
@@ -83,7 +75,7 @@ public class HomeFragment extends Fragment {
 
         rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-       // sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        // sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
         // Inflate the layout for this fragment
         return rootView;
@@ -106,7 +98,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -126,7 +118,7 @@ public class HomeFragment extends Fragment {
         ArrayList<Genre> items = new ArrayList<>();
 
         Resources res = getResources();
-        String[] genres = res.getStringArray(R.array.homepage);
+        String[] genres = res.getStringArray(R.array.genres);
 
         for (int i=0; i<genres.length; i++) {
             items.add(new Genre(genres[i]));
@@ -136,5 +128,3 @@ public class HomeFragment extends Fragment {
     }
 
 }
-
-

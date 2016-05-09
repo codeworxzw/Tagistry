@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pk.tagger.R;
-import com.pk.tagger.realm.ResetRealm;
+import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
