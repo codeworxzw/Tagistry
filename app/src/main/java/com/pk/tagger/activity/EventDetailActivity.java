@@ -416,7 +416,7 @@ public class EventDetailActivity extends AppCompatActivity {
                             myRealm.commitTransaction();
 
                             //update remaining data fields for event (i.e. data not already in Listings)
-                            updateData(eventID);
+                            updateEventData(eventID);
 
                         } catch (Exception e) {
                             Log.d("Error updating", e.toString());
@@ -470,8 +470,8 @@ public class EventDetailActivity extends AppCompatActivity {
                             myRealm.createOrUpdateObjectFromJson(Artist.class, response);
                             myRealm.commitTransaction();
 
-                            //update remaining data fields for event (i.e. data not already in Listings)
-                            updateData(artistID);
+                            //update remaining data fields for artist (i.e. data not already in realm)
+                            updateArtistData(artistID);
 
                         } catch (Exception e) {
                             Log.d("Error updating", e.toString());
@@ -525,8 +525,8 @@ public class EventDetailActivity extends AppCompatActivity {
                             myRealm.createOrUpdateObjectFromJson(Venue.class, response);
                             myRealm.commitTransaction();
 
-                            //update remaining data fields for event (i.e. data not already in Listings)
-                            updateData(venueID);
+                            //update remaining data fields for venue (i.e. data not already in realm)
+                            updateVenueData(venueID);
 
                         } catch (Exception e) {
                             Log.d("Error updating", e.toString());
@@ -560,12 +560,34 @@ public class EventDetailActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(req);
     }
 
-    public void updateData(String eventID){
+    public void updateEventData(String eventID){
         final Event event = myRealm
                 .where(Event.class)
                 .equalTo("id", eventID)
                 .findFirst();
-        Log.d("Updated with full data", event.toString());
+        Log.d("Updated full event", event.toString());
+
+        //update the remaining fields with the new volley data
+        //_event_title.setText("Test");
+
+    }
+    public void updateArtistData(String artistID){
+        final Artist artist = myRealm
+                .where(Artist.class)
+                .equalTo("id", artistID)
+                .findFirst();
+        Log.d("Updated full artist", artist.toString());
+
+        //update the remaining fields with the new volley data
+        _event_description.setText(artist.getDescription());
+
+    }
+    public void updateVenueData(String venueID){
+        final Venue venue = myRealm
+                .where(Venue.class)
+                .equalTo("id", venueID)
+                .findFirst();
+        Log.d("Updated full venue", venue.toString());
 
         //update the remaining fields with the new volley data
         //_event_title.setText("Test");
