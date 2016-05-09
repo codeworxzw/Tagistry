@@ -46,7 +46,6 @@ public class DatabaseSyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        resetRealm();
 
         resultReceiver = intent.getParcelableExtra(RESULT_RECEIVER_NAME);
 
@@ -63,86 +62,7 @@ public class DatabaseSyncService extends IntentService {
         Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DSyncService", myDate.toString());
-
-
-
-      /*  JsonArrayRequest req = new JsonArrayRequest(QUERY_URL,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                      //  Log.d("TAG", response.toString());
-
-                        myRealm = Realm.getInstance(getApplicationContext());
-
-                        try {
-                            // Parsing json array response
-                            // loop through each json object
-                            jsonResponse = "";
-                            for (int i = 0; i < response.length(); i++) {
-
-                                JSONObject event = (JSONObject) response
-                                        .get(i);
-
-                                jsonResponse = event.toString();
-
-
-                                myRealm.beginTransaction();
-                                myRealm.createObjectFromJson(Event.class, event);
-                                myRealm.commitTransaction();
-                                // we are already in a separate thread here, so we can do some long operation
-
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                }
-
-
-                            }
-
-
-                           // Log.d("TAG service", jsonResponse);
-                          //  Bundle getFinished = new Bundle();
-                          //  getFinished.putString("result", jsonResponse);
-                          //  resultReceiver.send(JSONSENT, getFinished);
-
-
-                            RealmResults<Event> results1 =
-                                    myRealm.where(Event.class).findAll();
-
-                            for(Event c:results1) {
-                               Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
-                            }
-
-                            myRealm.close();
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("TAG service", "Error: " + error.getMessage());
-
-            }
-        });
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req);
-
-
-
-
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-        }
-        */
-
+        myRealm = Realm.getDefaultInstance();
 
         EventRestClient.get("", null, new JsonHttpResponseHandler() {
 
@@ -157,8 +77,6 @@ public class DatabaseSyncService extends IntentService {
             public void onSuccess(int statusCode, Header[] headers, JSONArray data) {
 
                // Log.d("JSONArray", data.toString());
-
-                myRealm = Realm.getInstance(getApplicationContext());
 
                 try {
                     // Parsing json array response
@@ -221,20 +139,10 @@ public class DatabaseSyncService extends IntentService {
 
         myRealm.close();
 
-
         Bundle resultFinished = new Bundle();
         resultFinished.putString("result", "Service finished");
         resultReceiver.send(FINISHED, resultFinished);
 
     }
-
-    private void resetRealm() {
-        RealmConfiguration realmConfig = new RealmConfiguration
-                .Builder(getApplicationContext())
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.deleteRealm(realmConfig);
-    }
-
 
 }

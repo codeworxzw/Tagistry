@@ -103,7 +103,6 @@ public class DatabaseStartPaginatedService extends IntentService {
      */
     private void handleActionDownload(String param1, String param2) {
         // this needs to be kept if new database schema is being used
-        // resetRealm();
 
         SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
         Date date = new Date(System.currentTimeMillis());
@@ -114,7 +113,7 @@ public class DatabaseStartPaginatedService extends IntentService {
         Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DStartService", myDate.toString());
-        myRealm = Realm.getInstance(getApplicationContext());
+        myRealm = Realm.getDefaultInstance();
 
         myRealm.beginTransaction();
 
@@ -128,8 +127,6 @@ public class DatabaseStartPaginatedService extends IntentService {
 
                     //Log.d("JSONObject", "JSONObject received");
 
-//                    myRealm = Realm.getInstance(getApplicationContext());
-
                     try {
                         // Parsing json array response
                         // loop through each json object
@@ -138,15 +135,15 @@ public class DatabaseStartPaginatedService extends IntentService {
                         Log.d("Page Count", Integer.toString(pageCount));
 
                         JSONArray docs = (JSONArray) response.get("docs");
-                        Log.d("Docs", docs.get(2).toString());
+                        Log.d("Docs.get(2)", docs.get(2).toString());
 
                         for (int i = 0; i < docs.length(); i++) {
 
                             JSONObject event = (JSONObject) docs.get(i);
 
-                            jsonResponse = event.toString();
+                            //jsonResponse = event.toString();
 
-                            Log.d("jsonResponse", jsonResponse);
+                            //Log.d("jsonResponse", jsonResponse);
                            // myRealm.beginTransaction();
                             myRealm.createOrUpdateObjectFromJson(Event.class, event);
                            // myRealm.commitTransaction();
@@ -167,16 +164,16 @@ public class DatabaseStartPaginatedService extends IntentService {
                         //  resultReceiver.send(JSONSENT, getFinished);
 
 
-                   RealmResults<Event> results1 =
-                           myRealm.where(Event.class).findAll();
-
-                   for(Event c:results1) {
-                       Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
-                       Log.d("Realm EventVenueName: ", c.getVenue().getName().toString());
-                       //Log.d("Realm EventName: ", c.getName().toString());
-                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
-                       Log.d("Realm EventID: ", c.getId().toString());
-                   }
+//                   RealmResults<Event> results1 =
+//                           myRealm.where(Event.class).findAll();
+//
+//                   for(Event c:results1) {
+//                       Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
+//                       Log.d("Realm EventVenueName: ", c.getVenue().getName().toString());
+//                       //Log.d("Realm EventName: ", c.getName().toString());
+//                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
+//                       Log.d("Realm EventID: ", c.getId().toString());
+//                   }
 
 
                     } catch (JSONException e) {
@@ -189,8 +186,6 @@ public class DatabaseStartPaginatedService extends IntentService {
 //                public void onSuccess(int statusCode, Header[] headers, JSONArray data) {
 //
 //                    Log.d("JSONArray", "JSONArray received");
-//
-//                    myRealm = Realm.getInstance(getApplicationContext());
 //
 //                    try {
 //                        // Parsing json array response
@@ -242,8 +237,8 @@ public class DatabaseStartPaginatedService extends IntentService {
 //                }
             });
         }
-       // myRealm.close();      //was causing a crash sometimes. seems to run ok without it. for now.
         myRealm.commitTransaction();
+        myRealm.close();      //was causing a crash sometimes. seems to run ok without it. for now.
 
     }
 
@@ -253,14 +248,6 @@ public class DatabaseStartPaginatedService extends IntentService {
      */
     private void handleActionUpdate(String param1, String param2) {
 
-    }
-
-    private void resetRealm() {
-        RealmConfiguration realmConfig = new RealmConfiguration
-                .Builder(getApplicationContext())
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.deleteRealm(realmConfig);
     }
 
 }

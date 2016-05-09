@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -49,6 +50,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RealmConfiguration config = new RealmConfiguration.Builder(this)
+                .name("gigit.realm")
+                .schemaVersion(0)
+                .migration(new MyRealmMigration()) // Migration to run instead of throwing an exception
+                .build();
+        Realm.setDefaultConfiguration(config);
+
         SharedPreferences sharedPrefsCurrentFragment = getSharedPreferences("FragmentView", Context.MODE_PRIVATE);
 
         sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
@@ -82,16 +91,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
 
-        int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
-        Log.d("Filter MainActivty Test", String.valueOf(test));
-
-        // display the first navigation drawer view on app launch
-        if (sharedPrefsCurrentFragment.contains("fragment")) {
-
-            displayView(sharedPrefsCurrentFragment.getInt("fragment", 0));
-        } else {
-            displayView(0);
-        }
+//        int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
+//        Log.d("Filter MainActivty Test", String.valueOf(test));
+//
+//        // display the first navigation drawer view on app launch
+//        if (sharedPrefsCurrentFragment.contains("fragment")) {
+//
+//            displayView(sharedPrefsCurrentFragment.getInt("fragment", 0));
+//        } else {
+//            displayView(0);
+//        }
+        displayView(1);
     }
 
     @Override
@@ -132,14 +142,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         } */
 
         if(id == R.id.action_clear_cache){
-            myRealm = Realm.getInstance(getApplicationContext());
-            myRealm.beginTransaction();
-            myRealm.clear(Event.class);
-            myRealm.clear(Artist.class);
-            myRealm.clear(Venue.class);
-            myRealm.commitTransaction();
+            myRealm = Realm.getDefaultInstance();
+//            myRealm.beginTransaction();
+//            myRealm.clear(Event.class);
+//            myRealm.clear(Artist.class);
+//            myRealm.clear(Venue.class);
+//            myRealm.commitTransaction();
+
+            Log.d("MainActivity", myRealm.getPath());
             myRealm.close();
-//            ResetRealm.resetRealm(this);
             return true;
         }
 

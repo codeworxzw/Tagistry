@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Set;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 
@@ -45,7 +46,6 @@ public class ListingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-       // resetRealm();
     }
 
     @Override
@@ -69,7 +69,6 @@ public class ListingsFragment extends Fragment {
     @Override
     public void onDestroyView(){
         Log.d("Realm Tag onDV", "open");
-
         super.onDestroyView();
     }
 
@@ -139,10 +138,11 @@ public class ListingsFragment extends Fragment {
         int ticketMax = 1000;
         int ticketMin = 1;
 
-        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+//        MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+        MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
 
-        RealmResults events = events2.getResults();
-        long count = events2.getCount();
+        RealmResults events = myEvents.getResults();
+        long count = myEvents.getCount();
         Log.d("No. Events Found", String.valueOf(count));
 
         eventsRealmAdapter =

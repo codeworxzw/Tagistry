@@ -49,7 +49,7 @@ public class ClusterInfoWindow extends AppCompatActivity {
 
         realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realmCluster_recycler_view);
 
-        myRealm = Realm.getInstance(getApplicationContext());
+        myRealm = Realm.getDefaultInstance();
 
         int eSize = EventIDs.size();
         Log.i("Size of arrayList: ", String.valueOf(eSize));
@@ -70,6 +70,7 @@ public class ClusterInfoWindow extends AppCompatActivity {
                 .findAll();  */
 
         getClusterList(events);
+        myRealm.close();
 
     }
 

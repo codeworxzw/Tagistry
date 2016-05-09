@@ -98,8 +98,6 @@ public class DatabaseStartService extends IntentService {
      */
     private void handleActionDownload(String param1, String param2) {
 
-        resetRealm();
-
         SharedPreferences sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
         Date date = new Date(System.currentTimeMillis());
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -109,7 +107,7 @@ public class DatabaseStartService extends IntentService {
         Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DStartService", myDate.toString());
-        myRealm = Realm.getInstance(getApplicationContext());
+        myRealm = Realm.getDefaultInstance();
 
         myRealm.beginTransaction();
 
@@ -176,9 +174,9 @@ public class DatabaseStartService extends IntentService {
             }
         });
 
-//        myRealm.close();
         myRealm.commitTransaction();
         Log.d("Service", "Finished");
+        myRealm.close();
 
     }
 
@@ -188,14 +186,6 @@ public class DatabaseStartService extends IntentService {
      */
     private void handleActionUpdate(String param1, String param2) {
 
-    }
-
-    private void resetRealm() {
-        RealmConfiguration realmConfig = new RealmConfiguration
-                .Builder(getApplicationContext())
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.deleteRealm(realmConfig);
     }
 
 }

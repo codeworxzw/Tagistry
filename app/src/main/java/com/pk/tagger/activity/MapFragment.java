@@ -49,10 +49,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
-    //private static RealmConfiguration mRealmConfig;
-
-    private Realm myRealm;
-
     public MapFragment() {
         // Required empty public constructor
     }
@@ -206,7 +202,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     @Override
     public void onDestroyView() {
-        //myRealm.close();
         super.onDestroyView();
     }
 
@@ -218,20 +213,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(latLng.toString()));
-
-//        Realm myRealm = Realm.getInstance(getContext());
-//
-//        myRealm.beginTransaction();
-//
-//        // Create an object
-//        Event Tag1 = myRealm.createObject(Event.class);
-//
-//        // Set its fields
-//        Tag1.setLatLng(latLng.toString());
-//        Tag1.setLatitide(latLng.latitude);
-//        Tag1.setLongitude(latLng.longitude);
-//
-//        myRealm.commitTransaction();
 
     }
 

@@ -77,9 +77,6 @@ public class EventDetailActivity extends AppCompatActivity {
     @Bind(R.id.tab_artist) TextView _tab_artist;
     @Bind(R.id.tab_venue) TextView _tab_venue;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -103,7 +100,7 @@ public class EventDetailActivity extends AppCompatActivity {
 //        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) _baseLayout.getLayoutParams();
 //        anchorLeft = _baseLayout.getLeft() + lp.leftMargin;
 
-        myRealm = Realm.getInstance(getApplicationContext());
+        myRealm = Realm.getDefaultInstance();
         final Event event = myRealm
                 .where(Event.class)
                 .equalTo("id", eventID)
@@ -397,7 +394,6 @@ public class EventDetailActivity extends AppCompatActivity {
 */
     private void getFullEvent(String id) {
 
-        //showpDialog();
         final String eventID = id;
         final String FULL_QUERY_URL = BASE_QUERY_URL + eventID;
         Log.d("Querying", FULL_QUERY_URL);
@@ -409,7 +405,6 @@ public class EventDetailActivity extends AppCompatActivity {
                         Log.d("Response", response.toString());
 
                         try {
-                           // myRealm = Realm.getInstance(getApplicationContext());
 
                             myRealm.beginTransaction();
                             myRealm.createOrUpdateObjectFromJson(Event.class, response);
@@ -422,14 +417,12 @@ public class EventDetailActivity extends AppCompatActivity {
                             Log.d("Error updating", e.toString());
                         }
 
-                        //hidepDialog();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                //hidepDialog();
             }
         }){
 
@@ -452,7 +445,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void getFullArtist (String id) {
 
-        //showpDialog();
         final String artistID = id;
         final String FULL_QUERY_URL = BASE_QUERY_URL_ARTIST + artistID;
         Log.d("Querying", FULL_QUERY_URL);
@@ -464,7 +456,6 @@ public class EventDetailActivity extends AppCompatActivity {
                         Log.d("Response", response.toString());
 
                         try {
-                            // myRealm = Realm.getInstance(getApplicationContext());
 
                             myRealm.beginTransaction();
                             myRealm.createOrUpdateObjectFromJson(Artist.class, response);
@@ -477,14 +468,12 @@ public class EventDetailActivity extends AppCompatActivity {
                             Log.d("Error updating", e.toString());
                         }
 
-                        //hidepDialog();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                //hidepDialog();
             }
         }){
 
@@ -507,7 +496,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void getFullVenue (String id) {
 
-        //showpDialog();
         final String venueID = id;
         final String FULL_QUERY_URL = BASE_QUERY_URL_VENUE + venueID;
         Log.d("Querying", FULL_QUERY_URL);
@@ -519,7 +507,6 @@ public class EventDetailActivity extends AppCompatActivity {
                         Log.d("Response", response.toString());
 
                         try {
-                            // myRealm = Realm.getInstance(getApplicationContext());
 
                             myRealm.beginTransaction();
                             myRealm.createOrUpdateObjectFromJson(Venue.class, response);
@@ -532,14 +519,12 @@ public class EventDetailActivity extends AppCompatActivity {
                             Log.d("Error updating", e.toString());
                         }
 
-                        //hidepDialog();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                //hidepDialog();
             }
         }){
 
@@ -592,5 +577,11 @@ public class EventDetailActivity extends AppCompatActivity {
         //update the remaining fields with the new volley data
         //_event_title.setText("Test");
 
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        myRealm.close();
     }
 }
