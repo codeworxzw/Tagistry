@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name("gigit.realm")
-                .schemaVersion(0)
-                .migration(new MyRealmMigration()) // Migration to run instead of throwing an exception
+                //.schemaVersion(0)
+                //.migration(new MyRealmMigration()) // Migration to run instead of throwing an exception
+                .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
 

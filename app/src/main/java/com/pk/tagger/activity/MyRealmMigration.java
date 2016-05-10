@@ -38,7 +38,7 @@ public class MyRealmMigration implements RealmMigration {
 //         int age;
 //         ************************************************/
 //        // Migrate from version 0 to version 1
-//        if (oldVersion == 0) {
+        if (oldVersion == 0) {
 //            RealmObjectSchema personSchema = schema.get("Person");
 //
 //            // Combine 'firstName' and 'lastName' in a new field called 'fullName'
@@ -52,8 +52,9 @@ public class MyRealmMigration implements RealmMigration {
 //                    })
 //                    .removeField("firstName")
 //                    .removeField("lastName");
-//            oldVersion++;
-//        }
+            Log.d("Realm Migration", "Migrating from 0 to 1");
+            oldVersion++;
+        }
 //
 //        /************************************************
 //         // Version 2
