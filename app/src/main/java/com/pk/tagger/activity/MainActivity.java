@@ -19,6 +19,7 @@ import android.widget.EditText;
 
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
+import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
@@ -36,15 +37,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private FragmentDrawer drawerFragment;
     private Realm myRealm;
 
-
-    SharedPreferences sharedPreferences;
-    SharedPreferences sharedPreferencesDate;
-
     // Session Manager Class
     SessionManager session;
-
     //Filter Manager Class
     FilterManager filterManager;
+    //Screen Manager Class
+    ScreenManager screenManager;
 
     // Widget GUI
     Button btnCalendar, btnTimePicker;
@@ -62,25 +60,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
-
-        SharedPreferences sharedPrefsCurrentFragment = getSharedPreferences("FragmentView", Context.MODE_PRIVATE);
-
-        sharedPreferences = getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
+        screenManager = new ScreenManager(getApplicationContext());
 
         // Session class instance
         session = new SessionManager(getApplicationContext());
         //session.checkLogin();
-        if (sharedPreferences.contains("time")) {
-
-            Date myDate = new Date(sharedPreferences.getLong("time", 0));
-
-            Log.d("Date in Mainactivity", myDate.toString());
-           // DatabaseStartService.startActionDownload(this, "hello", "hello");
-        }
-
-        else {
-          //  DatabaseStartService.startActionBaz(this, "hello", "hello");
-        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -93,19 +77,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         drawerFragment.setDrawerListener(this);
 
-
-
-        int test = sharedPrefsCurrentFragment.getInt("fragment", 1);
-        Log.d("Filter MainActivty Test", String.valueOf(test));
-
         // display the first navigation drawer view on app launch
-        if (sharedPrefsCurrentFragment.contains("fragment")) {
-
-            displayView(sharedPrefsCurrentFragment.getInt("fragment", 1));
+        if (screenManager.getCurrentFragment()!=-1) {
+            displayView(screenManager.getCurrentFragment());
         } else {
             displayView(1);
         }
-        //displayView(1);
+
     }
 
     @Override
@@ -117,23 +95,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-     /*   if (id == R.id.action_settings) {
-
-            return true;
-        }  */
 
         if(id == R.id.action_options){
             Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
             intent.putExtra("TAG", getVisibleFragment().getTag());
+            screenManager.setCurrentFragment(getVisibleFragment().getTag());
             startActivity(intent);
             Log.d("MainActivity", "options selected");
             Log.i("Open Fragment", getVisibleFragment().getTag());
+            Log.i("Open Fragment", String.valueOf(screenManager.getCurrentFragment()));
             return true;
         }
 
@@ -166,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         if(id == R.id.report_issue){
-
-
             return true;
         }
 

@@ -91,7 +91,6 @@ public class HomeFragment extends Fragment {
                             .setActionBarTitle("Event Listings");
                     ft.commit();
                 }
-
                 else if (position == 4) {
                     ft.replace(R.id.container_body, new GenreFragment(), "Genres");
                     // Set title bar
@@ -99,12 +98,9 @@ public class HomeFragment extends Fragment {
                             .setActionBarTitle("Genres");
                     ft.commit();
                 }
-
                 else if (position == 5) {
                     Toast.makeText(getContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();
-
                 }
-
                 else
                 {
                     ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");

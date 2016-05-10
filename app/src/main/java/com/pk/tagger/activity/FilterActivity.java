@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
+import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.managers.SessionManager;
 
 import java.util.Calendar;
@@ -61,6 +62,7 @@ public class FilterActivity extends PreferenceActivity{
           //  sharedPreferencesDate = getContext().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
 
             final FilterManager filterManager = new FilterManager(getActivity());
+            final ScreenManager screenManager = new ScreenManager(getActivity());
 
             final String getTag = getArguments().getString("TAG");
             Log.i("inFragment ", getTag);
@@ -260,6 +262,7 @@ public class FilterActivity extends PreferenceActivity{
                     }
                     SharedPreferences sharedPrefsCurrentFragment = getActivity().getSharedPreferences("FragmentView", Context.MODE_PRIVATE);
                     Log.d("Filter", String.valueOf(data));
+                    Log.d("Filter 1", String.valueOf(screenManager.getCurrentFragment()));
                     SharedPreferences.Editor editor = sharedPrefsCurrentFragment.edit();
                     editor.putInt("fragment", data);
                     editor.commit();
