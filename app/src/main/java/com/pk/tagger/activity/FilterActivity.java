@@ -246,13 +246,13 @@ public class FilterActivity extends PreferenceActivity{
                     int data = -1;
                     switch (getTag) {
                         case "Home":
-                            data = 0;
-                            break;
-                        case "Event Listings":
                             data = 1;
                             break;
-                        case "Events Map":
+                        case "Event Listings":
                             data = 2;
+                            break;
+                        case "Events Map":
+                            data = 3;
                             break;
                         default:
                             data = -1;
