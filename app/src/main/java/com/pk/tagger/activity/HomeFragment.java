@@ -17,8 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.recyclerview.Genre;
 import com.pk.tagger.recyclerview.GenreAdapter;
 
@@ -46,7 +48,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
-
+        final FilterManager filterManager = new FilterManager(getContext());
         Resources res = getResources();
         //final String[] genresValues = res.getStringArray(R.array.genres_values);
 
@@ -62,13 +64,48 @@ public class HomeFragment extends Fragment {
 
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
-                if (position == 4) {
+                if (position == 0) {
+                    filterManager.setOneWeek();
+                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Listings");
+                    ft.commit();
+                }
+                else if (position == 1) {
+                    filterManager.setOneMonth();
+                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Listings");
+                    ft.commit();
+                }
+                else if (position == 2) {
+                    Toast.makeText(getContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();
+                }
+                else if (position == 3) {
+                    filterManager.setFestivals();
+                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Listings");
+                    ft.commit();
+                }
+
+                else if (position == 4) {
                     ft.replace(R.id.container_body, new GenreFragment(), "Genres");
                     // Set title bar
                     ((MainActivity) getActivity())
                             .setActionBarTitle("Genres");
                     ft.commit();
-                } else
+                }
+
+                else if (position == 5) {
+                    Toast.makeText(getContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                else
                 {
                     ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
                     // Set title bar

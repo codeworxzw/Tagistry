@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.recyclerview.Genre;
 import com.pk.tagger.recyclerview.GenreAdapter;
 
@@ -33,6 +34,7 @@ public GenreFragment () {
 }
 
     ArrayList<Genre> genres;
+    FilterManager filterManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public GenreFragment () {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
+        filterManager = new FilterManager(getContext());
         Resources res = getResources();
         final String[] genresValues = res.getStringArray(R.array.genres_values);
 
@@ -57,9 +60,8 @@ public GenreFragment () {
             @Override
             public void onItemClick(Genre mGenre, int position) {
                 Log.d("Genre: ", mGenre.getName());
-                Log.d("Genre Position: ", genresValues[position].toString());
-
-
+                Log.d("Genre Position: ", genresValues[position]);
+                filterManager.setGenre(genresValues[position]);
 
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");

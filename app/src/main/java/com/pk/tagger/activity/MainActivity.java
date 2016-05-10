@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     // Session Manager Class
     SessionManager session;
+
+    //Filter Manager Class
+    FilterManager filterManager;
 
     // Widget GUI
     Button btnCalendar, btnTimePicker;
@@ -78,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
           //  DatabaseStartService.startActionBaz(this, "hello", "hello");
         }
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -92,13 +95,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
 
-        int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
+        int test = sharedPrefsCurrentFragment.getInt("fragment", 1);
         Log.d("Filter MainActivty Test", String.valueOf(test));
 
         // display the first navigation drawer view on app launch
         if (sharedPrefsCurrentFragment.contains("fragment")) {
 
-            displayView(sharedPrefsCurrentFragment.getInt("fragment", 0));
+            displayView(sharedPrefsCurrentFragment.getInt("fragment", 1));
         } else {
             displayView(1);
         }

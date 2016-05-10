@@ -3,6 +3,11 @@ package com.pk.tagger.managers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.pk.tagger.R;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,6 +84,65 @@ public class FilterManager {
     public void setTicketsAvailable(boolean ticketsAvailable) {
        editor.putBoolean(TICKETS_AVAILABLE, ticketsAvailable);
         // commit changes
+        editor.commit();
+    }
+
+    public void setDefault() {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 6);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, false);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
+        editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.commit();
+    }
+
+    public void setOneMonth() {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 1);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, false);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
+        editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.commit();
+    }
+    public void setOneWeek() {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.WEEK_OF_MONTH, 1);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, false);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
+        editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.commit();
+    }
+    public void setFestivals() {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 6);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, false);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        String[] festivals = {"35"};
+        Set<String> Genres = new HashSet<String> (Arrays.asList(festivals));
+        editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.commit();
+    }
+    public void setGenre(String genre) {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 6);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, false);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        String[] genres = {genre};
+        Set<String> Genres = new HashSet<String> (Arrays.asList(genres));
+        editor.putStringSet(SEARCH_GENRES, Genres);
         editor.commit();
     }
 

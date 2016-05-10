@@ -263,8 +263,6 @@ public class FilterActivity extends PreferenceActivity{
                     SharedPreferences.Editor editor = sharedPrefsCurrentFragment.edit();
                     editor.putInt("fragment", data);
                     editor.commit();
-                    int test = sharedPrefsCurrentFragment.getInt("fragment", 0);
-                    Log.d("Filter Test", String.valueOf(test));
                     Intent myIntent = new Intent(getActivity(), MainActivity.class);
                     startActivity(myIntent);
 
