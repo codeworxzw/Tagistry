@@ -6,6 +6,7 @@
     <string name="action_options">Options</string>
     <string name="action_calendar">Calendar</string>
     <string name="action_sync">Sync</string>
+    <string name="action_report_issue">Report Issue</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
