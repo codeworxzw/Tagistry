@@ -50,7 +50,7 @@ public class MyRealmResults {
         Log.d("SearchArtist/Venue", searchArtistVenue);
         Log.d("TicketsAvailable", String.valueOf(ticketsAvailable));
         Log.d("Ticket Range", ticketMin + " to " + ticketMax);
-        Log.d("SearchGenres", Arrays.toString(searchGenres));;
+        Log.d("SearchGenres", Arrays.toString(searchGenres));
         int ticketCheck = 0;
         if(ticketsAvailable){
             ticketCheck = 1;

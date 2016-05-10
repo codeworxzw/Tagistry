@@ -162,6 +162,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             return true;
         }
 
+        if(id == R.id.report_issue){
+
+
+            return true;
+        }
+
         return false;
         //return super.onOptionsItemSelected(item);
     }

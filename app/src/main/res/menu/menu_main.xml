@@ -37,6 +37,11 @@
         android:title="@string/action_clear_cache"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/report_issue"
+        android:orderInCategory="100"
+        android:title="@string/action_report_issue"
+        app:showAsAction="never" />
  <!---   <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
