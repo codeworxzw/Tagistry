@@ -4,6 +4,7 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.event.EventsAdapter;
 
@@ -36,6 +38,7 @@ public class ListingsFragment extends Fragment {
     private EventsAdapter eventsRealmAdapter;
     private RealmRecyclerView realmRecyclerView;
 
+    FilterManager filterManager;
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -46,6 +49,7 @@ public class ListingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -123,17 +127,23 @@ public class ListingsFragment extends Fragment {
     }
 
     public void getListings(){
-        sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
-        date = new Date(sharedPreferencesDate.getLong("Date", 0));
-        endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
+        //sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
+        FilterManager filterManager = new FilterManager(getContext());
+        date = new Date(filterManager.getDateStart());
+        endDate = new Date(filterManager.getDateEnd());
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = prefs.edit();
+        //SharedPreferences prefs = getContext().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
+        //SharedPreferences.Editor editor = prefs.edit();
 
-        String searchArtistVenue = prefs.getString("search_artist_venue", "");
-        Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
+//        String searchArtistVenue = prefs.getString("search_artist_venue", "");
+//        Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
+//        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+//        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
+
+        String searchArtistVenue = filterManager.getSearchArtistVenue();
+       Set<String> searchGenresTemp = filterManager.getSearchGenres();
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
+        boolean ticketsAvailable = filterManager.getTicketsAvailable();
 
         int ticketMax = 1000;
         int ticketMin = 1;

@@ -4,6 +4,7 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.maps.ClusterMapInfoWindow;
 import com.pk.tagger.maps.ClusterMapRender;
 import com.pk.tagger.maps.ClusterMarkerLocation;
@@ -48,6 +50,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     private int zoomLevel = 10;
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
+
+    FilterManager filterManager;
 
     public MapFragment() {
         // Required empty public constructor
@@ -82,6 +86,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     public void setUpMap() {
 
+        FilterManager filterManager = new FilterManager(getContext());
+
         final ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
         clusterManager.setRenderer(new ClusterMapRender(getContext(), googleMap, clusterManager));
         googleMap.setOnCameraChangeListener(clusterManager);
@@ -100,14 +106,23 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(streatham, zoomLevel));
 
-        sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
-        Date date = new Date(sharedPreferencesDate.getLong("Date", 0));
-        Date endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String searchArtistVenue = prefs.getString("search_artist_venue", "");
-        Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
+//        sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
+//        Date date = new Date(sharedPreferencesDate.getLong("Date", 0));
+//        Date endDate = new Date(sharedPreferencesDate.getLong("DateEnd", 0));
+//        SharedPreferences prefs = getContext().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
+//        String searchArtistVenue = prefs.getString("search_artist_venue", "");
+//        Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
+//        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+//        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
+
+
+        Date date = new Date(filterManager.getDateStart());
+        Date endDate = new Date(filterManager.getDateEnd());
+
+        String searchArtistVenue = filterManager.getSearchArtistVenue();
+        Set<String> searchGenresTemp = filterManager.getSearchGenres();
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
+        boolean ticketsAvailable = filterManager.getTicketsAvailable();
 
         int ticketMax = 1000;
         int ticketMin = 1;

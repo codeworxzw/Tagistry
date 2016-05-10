@@ -19,6 +19,8 @@ import android.util.Log;
 import android.widget.DatePicker;
 
 import com.pk.tagger.R;
+import com.pk.tagger.managers.FilterManager;
+import com.pk.tagger.managers.SessionManager;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -28,6 +30,7 @@ import java.util.List;
  * Created by Kieran on 14/03/2016.
  */
 public class FilterActivity extends PreferenceActivity{
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,15 +55,18 @@ public class FilterActivity extends PreferenceActivity{
         public void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesName("FILTER_FILE_KEY");
             addPreferencesFromResource(R.xml.filters);
           //  final SharedPreferences sharedPreferencesDate;
           //  sharedPreferencesDate = getContext().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+
+            final FilterManager filterManager = new FilterManager(getActivity());
 
             final String getTag = getArguments().getString("TAG");
             Log.i("inFragment ", getTag);
             //Set summary to current prefs, if blank, set summary to "Search events for artist"
             Preference searchArtistVenuePrefs = findPreference("search_artist_venue");
-            SharedPreferences artistVenuePrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences artistVenuePrefs = getActivity().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
             String searchArtistVenue;
             searchArtistVenue = artistVenuePrefs.getString("search_artist_venue", "Search events for artist/venue");
             if(artistVenuePrefs.getString("search_artist_venue", "").equals("")){
@@ -91,26 +97,29 @@ public class FilterActivity extends PreferenceActivity{
                    int mMonth = monthOfYear;
                    int mDay = dayOfMonth;
 
-                   SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+                  // SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+
 
                     Calendar calendarDate = new GregorianCalendar();
 
                     calendarDate.set(mYear, mMonth, mDay);
-                    SharedPreferences.Editor editor = sharedPreferencesDate.edit();
-                    if (sharedPreferencesDate.contains("DateEnd")) {
-                        if ((sharedPreferencesDate.getLong("DateEnd", 0))>(calendarDate.getTimeInMillis())) {
-                            editor.putLong("Date", calendarDate.getTimeInMillis());
-                            editor.commit();
+                 //   SharedPreferences.Editor editor = sharedPreferencesDate.edit();
+                    if (filterManager.getDateEnd()!=0) {
+                        if (filterManager.getDateEnd()>(calendarDate.getTimeInMillis())) {
+                           // editor.putLong("Date", calendarDate.getTimeInMillis());
+                           // editor.commit();
+                            filterManager.setDateStart(calendarDate.getTimeInMillis());
                         } else {
                             new AlertDialog.Builder(getActivity()).setTitle("InValid Date").setMessage("Start Date must be before End Date").setNeutralButton("Close", null).show();
                         }
                     } else {
-                        editor.putLong("Date", calendarDate.getTimeInMillis());
-                        editor.commit();
+                        //editor.putLong("Date", calendarDate.getTimeInMillis());
+                        //editor.commit();
+                        filterManager.setDateStart(calendarDate.getTimeInMillis());
                     }
 
                     Calendar calendar = new GregorianCalendar();
-                    calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
+                    calendar.setTimeInMillis(filterManager.getDateStart());
 
                     Log.d("Date in Set Date", calendar.getTime().toString());
                 }
@@ -125,29 +134,32 @@ public class FilterActivity extends PreferenceActivity{
                     int mMonthEnd = monthOfYearEnd;
                     int mDayEnd = dayOfMonthEnd;
 
-                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+                    //SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
 
                     Calendar calendarDate = new GregorianCalendar();
                     calendarDate.set(mYearEnd, mMonthEnd, mDayEnd);
 
-                    SharedPreferences.Editor editor = sharedPreferencesDate.edit();
+                    //SharedPreferences.Editor editor = sharedPreferencesDate.edit();
 
-                    if (sharedPreferencesDate.contains("Date")) {
-                        if ((sharedPreferencesDate.getLong("Date", 0))<(calendarDate.getTimeInMillis())) {
-                            editor.putLong("DateEnd", calendarDate.getTimeInMillis());
-                            editor.commit();
+                    if (filterManager.getDateStart()!=0) {
+                        if (filterManager.getDateStart()<(calendarDate.getTimeInMillis())) {
+                           // editor.putLong("DateEnd", calendarDate.getTimeInMillis());
+                           // editor.commit();
+                            filterManager.setDateEnd(calendarDate.getTimeInMillis());
                         } else {
                             new AlertDialog.Builder(getActivity()).setTitle("InValid Date").setMessage("End Date must be after Start Date").setNeutralButton("Close", null).show();
                         }
                     } else {
-                        editor.putLong("DateEnd", calendarDate.getTimeInMillis());
-                        editor.commit();
+                       // editor.putLong("DateEnd", calendarDate.getTimeInMillis());
+                       // editor.commit();
+                        filterManager.setDateEnd(calendarDate.getTimeInMillis());
+
                     }
 
                     Calendar calendar = new GregorianCalendar();
-                    calendar.setTimeInMillis(sharedPreferencesDate.getLong("DateEnd", 0));
+                    calendar.setTimeInMillis(filterManager.getDateEnd());
 
-                    Log.d("Date in Set Date1", calendar.getTime().toString());
+                    Log.d("Date in End Set !", calendar.getTime().toString());
 
                 }
             };
@@ -159,13 +171,13 @@ public class FilterActivity extends PreferenceActivity{
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+                    //SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
                     int mYear, mMonth, mDay;
-                    if (sharedPreferencesDate.contains("Date")) {
+                    if (filterManager.getDateStart()!=0) {
 
                         Calendar calendar = new GregorianCalendar();
 
-                        calendar.setTimeInMillis(sharedPreferencesDate.getLong("Date", 0));
+                        calendar.setTimeInMillis(filterManager.getDateStart());
 
                         mYear = calendar.get(Calendar.YEAR);
                         mMonth = calendar.get(Calendar.MONTH);
@@ -197,13 +209,13 @@ public class FilterActivity extends PreferenceActivity{
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
+                    //SharedPreferences sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", Context.MODE_PRIVATE);
                     int mYearEnd, mMonthEnd, mDayEnd;
-                    if (sharedPreferencesDate.contains("DateEnd")) {
+                    if (filterManager.getDateEnd()!=0) {
 
                         Calendar calendar = new GregorianCalendar();
 
-                        calendar.setTimeInMillis(sharedPreferencesDate.getLong("DateEnd", 0));
+                        calendar.setTimeInMillis(filterManager.getDateEnd());
 
                         mYearEnd = calendar.get(Calendar.YEAR);
                         mMonthEnd = calendar.get(Calendar.MONTH);

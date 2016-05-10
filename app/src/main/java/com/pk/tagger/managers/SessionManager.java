@@ -19,7 +19,7 @@ public class SessionManager {
     SharedPreferences.Editor editor;
     Context prefContext;
 
-    int PRIVATE_MODE = 0;
+    int PRIVATE_MODE = 1;
     private static final String PREF_NAME = "PREFERENCE_FILE_KEY";
 
     private static final String IS_LOGIN = "LoggedIn";
@@ -117,7 +117,7 @@ public class SessionManager {
         editor.clear();
         editor.commit();
 
-        // After logout redirect user to Loing Activity
+        // After logout redirect user to Losing Activity
         Intent i = new Intent(prefContext, LoginActivity.class);
         // Closing all the Activities
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
