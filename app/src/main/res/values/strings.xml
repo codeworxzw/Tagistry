@@ -54,6 +54,8 @@
     <string name="hello_world">hello world</string>
 
     <string name="buy_tickets"><u>Buy Tickets</u></string>
+    <string name="spotify_url">https://play.spotify.com/artist/</string>
+
     <string-array name="empty_array"/>
 
     <string-array name="homepage">
@@ -113,4 +115,7 @@
         <item>55</item>
         <item>67</item>
     </string-array>
+
+
+
 </resources>

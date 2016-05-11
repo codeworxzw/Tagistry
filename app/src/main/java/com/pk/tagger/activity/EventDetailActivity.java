@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -586,11 +588,16 @@ public class EventDetailActivity extends AppCompatActivity {
                 .findFirst();
         Log.d("Full artist", artist.toString());
 
+        String spotifyURL = "<a href='" + getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
+        Log.d("spotifyURl:", spotifyURL);
+        //  + artist.getSpotify_id()
+
         //update the remaining fields with the new volley data
         _artist_title.setText(artist.getName());
         _artist_description.setText(artist.getDescription());
         _artist_genre.setText("Sw Genre ID: " +artist.getSw_genre_id());
-        _artist_spotify.setText(artist.getSpotify_id());
+        _artist_spotify.setText(Html.fromHtml(spotifyURL));
+        _artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
 
         try {_artist_website_official.setText(artist.getWebsite().getWebsite_official());
         } catch (Exception e) {Log.d("Website", "No official website found");}

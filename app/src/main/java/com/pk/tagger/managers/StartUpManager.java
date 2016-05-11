@@ -12,13 +12,23 @@ import java.util.Date;
 public class StartUpManager {
 
 
-    Context myContext;
+    Context startContext;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
 
     public StartUpManager(Context context)
 
     {
-        sharedPreferences = context.getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
+        this.startContext = context;
+
+
+
+    }
+
+    public void setUpApp() {
+
+        sharedPreferences = startContext.getSharedPreferences("TimeStamp", Context.MODE_PRIVATE);
 
         if (sharedPreferences.contains("time")) {
 
