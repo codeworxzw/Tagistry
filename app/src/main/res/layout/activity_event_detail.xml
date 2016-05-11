@@ -70,113 +70,14 @@
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/ic_profile"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#cccccc">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_access_time_black_24dp"/>
-                    <TextView
-                        android:id="@+id/textView_event_title"
-                        android:text="Title: "
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:clickable="true"
-                        android:onClick="toggle_description"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="description"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#e6e6e6">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_date_range_black_24dp"/>
-                    <TextView
-                        android:id="@+id/textView_event_date"
-                        android:text="Date: "
-                        android:maxLines="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#cccccc">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_place_black_24dp"/>
-                    <TextView
-                        android:id="@+id/textView_event_venue"
-                        android:text="Venue: "
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
+            <include layout="@layout/activity_event_detail_summary"
+                android:id="@+id/container_summary"/>
+            <include layout="@layout/activity_event_detail_artist"
+                android:id="@+id/container_artist"/>
+            <include layout="@layout/activity_event_detail_venue"
+                android:id="@+id/container_venue"/>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#e6e6e6">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_local_activity_black_24dp"/>
-                    <TextView
-                        android:id="@+id/textView_event_tickets_price"
-                        android:text="Tickets: "
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:maxLines="1"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"/>
-                    <TextView
-                        android:id="@+id/textView_event_tickets_buy"
-                        android:text="@string/buy_tickets"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:textColor="@android:color/holo_blue_dark"
-                        android:textSize="18sp"/>
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

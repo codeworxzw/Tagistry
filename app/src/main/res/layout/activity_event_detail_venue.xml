@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:background="#cccccc">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_info_outline_black_24dp"/>
+        <TextView
+            android:id="@+id/textView_venue_title"
+            android:text="Title: "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:onClick="toggle_venue_address"
+        android:background="#e6e6e6">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_place_black_24dp"/>
+        <TextView
+            android:text="Address: "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/venue_address_expand"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:src="@drawable/ic_expand_more_black_24dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textView_venue_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="full address"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:background="#cccccc">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_link_black_24dp"/>
+
+        <TextView
+            android:text="Sw Website: "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/textView_venue_website_sw"
+            android:text="website"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:ellipsize="middle"
+            android:layout_marginEnd="4dp"
+            android:maxLines="1"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:background="#e6e6e6">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_link_black_24dp"/>
+        <TextView
+            android:text="Official Website: "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/textView_venue_website_official"
+            android:text="website"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:ellipsize="middle"
+            android:layout_marginEnd="4dp"
+            android:maxLines="1"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="12sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:onClick="toggle_venue_current"
+        android:background="#cccccc">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_local_activity_black_24dp"/>
+        <TextView
+            android:id="@+id/textView_venue_current"
+            android:text="Current Events: "
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/venue_current_expand"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:src="@drawable/ic_expand_more_black_24dp"/>
+    </LinearLayout>
+
+</LinearLayout>

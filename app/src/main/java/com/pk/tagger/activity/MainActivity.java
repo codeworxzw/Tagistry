@@ -119,13 +119,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_clear_cache){
             myRealm = Realm.getDefaultInstance();
-//            myRealm.beginTransaction();
-//            myRealm.clear(Event.class);
-//            myRealm.clear(Artist.class);
-//            myRealm.clear(Venue.class);
-//            myRealm.commitTransaction();
+            myRealm.beginTransaction();
+            myRealm.clear(Event.class);
+            myRealm.clear(Artist.class);
+            myRealm.clear(Venue.class);
+            myRealm.commitTransaction();
 
-            Log.d("MainActivity", myRealm.getPath());
+//            Log.d("MainActivity", myRealm.getPath());
             myRealm.close();
             return true;
         }

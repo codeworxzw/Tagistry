@@ -49,33 +49,60 @@ public class EventDetailActivity extends AppCompatActivity {
     SharedPreferences sharedPref;
 
     // temporary string to show the parsed response
-    private String jsonResponse;
     private static final String BASE_QUERY_URL = "http://52.31.31.106:9000/api/event/";
     private static final String BASE_QUERY_URL_ARTIST = "http://52.31.31.106:9000/api/artist/";
     private static final String BASE_QUERY_URL_VENUE = "http://52.31.31.106:9000/api/venue/";
 
-    private int previousFingerPosition = 0;
-    private int baseLayoutPosition = 0;
-    private int defaultViewWidth;
+    String IMAGE_URL = "";
+    String IMAGE_URL_VENUE = "";
 
-    private boolean isClosing = false;
-    private boolean isScrollingLeft = false;
-    private boolean isScrollingRight = false;
 
-    private float anchorLeft = 0;
+
+//    private int previousFingerPosition = 0;
+//    private int baseLayoutPosition = 0;
+//    private int defaultViewWidth;
+//
+//    private boolean isClosing = false;
+//    private boolean isScrollingLeft = false;
+//    private boolean isScrollingRight = false;
+//
+//    private float anchorLeft = 0;
 
     @Bind(R.id.base_popup_layout) LinearLayout _baseLayout;
     @Bind(R.id.imageView_event) ImageView _event_image;
-    @Bind(R.id.textView_event_title) TextView _event_title;
-    @Bind(R.id.textView_description) TextView _event_description;
-    @Bind(R.id.textView_event_date) TextView _event_date;
-    @Bind(R.id.textView_event_venue) TextView _event_venue;
-    @Bind(R.id.textView_event_tickets_price) TextView _event_tickets_price;
-    @Bind(R.id.textView_event_tickets_buy) TextView _event_tickets_buy;
+    @Bind(R.id.textView_summary_title) TextView _summary_title;
+    @Bind(R.id.textView_summary_description) TextView _summary_description;
+    @Bind(R.id.textView_summary_date) TextView _summary_date;
+    @Bind(R.id.textView_summary_venue) TextView _summary_venue;
+    @Bind(R.id.textView_summary_tickets_price) TextView _summary_tickets_price;
+    @Bind(R.id.textView_summary_tickets_buy) TextView _summary_tickets_buy;
+    @Bind(R.id.textView_artist_title) TextView _artist_title;
+    @Bind(R.id.textView_artist_description) TextView _artist_description;
+    @Bind(R.id.textView_artist_genre) TextView _artist_genre;
+    @Bind(R.id.textView_artist_spotify) TextView _artist_spotify;
+    @Bind(R.id.textView_artist_website_official) TextView _artist_website_official;
+    @Bind(R.id.textView_artist_website_facebook) TextView _artist_website_facebook;
+    @Bind(R.id.textView_artist_website_twitter) TextView _artist_website_twitter;
+    @Bind(R.id.textView_artist_website_wiki) TextView _artist_website_wiki;
+    @Bind(R.id.textView_venue_title) TextView _venue_title;
+    @Bind(R.id.textView_venue_address) TextView _venue_address;
+    @Bind(R.id.textView_venue_website_official) TextView _venue_website_official;
+    @Bind(R.id.textView_venue_website_sw) TextView _venue_website_sw;
+    @Bind(R.id.artist_description_expand) ImageView _artist_desc_expand;
+    @Bind(R.id.artist_websites_expand) ImageView _artist_websites_expand;
+    @Bind(R.id.artist_current_expand) ImageView _artist_current_expand;
+    @Bind(R.id.venue_current_expand) ImageView _venue_current_expand;
+    @Bind(R.id.venue_address_expand) ImageView _venue_address_expand;
+
+
     @Bind(R.id.imageButton_close) ImageButton _close;
     @Bind(R.id.tab_summary) TextView _tab_summary;
     @Bind(R.id.tab_artist) TextView _tab_artist;
     @Bind(R.id.tab_venue) TextView _tab_venue;
+    @Bind(R.id.container_summary) LinearLayout _container_summary;
+    @Bind(R.id.container_artist) LinearLayout _container_artist;
+    @Bind(R.id.container_venue) LinearLayout _container_venue;
+    @Bind(R.id.artist_websites) LinearLayout _artist_websites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -87,13 +114,21 @@ public class EventDetailActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
+        _container_summary.setVisibility(View.VISIBLE);
+        _container_artist.setVisibility(View.GONE);
+        _container_venue.setVisibility(View.GONE);
+
+        _summary_description.setVisibility(View.GONE);
+        _artist_websites.setVisibility(View.GONE);
+        _artist_description.setVisibility(View.GONE);
+        _venue_address.setVisibility(View.GONE);
+
         String eventID = "1038341"; //default should return 'Katie Melua' event
         String artistID = "";
         String venueID = "";
         if (extras != null) {
             eventID = extras.getString("EventID");
         }
-       // _tab_summary.setBackgroundColor(Color.parseColor("#e6e6e6"));
 
 //        _baseLayout.setOnTouchListener(this);
 
@@ -120,29 +155,14 @@ public class EventDetailActivity extends AppCompatActivity {
         artistID = artist.getId();
         venueID = venue.getId();
 
+        setEventData(eventID);
+        setArtistData(artistID);
+        setVenueData(venueID);
+
         Log.d("Event", event.getArtist().getName());
         Log.d("Partial Data", event.toString());
 
-        _event_title.setText(event.getArtist().getName());
-        _event_description.setVisibility(View.GONE);
-        String description = "";
-        description = artist.getDescription();        //add back in when full artist data request has been added
-        _event_description.setText(description);
-        //TODO: should probably parse date properly not just truncate string lol
-        _event_date.setText(event.getStartTime().getLocal().toString().substring(0, 16));
-        _event_venue.setText(event.getVenue().getName());
-
-        String tickets = "Tickets Unavailable";
-        try {
-            if(event.getTickets().getTicket_count()!=0){
-                tickets = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
-            }
-        } catch(Exception e){
-            Log.d("Catch tickets", "No tickets");
-        }
-        _event_tickets_price.setText(tickets);
-
-        _event_tickets_buy.setOnClickListener(new View.OnClickListener() {
+        _summary_tickets_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try{
@@ -161,25 +181,12 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-        String IMAGE_URL = "";
-        try{
-            if(event.getImage_URL() != null) {
-                IMAGE_URL = event.getImage_URL();
-            } else if (event.getArtist().getImage_URL() != null){
-                IMAGE_URL = event.getArtist().getImage_URL();
-            }
-        } catch (Exception e){
-            Log.d(TAG, e.toString());
-        }
-        Picasso.with(getApplicationContext())
-                .load(IMAGE_URL)
-                .placeholder(R.drawable.ic_profile)
-                .into(_event_image);
+
 
         //Check if realm already has full event data (via EventURL), if not, make volley request
         try{
             if(event.getUrl()==null){           //TODO: needs to update to get latest ticket info, maybe a timestamp check to be added/separate api route for ticket info
-                getFullEvent(eventID);
+                requestFullData(eventID, "Event");
                 Log.d(TAG, "Requesting full data...");
             } else {
                 Log.d(TAG, "Already has full data");
@@ -190,7 +197,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         try{
             if(event.getArtist().getDescription()==null){         //check if full artist data already in realm
-                getFullArtist(artistID);
+                requestFullData(artistID, "Artist");
                 Log.d(TAG, "Requesting full artist data...");
             } else {
                 Log.d(TAG, "Already has full artist data");
@@ -201,7 +208,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         try{
             if(event.getVenue().getSw_website()==null){         //check if full venue data already in realm
-                getFullVenue(venueID);
+                requestFullData(venueID, "Venue");
                 Log.d(TAG, "Requesting full venue data...");
             } else {
                 Log.d(TAG, "Already has full venue data");
@@ -219,35 +226,109 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    public void toggle_description(View v){
-        if(_event_description.isShown()){
-            Fx.slide_up(this, _event_description);              //slide up animation not working
-            _event_description.setVisibility(View.GONE);
-        }
-        else{
-            _event_description.setVisibility(View.VISIBLE);
-            Fx.slide_down(this, _event_description);
-        }
-    }
-
     public void toggle_summary(View v) {
         //Toast.makeText(this, "Summary selected", Toast.LENGTH_SHORT).show();
         _tab_summary.setBackgroundColor(Color.parseColor("#cccccc"));
         _tab_artist.setBackgroundColor(Color.parseColor("#FFFFFF"));
         _tab_venue.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _container_summary.setVisibility(View.VISIBLE);
+        _container_artist.setVisibility(View.GONE);
+        _container_venue.setVisibility(View.GONE);
 
+        Picasso.with(getApplicationContext())
+                .load(IMAGE_URL)
+                .placeholder(R.drawable.ic_profile)
+                .into(_event_image);
     }
     public void toggle_artist(View v) {
        //Toast.makeText(this, "Artist selected", Toast.LENGTH_SHORT).show();
         _tab_summary.setBackgroundColor(Color.parseColor("#FFFFFF"));
         _tab_artist.setBackgroundColor(Color.parseColor("#cccccc"));
         _tab_venue.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        _container_summary.setVisibility(View.GONE);
+        _container_artist.setVisibility(View.VISIBLE);
+        _container_venue.setVisibility(View.GONE);
+
+        Picasso.with(getApplicationContext())
+                .load(IMAGE_URL)
+                .placeholder(R.drawable.ic_profile)
+                .into(_event_image);
     }
     public void toggle_venue(View v) {
         //Toast.makeText(this, "Venue selected", Toast.LENGTH_SHORT).show();
         _tab_summary.setBackgroundColor(Color.parseColor("#FFFFFF"));
         _tab_artist.setBackgroundColor(Color.parseColor("#FFFFFF"));
         _tab_venue.setBackgroundColor(Color.parseColor("#cccccc"));
+        _container_summary.setVisibility(View.GONE);
+        _container_artist.setVisibility(View.GONE);
+        _container_venue.setVisibility(View.VISIBLE);
+
+        Picasso.with(getApplicationContext())
+                .load(IMAGE_URL_VENUE)
+                .placeholder(R.drawable.ic_profile)
+                .into(_event_image);
+    }
+
+    public void toggle_artist_description(View v){
+        if(_artist_description.isShown()){
+            Fx.slide_up(this, _artist_description);              //slide up animation not working
+            _artist_description.setVisibility(View.GONE);
+            _artist_desc_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
+        }
+        else{
+            _artist_description.setVisibility(View.VISIBLE);
+            Fx.slide_down(this, _artist_description);
+            _artist_desc_expand.setImageResource(R.drawable.ic_expand_less_black_24dp);
+        }
+    }
+
+    public void toggle_artist_websites(View v) {
+        if(_artist_websites.isShown()){
+            Fx.slide_up(this, _artist_websites);              //slide up animation not working
+            _artist_websites.setVisibility(View.GONE);
+            _artist_websites_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
+        }
+        else{
+            _artist_websites.setVisibility(View.VISIBLE);
+            Fx.slide_down(this, _artist_websites);
+            _artist_websites_expand.setImageResource(R.drawable.ic_expand_less_black_24dp);
+        }
+    }
+
+    public void toggle_artist_current(View v) {
+//        if(_artist_websites.isShown()){
+//            Fx.slide_up(this, _artist_websites);              //slide up animation not working
+//            _artist_websites.setVisibility(View.GONE);
+//        }
+//        else{
+//            _artist_websites.setVisibility(View.VISIBLE);
+//            Fx.slide_down(this, _artist_websites);
+//        }
+    }
+
+    public void toggle_venue_address(View v) {
+        if(_venue_address.isShown()){
+            Fx.slide_up(this, _venue_address);              //slide up animation not working
+            _venue_address.setVisibility(View.GONE);
+            _venue_address_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
+
+        }
+        else{
+            _venue_address.setVisibility(View.VISIBLE);
+            Fx.slide_down(this, _venue_address);
+            _venue_address_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
+
+        }
+    }
+    public void toggle_venue_current(View v) {
+//        if(_artist_websites.isShown()){
+//            Fx.slide_up(this, _artist_websites);              //slide up animation not working
+//            _artist_websites.setVisibility(View.GONE);
+//        }
+//        else{
+//            _artist_websites.setVisibility(View.VISIBLE);
+//            Fx.slide_down(this, _artist_websites);
+//        }
     }
 /*
     public boolean onTouch(View view, MotionEvent event) {
@@ -392,10 +473,20 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 */
-    private void getFullEvent(String id) {
 
-        final String eventID = id;
-        final String FULL_QUERY_URL = BASE_QUERY_URL + eventID;
+    private void requestFullData(String id, String query) {
+
+        final String ID = id;
+        final String object = query;
+        String FULL_QUERY_URL = "";
+
+        if(object == "Event"){
+            FULL_QUERY_URL = BASE_QUERY_URL + ID;
+        } else if (object == "Artist"){
+            FULL_QUERY_URL = BASE_QUERY_URL_ARTIST + ID;
+        } else if (object == "Venue"){
+            FULL_QUERY_URL = BASE_QUERY_URL_VENUE + ID;
+        }
         Log.d("Querying", FULL_QUERY_URL);
 
         JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
@@ -405,13 +496,21 @@ public class EventDetailActivity extends AppCompatActivity {
                         Log.d("Response", response.toString());
 
                         try {
-
                             myRealm.beginTransaction();
-                            myRealm.createOrUpdateObjectFromJson(Event.class, response);
-                            myRealm.commitTransaction();
 
-                            //update remaining data fields for event (i.e. data not already in Listings)
-                            updateEventData(eventID);
+                            if(object == "Event"){
+                                myRealm.createOrUpdateObjectFromJson(Event.class, response);
+                                myRealm.commitTransaction();
+                                setEventData(ID);
+                            } else if (object == "Artist"){
+                                myRealm.createOrUpdateObjectFromJson(Artist.class, response);
+                                myRealm.commitTransaction();
+                                setArtistData(ID);
+                            } else if (object == "Venue"){
+                                myRealm.createOrUpdateObjectFromJson(Venue.class, response);
+                                myRealm.commitTransaction();
+                                setVenueData(ID);
+                            }
 
                         } catch (Exception e) {
                             Log.d("Error updating", e.toString());
@@ -443,140 +542,103 @@ public class EventDetailActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(req);
     }
 
-    private void getFullArtist (String id) {
-
-        final String artistID = id;
-        final String FULL_QUERY_URL = BASE_QUERY_URL_ARTIST + artistID;
-        Log.d("Querying", FULL_QUERY_URL);
-
-        JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Response", response.toString());
-
-                        try {
-
-                            myRealm.beginTransaction();
-                            myRealm.createOrUpdateObjectFromJson(Artist.class, response);
-                            myRealm.commitTransaction();
-
-                            //update remaining data fields for artist (i.e. data not already in realm)
-                            updateArtistData(artistID);
-
-                        } catch (Exception e) {
-                            Log.d("Error updating", e.toString());
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String defaultValue = getResources().getString(R.string.access_token);
-                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
-
-                headers.put("Authorization", "Bearer " + access_token);
-                Log.d("Headers", headers.toString());
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req);
-    }
-
-    private void getFullVenue (String id) {
-
-        final String venueID = id;
-        final String FULL_QUERY_URL = BASE_QUERY_URL_VENUE + venueID;
-        Log.d("Querying", FULL_QUERY_URL);
-
-        JsonObjectRequest req = new JsonObjectRequest(FULL_QUERY_URL,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Response", response.toString());
-
-                        try {
-
-                            myRealm.beginTransaction();
-                            myRealm.createOrUpdateObjectFromJson(Venue.class, response);
-                            myRealm.commitTransaction();
-
-                            //update remaining data fields for venue (i.e. data not already in realm)
-                            updateVenueData(venueID);
-
-                        } catch (Exception e) {
-                            Log.d("Error updating", e.toString());
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String defaultValue = getResources().getString(R.string.access_token);
-                String access_token = sharedPref.getString(getString(R.string.access_token), defaultValue);
-
-                headers.put("Authorization", "Bearer " + access_token);
-                Log.d("Headers", headers.toString());
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req);
-    }
-
-    public void updateEventData(String eventID){
+    public void setEventData(String eventID){
         final Event event = myRealm
                 .where(Event.class)
                 .equalTo("id", eventID)
                 .findFirst();
-        Log.d("Updated full event", event.toString());
+        Log.d("Full event", event.toString());
 
-        //update the remaining fields with the new volley data
-        //_event_title.setText("Test");
+        _summary_title.setText(event.getArtist().getName());
+
+        //TODO: should probably parse date properly not just truncate string lol
+        _summary_date.setText(event.getStartTime().getLocal().toString().substring(0, 16));
+        _summary_venue.setText(event.getVenue().getName());
+
+        try{
+            if(event.getImage_URL() != null) {
+                IMAGE_URL = event.getImage_URL();
+            } else if (event.getArtist().getImage_URL() != null){
+                IMAGE_URL = event.getArtist().getImage_URL();
+            }
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+        Picasso.with(getApplicationContext())
+                .load(IMAGE_URL)
+                .placeholder(R.drawable.ic_profile)
+                .into(_event_image);
+
+        String tickets = "Tickets Unavailable";
+        try {
+            if(event.getTickets().getTicket_count()!=0){
+                tickets = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
+            }
+        } catch(Exception e){Log.d("Catch tickets", "No tickets");}
+
+        _summary_tickets_price.setText(tickets);
 
     }
-    public void updateArtistData(String artistID){
+    public void setArtistData(String artistID){
         final Artist artist = myRealm
                 .where(Artist.class)
                 .equalTo("id", artistID)
                 .findFirst();
-        Log.d("Updated full artist", artist.toString());
+        Log.d("Full artist", artist.toString());
 
         //update the remaining fields with the new volley data
-        _event_description.setText(artist.getDescription());
+        _artist_title.setText(artist.getName());
+        _artist_description.setText(artist.getDescription());
+        _artist_genre.setText("Sw Genre ID: " +artist.getSw_genre_id());
+        _artist_spotify.setText(artist.getSpotify_id());
+
+        try {_artist_website_official.setText(artist.getWebsite().getWebsite_official());
+        } catch (Exception e) {Log.d("Website", "No official website found");}
+        try {_artist_website_facebook.setText(artist.getWebsite().getWebsite_fb());
+        } catch (Exception e) {Log.d("Website", "No facebook website found");}
+        try {_artist_website_twitter.setText(artist.getWebsite().getWebsite_twitter());
+        } catch (Exception e) {Log.d("Website", "No twitter website found");}
+        try{_artist_website_wiki.setText(artist.getWebsite().getWebsite_wiki());
+        } catch (Exception e) {Log.d("Website", "No wiki website found");}
 
     }
-    public void updateVenueData(String venueID){
+    public void setVenueData(String venueID){
         final Venue venue = myRealm
                 .where(Venue.class)
                 .equalTo("id", venueID)
                 .findFirst();
-        Log.d("Updated full venue", venue.toString());
+        Log.d("Full venue", venue.toString());
 
         //update the remaining fields with the new volley data
-        //_event_title.setText("Test");
+        _venue_title.setText(venue.getName());
+        try{_venue_website_official.setText(venue.getWebsite());
+        } catch (Exception e) {_venue_website_official.setText("NA");}
+        try{_venue_website_sw.setText(venue.getSw_website());
+        } catch (Exception e) {_venue_website_sw.setText("NA");}
 
+        String address, address1, address2, city, post_code;
+        address = address1 = address2 = city = post_code = "";
+        try {address1 = venue.getLocation().getAddress_1() + "\n";
+        } catch(Exception e){Log.d(TAG, "No address1");}
+        try {address2 = venue.getLocation().getAddress_2() +"\n";
+        } catch(Exception e){Log.d(TAG, "No address2");}
+        try {city = venue.getLocation().getCity() +"\n";
+        } catch(Exception e){Log.d(TAG, "No city");}
+        try {post_code = venue.getLocation().getPost_code();
+        } catch(Exception e){Log.d(TAG, "No post code");}
+
+        address = address1 + address2 + city + post_code;
+
+        _venue_address.setText("Address: " +address);
+        Log.d("Venue", "" +venue.getLocation().getAddress_1());
+
+        try{
+            if(venue.getImage_URL() != null) {
+                IMAGE_URL_VENUE = venue.getImage_URL();
+            }
+        } catch (Exception e){
+            Log.d(TAG, "No venue image");
+        }
     }
 
     @Override
