@@ -149,7 +149,7 @@ public class ListingsFragment extends Fragment {
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
         boolean ticketsAvailable = filterManager.getTicketsAvailable();
 
-        int ticketMax = 1000;
+        int ticketMax = filterManager.getMaxPrice();;
         int ticketMin = 1;
 
 //        MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);

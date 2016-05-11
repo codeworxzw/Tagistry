@@ -98,10 +98,8 @@ public class FragmentDrawer extends Fragment {
 
             }
         }));
-
         return layout;
     }
-
 
     public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);

@@ -128,7 +128,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
         boolean ticketsAvailable = filterManager.getTicketsAvailable();
 
-        int ticketMax = 1000;
+        int ticketMax = filterManager.getMaxPrice();
         int ticketMin = 1;
 
         MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);

@@ -29,6 +29,7 @@ public class FilterManager {
     public static final String SEARCH_ARTIST_VENUE = "search_artist_venue";
     public static final String SEARCH_GENRES = "search_genres";
     public static final String TICKETS_AVAILABLE = "tickets_available";
+    public static final String MAX_PRICE = "key_max_price";
 
     // Constructor
     public FilterManager(Context context) {
@@ -55,6 +56,10 @@ public class FilterManager {
 
     public Boolean getTicketsAvailable() {
         return sharedPref.getBoolean(TICKETS_AVAILABLE, false);
+    }
+
+    public int getMaxPrice() {
+        return sharedPref.getInt(MAX_PRICE, 0);
     }
 
     public void setDateStart(long dateStart) {
@@ -87,6 +92,12 @@ public class FilterManager {
         editor.commit();
     }
 
+    public void setMaxPrice(int MaxPrice) {
+        editor.putInt(MAX_PRICE, 0);
+        // commit changes
+        editor.commit();
+    }
+
     public void setDefault() {
         Calendar calendarDate = new GregorianCalendar();
         editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
@@ -96,6 +107,7 @@ public class FilterManager {
         editor.putString(SEARCH_ARTIST_VENUE, "");
         Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
         editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
 
@@ -108,6 +120,7 @@ public class FilterManager {
         editor.putString(SEARCH_ARTIST_VENUE, "");
         Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
         editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
     public void setOneWeek() {
@@ -119,6 +132,7 @@ public class FilterManager {
         editor.putString(SEARCH_ARTIST_VENUE, "");
         Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
         editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
     public void setFestivals() {
@@ -131,6 +145,7 @@ public class FilterManager {
         String[] festivals = {"35"};
         Set<String> Genres = new HashSet<String> (Arrays.asList(festivals));
         editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
     public void setGenre(String genre) {
@@ -143,6 +158,7 @@ public class FilterManager {
         String[] genres = {genre};
         Set<String> Genres = new HashSet<String> (Arrays.asList(genres));
         editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
 

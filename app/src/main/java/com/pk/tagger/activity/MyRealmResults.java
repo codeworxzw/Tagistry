@@ -55,6 +55,9 @@ public class MyRealmResults {
         if(ticketsAvailable){
             ticketCheck = 1;
         }
+        if (ticketMax==0) {
+            ticketMax = 1001;
+        }
 
         String sortField = "date";     //placeholder to allow sorting by other fields later
         Sort asc = Sort.ASCENDING;
@@ -68,7 +71,7 @@ public class MyRealmResults {
                 .lessThan("startTime.local", endDate)
                 .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)
                         //.greaterThanOrEqualTo("purchasePrice", ticketMin)
-                        //.lessThanOrEqualTo("purchasePrice", ticketMax)
+                        .lessThanOrEqualTo("purchasePrice", ticketMax)
                     .beginGroup()
                     .contains("artist.name", searchArtistVenue, Case.INSENSITIVE)
                     .or()
@@ -104,6 +107,9 @@ public class MyRealmResults {
         if(ticketsAvailable){
             ticketCheck = 1;
         }
+        if (ticketMax==0) {
+            ticketMax = 1001;
+        }
         RealmQuery<Event> query = myRealm
                 .where(Event.class);
 
@@ -112,7 +118,7 @@ public class MyRealmResults {
                 .lessThan("startTime.local", endDate)
                 .greaterThanOrEqualTo("tickets.ticket_count", ticketCheck)
                 //.greaterThanOrEqualTo("purchasePrice", ticketMin)
-                //.lessThanOrEqualTo("purchasePrice", ticketMax)
+                .lessThanOrEqualTo("purchasePrice", ticketMax)
                     .beginGroup()
                     .contains("artist.name", searchArtistVenue, Case.INSENSITIVE)
                     .or()

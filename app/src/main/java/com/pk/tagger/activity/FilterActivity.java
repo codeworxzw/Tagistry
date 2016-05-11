@@ -60,10 +60,10 @@ public class FilterActivity extends PreferenceActivity{
 
             //Set summary to current prefs, if blank, set summary to "Search events for artist"
             Preference searchArtistVenuePrefs = findPreference("search_artist_venue");
-            SharedPreferences artistVenuePrefs = getActivity().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
+            SharedPreferences sharedPrefs = getActivity().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
             String searchArtistVenue;
-            searchArtistVenue = artistVenuePrefs.getString("search_artist_venue", "Search events for artist/venue");
-            if(artistVenuePrefs.getString("search_artist_venue", "").equals("")){
+            searchArtistVenue = sharedPrefs.getString("search_artist_venue", "Search events for artist/venue");
+            if(sharedPrefs.getString("search_artist_venue", "").equals("")){
                 searchArtistVenuePrefs.setSummary("Search events for artist/venue");
             } else {
                 searchArtistVenuePrefs.setSummary(searchArtistVenue);
@@ -77,6 +77,27 @@ public class FilterActivity extends PreferenceActivity{
                         preference.setSummary("Search events for artist/venue");
                     } else {
                         preference.setSummary((String) newValue);
+                    }
+                    return true;
+                }
+            });
+
+            Preference highestPrice = findPreference("key_max_price");
+            int maxPrice = sharedPrefs.getInt("key_max_price", 0);
+            if(sharedPrefs.getInt("key_max_price", 0)==0){
+                highestPrice.setSummary("Set Maximum Ticket Price here");
+            } else {
+                highestPrice.setSummary("£" + String.valueOf(maxPrice));
+            }
+
+            //Update summary when changed
+            highestPrice.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (newValue.equals("")) {
+                        preference.setSummary("Set Maximum Ticket Price here");
+                    } else {
+                        preference.setSummary("£" + newValue.toString());
                     }
                     return true;
                 }
@@ -157,7 +178,6 @@ public class FilterActivity extends PreferenceActivity{
 
                 }
             };
-
 
             Preference btnDateStartFilter = (Preference) findPreference("btnDateStartFilter");
             btnDateStartFilter.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

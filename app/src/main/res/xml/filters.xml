@@ -36,6 +36,13 @@
         android:defaultValue="@array/genres_values"
         android:entries="@array/genres"
         android:entryValues="@array/genres_values"/>
+
+    <com.pk.tagger.preference.NumberPickerPreference
+        android:id="@+id/key_max_price"
+        android:key="key_max_price"
+        android:title="Maximum Price (£)"
+        android:defaultValue="50" />
+
     <Preference
         android:key="btnDateStartFilter"
         android:summary="Start Date"
