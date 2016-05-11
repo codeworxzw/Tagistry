@@ -6,7 +6,7 @@
     <string name="action_options">Options</string>
     <string name="action_calendar">Calendar</string>
     <string name="action_sync">Sync</string>
-    <string name="action_report_issue">Report Issue</string>
+    <string name="action_send_feedback">Send Feedback</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -17,6 +17,7 @@
     <string name="nav_item_home">Home</string>
     <string name="nav_item_listings">Event Listings</string>
     <string name="nav_item_map">Map</string>
+    <string name="nav_item_post_event">Post New Event</string>
 
     <string-array name="nav_drawer_labels">
         <item>@string/nav_item_login</item>
@@ -24,6 +25,7 @@
         <item>@string/nav_item_home</item>
         <item>@string/nav_item_listings</item>
         <item>@string/nav_item_map</item>
+        <item>@string/nav_item_post_event</item>
     </string-array>
 
     <string name="title_login">Login</string>

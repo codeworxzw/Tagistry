@@ -14,7 +14,7 @@
         android:id="@+id/action_options"
         android:title="@string/action_options"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_settings_action"
+        android:icon="@drawable/ic_tune_white_24dp"
         app:showAsAction="always" />
 
  <!--   <item
@@ -38,9 +38,9 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/report_issue"
+        android:id="@+id/send_feedback"
         android:orderInCategory="100"
-        android:title="@string/action_report_issue"
+        android:title="@string/action_send_feedback"
         app:showAsAction="never" />
  <!---   <item
         android:id="@+id/action_settings"

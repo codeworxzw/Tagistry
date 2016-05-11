@@ -1,13 +1,13 @@
 package com.pk.tagger.activity;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
@@ -27,7 +28,6 @@ import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedService;
 
-import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -123,15 +123,25 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         } */
 
         if(id == R.id.action_clear_cache){
-            myRealm = Realm.getDefaultInstance();
-            myRealm.beginTransaction();
-            myRealm.clear(Event.class);
-            myRealm.clear(Artist.class);
-            myRealm.clear(Venue.class);
-            myRealm.commitTransaction();
 
-//            Log.d("MainActivity", myRealm.getPath());
-            myRealm.close();
+            new AlertDialog.Builder(this)
+                    //.setTitle("Title")
+                    .setMessage("Warning: This will clear everything!")
+                    //.setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
+                            myRealm = Realm.getDefaultInstance();
+                            myRealm.beginTransaction();
+                            myRealm.clear(Event.class);
+                            myRealm.clear(Artist.class);
+                            myRealm.clear(Venue.class);
+                            myRealm.commitTransaction();
+                            myRealm.close();
+                        }})
+                    .setNegativeButton(android.R.string.no, null).show();
+
             return true;
         }
 
@@ -142,7 +152,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             return true;
         }
 
-        if(id == R.id.report_issue){
+        if(id == R.id.send_feedback){
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
 
@@ -178,6 +198,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case 3:
                 fragment = new MapFragment();
                 title = getString(R.string.title_map);
+                break;
+            case 4:
+                Intent intent = new Intent(getApplicationContext(), SendEventActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

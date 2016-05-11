@@ -47,7 +47,6 @@
         android:key="btnDateStartFilter"
         android:summary="Start Date"
         android:title="Start Date" />
-
     <Preference
         android:key="btnDateEndFilter"
         android:summary="End Date"

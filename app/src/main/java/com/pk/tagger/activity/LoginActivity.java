@@ -117,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         if (!validate()) {
             onLoginFailed(progressDialog);
             return;
-
         }
 
         _loginButton.setEnabled(false);
