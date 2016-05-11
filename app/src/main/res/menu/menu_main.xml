@@ -29,7 +29,7 @@
         android:title="@string/action_sync"
         android:orderInCategory="100"
         android:icon="@drawable/ic_sync_action"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_clear_cache"
