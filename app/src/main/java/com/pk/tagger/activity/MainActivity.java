@@ -21,6 +21,7 @@ import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.managers.SessionManager;
+import com.pk.tagger.managers.StartUpManager;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private FragmentDrawer drawerFragment;
     private Realm myRealm;
 
+    // Startup Manager
+    StartUpManager startUpManager;
     // Session Manager Class
     SessionManager session;
     //Filter Manager Class
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startUpManager = new StartUpManager(getApplicationContext());
+        startUpManager.setUpApp();
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name("gigit.realm")
                 //.schemaVersion(0)

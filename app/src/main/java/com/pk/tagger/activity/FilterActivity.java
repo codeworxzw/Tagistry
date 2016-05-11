@@ -36,15 +36,9 @@ public class FilterActivity extends PreferenceActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //addPreferencesFromResource(R.xml.preferences);
-        Intent intent = getIntent();
-        final String tag = intent.getExtras().getString("TAG");
-        Log.d("From FilterA", tag);
-        Bundle bundle = new Bundle();
-        bundle.putString("TAG", tag);
 
         if (savedInstanceState == null) {
             MyPreferenceFragment prefFragment = new MyPreferenceFragment();
-            prefFragment.setArguments(bundle);
             getFragmentManager().beginTransaction().replace(android.R.id.content, prefFragment).commit();
         }
        // initActionBar();
@@ -64,8 +58,6 @@ public class FilterActivity extends PreferenceActivity{
             final FilterManager filterManager = new FilterManager(getActivity());
             final ScreenManager screenManager = new ScreenManager(getActivity());
 
-            final String getTag = getArguments().getString("TAG");
-            Log.i("inFragment ", getTag);
             //Set summary to current prefs, if blank, set summary to "Search events for artist"
             Preference searchArtistVenuePrefs = findPreference("search_artist_venue");
             SharedPreferences artistVenuePrefs = getActivity().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
@@ -245,27 +237,8 @@ public class FilterActivity extends PreferenceActivity{
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    int data = -1;
-                    switch (getTag) {
-                        case "Home":
-                            data = 1;
-                            break;
-                        case "Event Listings":
-                            data = 2;
-                            break;
-                        case "Events Map":
-                            data = 3;
-                            break;
-                        default:
-                            data = -1;
-                            break;
-                    }
-                    SharedPreferences sharedPrefsCurrentFragment = getActivity().getSharedPreferences("FragmentView", Context.MODE_PRIVATE);
-                    Log.d("Filter", String.valueOf(data));
+
                     Log.d("Filter 1", String.valueOf(screenManager.getCurrentFragment()));
-                    SharedPreferences.Editor editor = sharedPrefsCurrentFragment.edit();
-                    editor.putInt("fragment", data);
-                    editor.commit();
                     Intent myIntent = new Intent(getActivity(), MainActivity.class);
                     startActivity(myIntent);
 

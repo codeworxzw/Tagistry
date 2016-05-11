@@ -129,6 +129,10 @@ public class ListingsFragment extends Fragment {
     public void getListings(){
         //sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
         FilterManager filterManager = new FilterManager(getContext());
+        if (filterManager.getDateStart()==0) {
+            filterManager.setDefault();
+        } else {
+        }
         date = new Date(filterManager.getDateStart());
         endDate = new Date(filterManager.getDateEnd());
 

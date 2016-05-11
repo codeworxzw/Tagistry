@@ -87,6 +87,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void setUpMap() {
 
         FilterManager filterManager = new FilterManager(getContext());
+        if (filterManager.getDateStart()==0) {
+            filterManager.setDefault();
+        } else {
+        }
 
         final ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
         clusterManager.setRenderer(new ClusterMapRender(getContext(), googleMap, clusterManager));

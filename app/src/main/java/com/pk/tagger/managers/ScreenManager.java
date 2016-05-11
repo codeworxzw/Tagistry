@@ -20,7 +20,7 @@ public class ScreenManager {
 
     public ScreenManager(Context context) {
         this.prefContext = context;
-        sharedPref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        sharedPref = prefContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = sharedPref.edit();
     }
 
