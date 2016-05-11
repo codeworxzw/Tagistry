@@ -78,7 +78,7 @@
             android:layout_marginRight="4dp"
             android:src="@drawable/ic_spotify"/>
         <TextView
-            android:text="Spotify ID: "
+            android:text="Spotify: "
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -98,7 +98,7 @@
             android:layout_marginEnd="4dp"
             android:maxLines="1"
             android:textColor="@android:color/holo_blue_dark"
-            android:textSize="12sp"/>
+            android:textSize="18sp"/>
     </LinearLayout>
 
 

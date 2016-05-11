@@ -106,6 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:layout_marginEnd="4dp"
             android:maxLines="1"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="18sp"/>

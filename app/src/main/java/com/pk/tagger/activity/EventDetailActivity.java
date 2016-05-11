@@ -121,6 +121,7 @@ public class EventDetailActivity extends AppCompatActivity {
         _container_venue.setVisibility(View.GONE);
 
         _summary_description.setVisibility(View.GONE);
+        _summary_tickets_buy.setVisibility(View.GONE);
         _artist_websites.setVisibility(View.GONE);
         _artist_description.setVisibility(View.GONE);
         _venue_address.setVisibility(View.GONE);
@@ -318,7 +319,7 @@ public class EventDetailActivity extends AppCompatActivity {
         else{
             _venue_address.setVisibility(View.VISIBLE);
             Fx.slide_down(this, _venue_address);
-            _venue_address_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
+            _venue_address_expand.setImageResource(R.drawable.ic_expand_less_black_24dp);
 
         }
     }
@@ -571,14 +572,18 @@ public class EventDetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.ic_profile)
                 .into(_event_image);
 
-        String tickets = "Tickets Unavailable";
+        String tickets = "Tickets unavailable";
+
         try {
             if(event.getTickets().getTicket_count()!=0){
                 tickets = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
+                _summary_tickets_price.setText(tickets);
+                _summary_tickets_buy.setVisibility(View.VISIBLE);
+            }else {
+                _summary_tickets_price.setText(tickets);
             }
         } catch(Exception e){Log.d("Catch tickets", "No tickets");}
 
-        _summary_tickets_price.setText(tickets);
 
     }
     public void setArtistData(String artistID){
@@ -588,16 +593,29 @@ public class EventDetailActivity extends AppCompatActivity {
                 .findFirst();
         Log.d("Full artist", artist.toString());
 
-        String spotifyURL = "<a href='" + getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
-        Log.d("spotifyURl:", spotifyURL);
+        try{
+            if(artist.getSpotify_id().equals("Not found") || artist.getSpotify_id().equals("NA") || artist.getSpotify_id().equals(null)){
+                _artist_spotify.setTextColor(Color.BLACK);
+                _artist_spotify.setText("Not found :<");
+            } else {
+                String spotifyURL = "<a href='" + getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
+                Log.d("spotifyURl:", spotifyURL);
+                _artist_spotify.setText(Html.fromHtml(spotifyURL));
+                _artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+        } catch (Exception e) {
+            _artist_spotify.setTextColor(Color.BLACK);
+            _artist_spotify.setText("Not found :<");
+        }
+
+
         //  + artist.getSpotify_id()
 
         //update the remaining fields with the new volley data
         _artist_title.setText(artist.getName());
         _artist_description.setText(artist.getDescription());
         _artist_genre.setText("Sw Genre ID: " +artist.getSw_genre_id());
-        _artist_spotify.setText(Html.fromHtml(spotifyURL));
-        _artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
+
 
         try {_artist_website_official.setText(artist.getWebsite().getWebsite_official());
         } catch (Exception e) {Log.d("Website", "No official website found");}
