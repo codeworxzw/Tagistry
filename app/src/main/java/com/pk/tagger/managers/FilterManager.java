@@ -161,5 +161,17 @@ public class FilterManager {
         editor.putInt(MAX_PRICE, 0);
         editor.commit();
     }
+    public void setTennerorLess() {
+        Calendar calendarDate = new GregorianCalendar();
+        editor.putLong(KEY_DATE_START, calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 6);
+        editor.putLong(KEY_DATE_END, calendarDate.getTimeInMillis());
+        editor.putBoolean(TICKETS_AVAILABLE, true);
+        editor.putString(SEARCH_ARTIST_VENUE, "");
+        Set<String> Genres = new HashSet<String> (Arrays.asList(filterContext.getResources().getStringArray(R.array.genres_values)));
+        editor.putStringSet(SEARCH_GENRES, Genres);
+        editor.putInt(MAX_PRICE, 10);
+        editor.commit();
+    }
 
 }

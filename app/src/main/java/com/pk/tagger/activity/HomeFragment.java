@@ -81,7 +81,12 @@ public class HomeFragment extends Fragment {
                     ft.commit();
                 }
                 else if (position == 2) {
-                    Toast.makeText(getContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();
+                    filterManager.setTennerorLess();
+                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Listings");
+                    ft.commit();
                 }
                 else if (position == 3) {
                     filterManager.setFestivals();
