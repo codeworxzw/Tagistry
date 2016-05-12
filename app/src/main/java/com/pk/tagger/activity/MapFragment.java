@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,11 +36,16 @@ import com.pk.tagger.maps.ClusterMapInfoWindow;
 import com.pk.tagger.maps.ClusterMapRender;
 import com.pk.tagger.maps.ClusterMarkerLocation;
 import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.event.EventsAdapter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
+import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -47,11 +55,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     MapView mMapView;
     private GoogleMap googleMap;
+    FloatingActionButton fab;
     private int zoomLevel = 10;
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
     FilterManager filterManager;
+
+    private EventsAdapter eventsRealmAdapter;
+    private RealmRecyclerView realmRecyclerView;
+    private Realm myRealm;
 
     public MapFragment() {
         // Required empty public constructor
@@ -63,10 +76,24 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         setHasOptionsMenu(true);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.hide();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
+                LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
+                lnrp.weight = 0f;
+                lnr.setLayoutParams(lnrp);
+                fab.hide();
+            }
+        });
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -98,9 +125,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         googleMap.setOnMarkerClickListener(clusterManager);
         googleMap.setOnInfoWindowClickListener(clusterManager);
         googleMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
-        final ClusterMapInfoWindow clusterMapInfoWindow = new ClusterMapInfoWindow();
+       // final ClusterMapInfoWindow clusterMapInfoWindow = new ClusterMapInfoWindow();
 
-        clusterManager.getClusterMarkerCollection().setOnInfoWindowAdapter(clusterMapInfoWindow);
+       // clusterManager.getClusterMarkerCollection().setOnInfoWindowAdapter(clusterMapInfoWindow);
 
         LatLng streatham = new LatLng(51.419959, -0.128017);
 //        googleMap.addMarker(new MarkerOptions()
@@ -155,8 +182,48 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             @Override
             public boolean onClusterClick(Cluster<ClusterMarkerLocation> cluster) {
                 Toast.makeText(getContext(), "Multiple Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
-                clusterMapInfoWindow.setData(cluster);
-                clusterMapInfoWindow.setContext(getContext());
+                LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
+                LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
+                lnrp.weight = 1f;
+                lnr.setLayoutParams(lnrp);
+                fab.show();
+                Collection<ClusterMarkerLocation> items = cluster.getItems();
+
+                ArrayList<String> bulk = new ArrayList<String>();
+                if (cluster != null) {
+                    for (ClusterMarkerLocation item : items) {
+                        bulk.add(item.getEventID());
+                        Log.i("MyMaps", "ID: " + item.getEventID());
+                    }
+                }
+                realmRecyclerView = (RealmRecyclerView) getActivity().findViewById(R.id.realmCluster_recycler_view2);
+
+                myRealm = Realm.getDefaultInstance();
+
+                int eSize = bulk.size();
+                Log.i("Size of arrayList: ", String.valueOf(eSize));
+
+                // Build the query looking at all users:
+                RealmQuery<Event> query = myRealm.where(Event.class).beginGroup();
+
+                for (int i = 0; i < eSize; i++) {
+                    query.or().equalTo("id", bulk.get(i));
+                }
+                // Execute the query:
+                RealmResults<Event> events = query.endGroup().findAll();
+                getClusterList(events);
+
+        /*
+        RealmResults<Event> events = myRealm
+                .where(Event.class)
+                .equalTo("eventID", eventID)
+                .findAll();  */
+
+                myRealm.close();
+
+
+                //clusterMapInfoWindow.setData(cluster);
+                //clusterMapInfoWindow.setContext(getContext());
                 return false;
             }
         });
@@ -191,7 +258,22 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         });
         }
 
+    public void getClusterList(RealmResults<Event> events){
 
+        int ticketMax = 1000;
+        int ticketMin = 1;
+
+        eventsRealmAdapter =
+                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
+                    @Override public void onItemClick(Event item) {
+                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
+                        intent.putExtra("EventID", item.getId());
+                        startActivity(intent);
+
+                    }
+                });
+        realmRecyclerView.setAdapter(eventsRealmAdapter);
+    }
 
     public void makeMarker(double latitude, double longitude, String name, String address) {
 
