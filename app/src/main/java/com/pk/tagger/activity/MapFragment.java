@@ -7,17 +7,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -56,16 +62,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     MapView mMapView;
     private GoogleMap googleMap;
     FloatingActionButton fab;
+    String DEBUG_TAG = "Map Debugger";
     private int zoomLevel = 10;
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    Rect rectf;
 
     FilterManager filterManager;
 
     private EventsAdapter eventsRealmAdapter;
     private RealmRecyclerView realmRecyclerView;
     private Realm myRealm;
-
+    private int height, top, bottom, width;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -76,28 +84,95 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
-        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.hide();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
-                LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
-                lnrp.weight = 0f;
-                lnr.setLayoutParams(lnrp);
-                fab.hide();
-            }
-        });
+        final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();// needed to get the map to display immediately
+
+        mMapView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        mMapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        rectf = new Rect();
+                        mMapView.getGlobalVisibleRect(rectf);
+
+                        Log.d("WIDTH        :",String.valueOf(rectf.width()));
+                        height = rectf.height();
+                        width = rectf.width();
+                        top = rectf.top;
+                        bottom = rectf.bottom;
+                        Log.d("HEIGHT       :",String.valueOf(rectf.height()));
+                        Log.d("left         :",String.valueOf(rectf.left));
+                        Log.d("right        :",String.valueOf(rectf.right));
+                        Log.d("top          :",String.valueOf(rectf.top));
+                        Log.d("bottom       :",String.valueOf(rectf.bottom));
+                    }
+
+                }
+        );
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                {
+                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Listings");
+                    ft.commit();
+                }
+
+            }
+        });
+
+        View myView = rootView.findViewById(R.id.borderview);
+
+        myView.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                // ... Respond to touch events
+                //Log.d(DEBUG_TAG,event.toString());
+
+                resize(event.getRawY());
+                int action = MotionEventCompat.getActionMasked(event);
+                switch(action) {
+                    case (MotionEvent.ACTION_DOWN) :
+                        //Log.d(DEBUG_TAG,"Action was DOWN");
+                        return true;
+                    case (MotionEvent.ACTION_MOVE) :
+                        Log.d(DEBUG_TAG,"Action was MOVE");
+                        Log.d("X", String.valueOf(event.getX()));
+                        Log.d("Y", String.valueOf(event.getRawY()));
+                        //Down Y means positive Up Y means negative
+
+                        return true;
+                    case (MotionEvent.ACTION_UP) :
+                        Log.d(DEBUG_TAG,"Action was UP");
+                        return true;
+                    case (MotionEvent.ACTION_CANCEL) :
+                        Log.d(DEBUG_TAG,"Action was CANCEL");
+                        return true;
+                    case (MotionEvent.ACTION_OUTSIDE) :
+                        Log.d(DEBUG_TAG,"Movement occurred outside bounds " +
+                                "of current screen element");
+                        return true;
+                    default :
+
+                }
+                return true;
+            }
+        });
+
+
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -109,6 +184,32 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         setUpMap();
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    private void resize(float y) {
+
+        float resized = 1 - ((y - top) / (height / 2)) / 2; // 1 : 1 split 1864:708 3:1
+
+        float resized2 = (y - top) / (height / 2) / 2; // 1 : 1
+        // Log.d("resized", String.valueOf(resized));
+        // Log.d("resized2", String.valueOf(resized2));
+        if (resized2 < 0.8) {
+            LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
+            LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
+            lnrp.weight = resized;
+            lnr.setLayoutParams(lnrp);
+            LinearLayout lnr2 = (LinearLayout) getActivity().findViewById(R.id.llview2);
+            LinearLayout.LayoutParams lnrp2 = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview2).getLayoutParams();
+            lnrp2.weight = resized2;
+            lnr2.setLayoutParams(lnrp2);
+        } else {
+            LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
+        LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
+        lnrp.weight = 0f;
+        lnr.setLayoutParams(lnrp);
+
+    }
+
     }
 
     public void setUpMap() {
@@ -186,7 +287,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
                 lnrp.weight = 1f;
                 lnr.setLayoutParams(lnrp);
-                fab.show();
+
                 Collection<ClusterMarkerLocation> items = cluster.getItems();
 
                 ArrayList<String> bulk = new ArrayList<String>();

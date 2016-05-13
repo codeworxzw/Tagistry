@@ -27,7 +27,13 @@
         android:id="@+id/llview2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_weight="1">
+        <View
+            android:id="@+id/borderview"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="#000000" />
 <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
 android:id="@+id/realmCluster_recycler_view2"
 android:layout_width="match_parent"
@@ -37,14 +43,14 @@ app:rrvEmptyLayoutId="@layout/listings_empty_view"
     android:layout_weight="1"/>
 
     </LinearLayout>
-</LinearLayout>
+</LinearLayout>       
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="18dp"
         android:clickable="true"
-        android:src="@drawable/ic_close_black_18dp"
-        app:layout_anchor="@id/llview2"
-        app:layout_anchorGravity="bottom|right|end"/>
+        android:src="@drawable/ic_settings_action"
+        app:layout_anchor="@id/llview1"
+        app:layout_anchorGravity="top|right"/>
 </android.support.design.widget.CoordinatorLayout>

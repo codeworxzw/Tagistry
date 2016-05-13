@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +39,7 @@ public class ListingsFragment extends Fragment {
     private Date endDate;
     private EventsAdapter eventsRealmAdapter;
     private RealmRecyclerView realmRecyclerView;
-
+    FloatingActionButton fab;
     FilterManager filterManager;
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -59,6 +61,24 @@ public class ListingsFragment extends Fragment {
         Log.d("ListingsFragment", "onCreateView called");
 
         realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                {
+                    ft.replace(R.id.container_body, new MapFragment(), "Map");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Map");
+                    ft.commit();
+                }
+
+            }
+        });
 
         getListings();
 
