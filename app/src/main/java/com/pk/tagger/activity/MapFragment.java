@@ -33,6 +33,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -67,6 +69,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     SharedPreferences sharedPreferencesDate;
     private int mYear, mMonth, mDay, mHour, mMinute;
     Rect rectf;
+    static final float IMAGE_SIZE_RATIO = .15f; //define how big your marker is relative to the total screen
 
     FilterManager filterManager;
 
@@ -312,6 +315,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 }
                 // Execute the query:
                 RealmResults<Event> events = query.endGroup().findAll();
+
                 getClusterList(events);
 
         /*
@@ -333,6 +337,37 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             @Override
             public boolean onClusterItemClick(ClusterMarkerLocation clusterMarkerLocation) {
                 Toast.makeText(getContext(), "1 Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
+                Log.d("1 cluster item", clusterMarkerLocation.getEventID());
+                //ArrayList<String> bulk = new ArrayList<String>();
+                //bulk.add(clusterMarkerLocation.getEventID());
+
+//                LatLngBounds b = googleMap.getProjection().getVisibleRegion().latLngBounds;
+//                Float distance = distanceBetweenPoints(b.northeast, b.southwest) * IMAGE_SIZE_RATIO;
+//                for (Marker m : markers ) {
+//                    if (marker.equals(m) ) { continue; } //don't compare the same one
+//                    if (distanceBetweenPoint(m.getPosition(), marker.getPosition()) {
+//                /*Note do onMarkerClick this as an Aynch task and continue along
+//                if also want to fire off against the main object.
+//                */
+//                      //  return onMarkerClick(m);
+//                    }
+//                }
+
+                LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
+                LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
+                lnrp.weight = 1f;
+                lnr.setLayoutParams(lnrp);
+                realmRecyclerView = (RealmRecyclerView) getActivity().findViewById(R.id.realmCluster_recycler_view2);
+
+                myRealm = Realm.getDefaultInstance();
+
+                RealmResults<Event> events = myRealm.where(Event.class)
+                        .equalTo("id", clusterMarkerLocation.getEventID())
+                        .findAll();
+
+                getClusterList(events);
+
+                myRealm.close();
                 return false;
             }
         });
@@ -342,6 +377,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             @Override
             public void onClusterInfoWindowClick(Cluster<ClusterMarkerLocation> cluster) {
                 Toast.makeText(getContext(), "Cluster Window Clicked", Toast.LENGTH_SHORT).show();
+
             }
 
         });
@@ -351,16 +387,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             @Override
             public void onClusterItemInfoWindowClick(ClusterMarkerLocation clusterMarkerLocation) {
                 Toast.makeText(getContext(), "1 Cluster Window Clicked", Toast.LENGTH_SHORT).show();
-                String ID = clusterMarkerLocation.getEventID();
-                Intent intent = new Intent(getContext(), EventDetailActivity.class);
-                intent.putExtra("EventID", ID);
-                startActivity(intent);
+              //  String ID = clusterMarkerLocation.getEventID();
+               // Intent intent = new Intent(getContext(), EventDetailActivity.class);
+               // intent.putExtra("EventID", ID);
+               // startActivity(intent);
             }
         });
         }
 
     public void getClusterList(RealmResults<Event> events){
-
+        //Log.d("events: ", events.toString());
         int ticketMax = 1000;
         int ticketMin = 1;
 
