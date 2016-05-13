@@ -1,4 +1,4 @@
-package com.pk.tagger.activity;
+package com.pk.tagger.realm;
 
 import android.util.Log;
 

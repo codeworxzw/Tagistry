@@ -4,18 +4,15 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,16 +29,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
-import com.pk.tagger.maps.ClusterMapInfoWindow;
 import com.pk.tagger.maps.ClusterMapRender;
 import com.pk.tagger.maps.ClusterMarkerLocation;
+import com.pk.tagger.realm.MyRealmResults;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.event.EventsAdapter;
 
@@ -210,8 +204,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
         lnrp.weight = 0f;
         lnr.setLayoutParams(lnrp);
-
-    }
+        }
 
     }
 
@@ -250,7 +243,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
 //        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
 
-
         Date date = new Date(filterManager.getDateStart());
         Date endDate = new Date(filterManager.getDateEnd());
 
@@ -288,7 +280,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 Toast.makeText(getContext(), "Multiple Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
                 LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
                 LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
-                lnrp.weight = 1f;
+                lnrp.weight = 2f;
                 lnr.setLayoutParams(lnrp);
 
                 Collection<ClusterMarkerLocation> items = cluster.getItems();

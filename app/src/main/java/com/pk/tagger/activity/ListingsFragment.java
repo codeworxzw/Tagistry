@@ -4,11 +4,9 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -22,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
+import com.pk.tagger.realm.MyRealmResults;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.event.EventsAdapter;
 
@@ -29,7 +28,6 @@ import java.util.Date;
 import java.util.Set;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 

@@ -6,10 +6,6 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.pk.tagger.activity.MyRealmMigration;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 /**
  * Created by Kieran on 27/01/2016.
