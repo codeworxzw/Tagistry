@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -40,10 +42,8 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
     private ExpandableLayout.OnExpandListener expandListener;
     private Realm myRealm;
 
-
     public interface OnClickListener {
         void onClick(View v);
-
     }
 
     public interface OnExpandListener {
@@ -73,13 +73,13 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
 
     public class ViewHolder extends RealmViewHolder {
         public ExpandableLayout expandableLayout;
-        public LinearLayout llexpand, toggle_artist_desc, toggle_artist_websites, artist_websites;
-        public ImageView listingsImage, artist_desc_expand,artist_websites_expand;
-        public TextView listingsTitle;
-        public TextView listingsDate;
-        public TextView listingsVenue;
-        public TextView listingsTickets;
+        public LinearLayout llexpand, artist_websites;
+
+        public ImageView listingsImage;
+        public TextView listingsTitle, listingsDate, listingsVenue, listingsTickets;
         public TextView artist_title, artist_desc, artist_genre, artist_spotify, artist_website_official, artist_website_fb, artist_website_twitter, artist_website_wiki;
+        public TextView venue_title, venue_address, venue_website_sw, venue_website_official;
+        public TextView event_tickets_price, event_tickets_buy;
 
         public ViewHolder(LinearLayout container) {
             super(container);
@@ -92,12 +92,6 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             this.listingsTickets = (TextView) container.findViewById(R.id.textView_listings_tickets);
             this.artist_title = (TextView) container.findViewById(R.id.textView_artist_title);
             this.artist_desc = (TextView) container.findViewById(R.id.textView_artist_description);
-            this.toggle_artist_desc = (LinearLayout) container.findViewById(R.id.toggle_artist_desc);
-            this.toggle_artist_websites = (LinearLayout) container.findViewById(R.id.toggle_artist_websites);
-
-            this.artist_desc_expand = (ImageView) container.findViewById(R.id.artist_description_expand);
-            this.artist_websites_expand = (ImageView) container.findViewById(R.id.artist_websites_expand);
-
             this.artist_genre = (TextView) container.findViewById(R.id.textView_artist_genre);
             this.artist_spotify = (TextView) container.findViewById(R.id.textView_artist_spotify);
             this.artist_websites = (LinearLayout) container.findViewById(R.id.artist_websites);
@@ -105,6 +99,12 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             this.artist_website_fb = (TextView) container.findViewById(R.id.textView_artist_website_facebook);
             this.artist_website_twitter = (TextView) container.findViewById(R.id.textView_artist_website_twitter);
             this.artist_website_wiki = (TextView) container.findViewById(R.id.textView_artist_website_wiki);
+            this.venue_title = (TextView) container.findViewById(R.id.textView_venue_title);
+            this.venue_address = (TextView) container.findViewById(R.id.textView_venue_address);
+            this.venue_website_sw = (TextView) container.findViewById(R.id.textView_venue_website_sw);
+            this.venue_website_official = (TextView) container.findViewById(R.id.textView_venue_website_official);
+            this.event_tickets_price = (TextView) container.findViewById(R.id.textView_event_tickets_price);
+            this.event_tickets_buy = (TextView) container.findViewById(R.id.textView_event_tickets_buy);
 
         }
         public void bind(final Event event) {
@@ -120,6 +120,24 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     .equalTo("id", event.getVenue().getId())
                     .findFirst();
             Log.d("Venue", venue.toString());
+
+            String IMAGE_URL = "";
+
+            try{
+                if(event.getImage_URL() != null) {
+                    IMAGE_URL = event.getImage_URL();
+                } else if (event.getArtist().getImage_URL() != null){
+                    IMAGE_URL = event.getArtist().getImage_URL();
+                }
+            } catch (Exception e){
+                Log.d("Bind", e.toString());
+            }
+
+            Picasso.with(context)
+                    .load(IMAGE_URL)
+                    .placeholder(R.drawable.note_listings)
+                    .into(listingsImage);
+
 
             listingsTitle.setText(event.getArtist().getName());
             //TODO: should probably parse date properly not just truncate string lol
@@ -138,58 +156,68 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             listingsTickets.setText(tickets);
             itemView.setBackgroundColor(Color.parseColor("#e6e6e6"));
 
+            //Expanded layout stuff set below
             artist_title.setText(artist.getName());
-            artist_desc.setVisibility(View.GONE);
             artist_desc.setText(artist.getDescription());
-            artist_websites.setVisibility(View.GONE);
-            toggle_artist_desc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(artist_desc.isShown()){
-                        Fx.slide_up(context, artist_desc);              //slide up animation not working
-                        artist_desc.setVisibility(View.GONE);
-                        artist_desc_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
-                    }
-                    else{
-                        artist_desc.setVisibility(View.VISIBLE);
-                        Fx.slide_down(context, artist_desc);
-                        artist_desc_expand.setImageResource(R.drawable.ic_expand_less_black_24dp);
-                    }
-                }
-            });
-            toggle_artist_websites.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(artist_websites.isShown()){
-                        Fx.slide_up(context, artist_websites);              //slide up animation not working
-                        artist_websites.setVisibility(View.GONE);
-                        artist_websites_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
-                    }
-                    else{
-                        artist_websites.setVisibility(View.VISIBLE);
-                        Fx.slide_down(context, artist_websites);
-                        artist_websites_expand.setImageResource(R.drawable.ic_expand_less_black_24dp);
-                    }
-                }
-            });
-
-            String IMAGE_URL = "";
-//            IMAGE_URL = "http://a.stwv.im/filestore/season/image/pinkpop_002474_1_mainpicture.jpg";
+            artist_genre.setText("Sw Genre ID: " +artist.getSw_genre_id());     //replace with actual genre names when we get them (waiting updated api)
 
             try{
-                if(event.getImage_URL() != null) {
-                    IMAGE_URL = event.getImage_URL();
-                } else if (event.getArtist().getImage_URL() != null){
-                    IMAGE_URL = event.getArtist().getImage_URL();
+                if(artist.getSpotify_id().equals("Not found") || artist.getSpotify_id().equals("NA") || artist.getSpotify_id().isEmpty()){
+                    artist_spotify.setTextColor(Color.BLACK);
+                    artist_spotify.setText("Not found :<");
+                } else {
+                    String spotifyURL = "<a href='" + context.getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
+                    Log.d("spotifyURl:", spotifyURL);
+                    artist_spotify.setText(Html.fromHtml(spotifyURL));
+                    artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
                 }
-            } catch (Exception e){
-                Log.d("Bind", e.toString());
+            } catch (Exception e) {
+                artist_spotify.setTextColor(Color.BLACK);
+                artist_spotify.setText("Not found :<");
             }
+            try {artist_website_official.setText(artist.getWebsite().getWebsite_official());
+            } catch (Exception e) {Log.d("Website", "No official website found");}
+            try {artist_website_fb.setText(artist.getWebsite().getWebsite_fb());
+            } catch (Exception e) {Log.d("Website", "No facebook website found");}
+            try {artist_website_twitter.setText(artist.getWebsite().getWebsite_twitter());
+            } catch (Exception e) {Log.d("Website", "No twitter website found");}
+            try{artist_website_wiki.setText(artist.getWebsite().getWebsite_wiki());
+            } catch (Exception e) {Log.d("Website", "No wiki website found");}
 
-            Picasso.with(context)
-                    .load(IMAGE_URL)
-                    .placeholder(R.drawable.note_listings)
-                    .into(listingsImage);
+            venue_title.setText(venue.getName());
+
+            try{venue_website_official.setText(venue.getWebsite());
+            } catch (Exception e) {venue_website_official.setText("NA");}
+            try{venue_website_sw.setText(venue.getSw_website());
+            } catch (Exception e) {venue_website_sw.setText("NA");}
+
+            String address, address1, address2, city, post_code;
+            address = address1 = address2 = city = post_code = "";
+            try {address1 = venue.getLocation().getAddress_1() + "\n";
+            } catch(Exception e){Log.d("Address", "No address1");}
+            try {address2 = venue.getLocation().getAddress_2() +"\n";
+            } catch(Exception e){Log.d("Address", "No address2");}
+            try {city = venue.getLocation().getCity() +"\n";
+            } catch(Exception e){Log.d("Address", "No city");}
+            try {post_code = venue.getLocation().getPost_code();
+            } catch(Exception e){Log.d("Address", "No post code");}
+
+            address = address1 + address2 + city + post_code;
+
+            venue_address.setText(address);
+
+            String tickets2 = "Tickets unavailable";
+
+            try {
+                if(event.getTickets().getTicket_count()!=0){
+                    tickets2 = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
+                    event_tickets_price.setText(tickets2);
+                    event_tickets_buy.setVisibility(View.VISIBLE);
+                }else {
+                    event_tickets_price.setText(tickets2);
+                }
+            } catch(Exception e){Log.d("Catch tickets", "No tickets");}
+
             myRealm.close();
         }
     }
