@@ -52,10 +52,10 @@ public GenreFragment () {
         Resources res = getResources();
         final String[] genresValues = res.getStringArray(R.array.genres_values);
 
-        RecyclerView rvGenres = (RecyclerView) rootView.findViewById(R.id.rvGenres);
-        genres = getSampleArrayList();
+      //  RecyclerView rvGenres = (RecyclerView) rootView.findViewById(R.id.rvGenres);
+      //  genres = getSampleArrayList();
 
-        GenreAdapter adapter = new GenreAdapter(genres, new GenreAdapter.OnItemClickListener() {
+    /*    GenreAdapter adapter = new GenreAdapter(genres, new GenreAdapter.OnItemClickListener() {
 
             @Override
             public void onItemClick(Genre mGenre, int position) {
@@ -73,11 +73,11 @@ public GenreFragment () {
             }
         });
 
-        rvGenres.setAdapter(adapter);
+        //rvGenres.setAdapter(adapter);
 
-        rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2));
+       // rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        // sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        // sharedPref = getActivity().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE); */
 
         // Inflate the layout for this fragment
         return rootView;

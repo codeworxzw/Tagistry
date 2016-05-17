@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.kyo.expandablelayout.ExpandableLayout;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.maps.ClusterMapRender;
@@ -57,6 +59,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     MapView mMapView;
     private GoogleMap googleMap;
+    private SparseBooleanArray expandState = new SparseBooleanArray();
     FloatingActionButton fab;
     String DEBUG_TAG = "Map Debugger";
     private int zoomLevel = 10;
@@ -69,6 +72,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     private EventsAdapter eventsRealmAdapter;
     private RealmRecyclerView realmRecyclerView;
+    private RealmResults<Event> mItems;
     private Realm myRealm;
     private int height, top, bottom, width;
     public MapFragment() {
@@ -122,10 +126,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
                 {
-                    ft.replace(R.id.container_body, new ListingsFragment(), "Event Listings");
+                    ft.replace(R.id.container_body, new HomeFragment(), "Home");
                     // Set title bar
                     ((MainActivity) getActivity())
-                            .setActionBarTitle("Event Listings");
+                            .setActionBarTitle("Home");
                     ft.commit();
                 }
 
@@ -389,11 +393,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     public void getClusterList(RealmResults<Event> events){
         //Log.d("events: ", events.toString());
-        int ticketMax = 1000;
-        int ticketMin = 1;
-
+//        int ticketMax = 1000;
+//        int ticketMin = 1;
+          mItems = events;
 //        eventsRealmAdapter =
-//                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
+//                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnClickListener() {
 //                    @Override public void onItemClick(Event item) {
 //                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
 //                        intent.putExtra("EventID", item.getId());
@@ -402,6 +406,69 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //                    }
 //                });
 //        realmRecyclerView.setAdapter(eventsRealmAdapter);
+
+//        long count = events.getCount();
+//        Log.d("No. Events Found", String.valueOf(count));
+
+
+
+        for (int i = 0; i < mItems.size(); i++) {
+            expandState.append(i, false);
+        }
+
+        eventsRealmAdapter =
+                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
+                        holder.expandableLayout.toggleExpansion();
+
+                        //store last expandstate for clicked item
+                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
+
+                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
+                        for (int i = 0; i < mItems.size(); i++) {
+                            expandState.append(i, false);
+                        }
+
+                        Log.d("ExpandResult", Boolean.toString(result));
+
+                        //set new expandstate for clicked item
+                        expandState.append(holder.getAdapterPosition(), result);
+                    }
+                }, new ExpandableLayout.OnExpandListener() {
+
+                    private boolean isScrollingToBottom = false;
+
+                    @Deprecated
+                    @Override
+                    public void onToggle(ExpandableLayout view, View child,
+                                         boolean isExpanded) {
+                    }
+
+                    @Override
+                    public void onExpandOffset(ExpandableLayout view, View child,
+                                               float offset, boolean isExpanding) {
+                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
+                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
+                            if (holder.getAdapterPosition() == mItems.size() - 1) {
+                                if (!isScrollingToBottom) {
+                                    isScrollingToBottom = true;
+                                    realmRecyclerView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isScrollingToBottom = false;
+                                            realmRecyclerView.scrollToPosition(holder
+                                                    .getAdapterPosition());
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        }
+                    }
+                }, expandState);
+        realmRecyclerView.setAdapter(eventsRealmAdapter);
+
     }
 
     public void makeMarker(double latitude, double longitude, String name, String address) {

@@ -64,6 +64,13 @@
 
     <string-array name="empty_array"/>
 
+    <string name="home_week">This Week</string>
+    <string name="home_month">This Month</string>
+    <string name="home_tenner">Tenner or Less</string>
+    <string name="home_festivals">Festivals</string>
+    <string name="home_genres">Search by Genres</string>
+    <string name="home_favs">Your Favourites</string>
+
     <string-array name="homepage">
         <item>This Week</item>
         <item>This Month</item>

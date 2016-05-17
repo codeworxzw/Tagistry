@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -11,13 +12,44 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary">
 
+
         <ImageView
+            android:id="@+id/navicon"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/ic_profile"
             android:scaleType="fitCenter"
             android:layout_centerInParent="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/navicon"
+            android:orientation="horizontal">
 
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/navusername"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/name"
+                android:maxLines="1"
+                android:layout_weight="1"
+                android:textSize="40sp"
+                autofit:minTextSize="16sp"
+                />
+
+            <ImageView
+                android:id="@+id/navsettings"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_settings_action"
+                android:scaleType="fitCenter"
+                />
+
+
+        </LinearLayout>
     </RelativeLayout>
 
 
