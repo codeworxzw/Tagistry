@@ -392,16 +392,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         int ticketMax = 1000;
         int ticketMin = 1;
 
-        eventsRealmAdapter =
-                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
-                    @Override public void onItemClick(Event item) {
-                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
-                        intent.putExtra("EventID", item.getId());
-                        startActivity(intent);
-
-                    }
-                });
-        realmRecyclerView.setAdapter(eventsRealmAdapter);
+//        eventsRealmAdapter =
+//                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
+//                    @Override public void onItemClick(Event item) {
+//                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
+//                        intent.putExtra("EventID", item.getId());
+//                        startActivity(intent);
+//
+//                    }
+//                });
+//        realmRecyclerView.setAdapter(eventsRealmAdapter);
     }
 
     public void makeMarker(double latitude, double longitude, String name, String address) {

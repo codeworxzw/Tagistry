@@ -79,16 +79,17 @@ public class ClusterInfoWindow extends AppCompatActivity {
         int ticketMax = 1000;
         int ticketMin = 1;
 
-        eventsRealmAdapter =
-                new EventsAdapter(context, events, true, true, new EventsAdapter.OnItemClickListener() {
-                    @Override public void onItemClick(Event item) {
-                        Intent intent = new Intent(context, EventDetailActivity.class);
-                        intent.putExtra("EventID", item.getId());
-                        startActivity(intent);
-
-                    }
-                });
-        realmRecyclerView.setAdapter(eventsRealmAdapter);
+        //needs to be updated with new eventsadapter
+//        eventsRealmAdapter =
+//                new EventsAdapter(context, events, true, true, new EventsAdapter.OnItemClickListener() {
+//                    @Override public void onItemClick(Event item) {
+//                        Intent intent = new Intent(context, EventDetailActivity.class);
+//                        intent.putExtra("EventID", item.getId());
+//                        startActivity(intent);
+//
+//                    }
+//                });
+//        realmRecyclerView.setAdapter(eventsRealmAdapter);
     }
 
 }

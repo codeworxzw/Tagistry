@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kyo.expandablelayout.ExpandableLayout;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.realm.MyRealmResults;
@@ -33,14 +35,14 @@ import io.realm.RealmResults;
 
 public class ListingsFragment extends Fragment {
 
+    private RealmRecyclerView realmRecyclerView;
+    private EventsAdapter eventsRealmAdapter;
+    private SparseBooleanArray expandState = new SparseBooleanArray();
+
+    private RealmResults<Event> mItems;
     private Date date;
     private Date endDate;
-    private EventsAdapter eventsRealmAdapter;
-    private RealmRecyclerView realmRecyclerView;
     FloatingActionButton fab;
-    FilterManager filterManager;
-    SharedPreferences sharedPreferencesDate;
-    private int mYear, mMonth, mDay, mHour, mMinute;
 
     public ListingsFragment() {
         // Required empty public constructor
@@ -140,12 +142,11 @@ public class ListingsFragment extends Fragment {
         switch(item.getItemId()) {
             default:
                 return false;
-                // /return super.onOptionsItemSelected(item);
+            // /return super.onOptionsItemSelected(item);
         }
     }
 
     public void getListings(){
-        //sharedPreferencesDate = getActivity().getSharedPreferences("DateFilter", getActivity().MODE_PRIVATE);
         FilterManager filterManager = new FilterManager(getContext());
         if (filterManager.getDateStart()==0) {
             filterManager.setDefault();
@@ -154,38 +155,75 @@ public class ListingsFragment extends Fragment {
         date = new Date(filterManager.getDateStart());
         endDate = new Date(filterManager.getDateEnd());
 
-        //SharedPreferences prefs = getContext().getSharedPreferences("FILTER_FILE_KEY", Context.MODE_PRIVATE);
-        //SharedPreferences.Editor editor = prefs.edit();
-
-//        String searchArtistVenue = prefs.getString("search_artist_venue", "");
-//        Set<String> searchGenresTemp = prefs.getStringSet("search_genres", null);
-//        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-//        boolean ticketsAvailable = prefs.getBoolean("tickets_available", false);
-
         String searchArtistVenue = filterManager.getSearchArtistVenue();
-       Set<String> searchGenresTemp = filterManager.getSearchGenres();
+        Set<String> searchGenresTemp = filterManager.getSearchGenres();
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
         boolean ticketsAvailable = filterManager.getTicketsAvailable();
 
         int ticketMax = filterManager.getMaxPrice();;
         int ticketMin = 1;
 
-//        MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
         MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
 
-        RealmResults events = myEvents.getResults();
+        mItems = myEvents.getResults();
         long count = myEvents.getCount();
         Log.d("No. Events Found", String.valueOf(count));
 
-        eventsRealmAdapter =
-                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnItemClickListener() {
-                    @Override public void onItemClick(Event item) {
-                        Intent intent = new Intent(getContext(), EventDetailActivity.class);
-                        intent.putExtra("EventID", item.getId());
-                        startActivity(intent);
+        for (int i = 0; i < mItems.size(); i++) {
+            expandState.append(i, false);
+        }
 
+        eventsRealmAdapter =
+                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
+                        holder.expandableLayout.toggleExpansion();
+
+                        //store last expandstate for clicked item
+                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
+
+                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
+                        for (int i = 0; i < mItems.size(); i++) {
+                            expandState.append(i, false);
+                        }
+
+                        Log.d("ExpandResult", Boolean.toString(result));
+
+                        //set new expandstate for clicked item
+                        expandState.append(holder.getAdapterPosition(), result);
                     }
-                });
+                }, new ExpandableLayout.OnExpandListener() {
+
+                    private boolean isScrollingToBottom = false;
+
+                    @Deprecated
+                    @Override
+                    public void onToggle(ExpandableLayout view, View child,
+                                         boolean isExpanded) {
+                    }
+
+                    @Override
+                    public void onExpandOffset(ExpandableLayout view, View child,
+                                               float offset, boolean isExpanding) {
+                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
+                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
+                            if (holder.getAdapterPosition() == mItems.size() - 1) {
+                                if (!isScrollingToBottom) {
+                                    isScrollingToBottom = true;
+                                    realmRecyclerView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isScrollingToBottom = false;
+                                            realmRecyclerView.scrollToPosition(holder
+                                                    .getAdapterPosition());
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        }
+                    }
+                }, expandState);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
     }
 }

@@ -203,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 Intent intent = new Intent(getApplicationContext(), SendEventActivity.class);
                 startActivity(intent);
                 break;
+//            case 5:
+//                fragment = new RecyclerViewExample();
+//                title = getString(R.string.title_recyclerview_example);
+//                break;
             default:
                 break;
         }
