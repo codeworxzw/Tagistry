@@ -210,14 +210,33 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
 
             try {
                 if(event.getTickets().getTicket_count()!=0){
-                    tickets2 = "Tickets from: £" + String.valueOf(event.getTickets().getPurchase_price());
+                    tickets2 = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
                     event_tickets_price.setText(tickets2);
                     event_tickets_buy.setVisibility(View.VISIBLE);
                 }else {
                     event_tickets_price.setText(tickets2);
+                    event_tickets_buy.setVisibility(View.GONE);
                 }
             } catch(Exception e){Log.d("Catch tickets", "No tickets");}
 
+            event_tickets_buy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        if (event.getUrl() != null) {
+                            Toast.makeText(context, "Show me dem tickets!", Toast.LENGTH_SHORT).show();
+                            Log.d("Buying", event.getUrl());
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getUrl()));
+                            context.startActivity(browserIntent);
+                        } else {
+                            Toast.makeText(context, "No ticket link :(", Toast.LENGTH_SHORT).show();
+                            Log.d("Else", event.getUrl());
+                        }
+                    }catch(Exception e){
+                        Log.d("Catch", e.toString());
+                    }
+                }
+            });
             myRealm.close();
         }
     }
