@@ -7,10 +7,10 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.restclient.EventRestClient;
+import com.pk.tagger.restclient.VenueRestClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,9 +20,7 @@ import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import io.realm.exceptions.RealmException;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -31,7 +29,7 @@ import io.realm.exceptions.RealmException;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class DatabaseStartPaginatedService extends IntentService {
+public class DatabaseStartPaginatedServiceVenues extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_DOWNLOAD = "com.pk.tagger.services.action.FOO";
@@ -49,7 +47,7 @@ public class DatabaseStartPaginatedService extends IntentService {
 
     private int pageCount = 1;       //total page count (initialize as 1, then update from response)
 
-    public DatabaseStartPaginatedService() {
+    public DatabaseStartPaginatedServiceVenues() {
         super("DatabaseStartService");
     }
 
@@ -61,7 +59,7 @@ public class DatabaseStartPaginatedService extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionDownload(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DatabaseStartPaginatedService.class);
+        Intent intent = new Intent(context, DatabaseStartPaginatedServiceVenues.class);
         intent.setAction(ACTION_DOWNLOAD);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
@@ -77,7 +75,7 @@ public class DatabaseStartPaginatedService extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionUpdate(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DatabaseStartPaginatedService.class);
+        Intent intent = new Intent(context, DatabaseStartPaginatedServiceVenues.class);
         intent.setAction(ACTION_UPDATE);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
@@ -123,7 +121,7 @@ public class DatabaseStartPaginatedService extends IntentService {
         for(int j = 1; j<=pageCount; j++ ) {
             Log.d("pageNumber", Integer.toString(j));
 
-            EventRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
+            VenueRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -142,18 +140,13 @@ public class DatabaseStartPaginatedService extends IntentService {
 
                         for (int i = 0; i < docs.length(); i++) {
 
-                            JSONObject event = (JSONObject) docs.get(i);
+                            JSONObject venue = (JSONObject) docs.get(i);
 
                             //jsonResponse = event.toString();
 
                             //Log.d("jsonResponse", jsonResponse);
                            // myRealm.beginTransaction();
-                            try{
-                                myRealm.createOrUpdateObjectFromJson(Event.class, event);
-
-                            }catch(RealmException e){
-                                Log.d("Realm error", e.toString());
-                            }
+                            myRealm.createOrUpdateObjectFromJson(Venue.class, venue);
                            // myRealm.commitTransaction();
 
                             // we are already in a separate thread here, so we can do some long operation
@@ -172,25 +165,15 @@ public class DatabaseStartPaginatedService extends IntentService {
                         //  resultReceiver.send(JSONSENT, getFinished);
 
 
-//                        Event result =
-//                                myRealm.where(Event.class).findFirst();
-//                        Log.d("Realm EventLngLats: ", result.getVenue().getName());
-
-                        Venue venue =
-                                myRealm.where(Venue.class).findFirst();
-                        Log.d("Realm Venue: ", venue.getName());
-                        Artist artist =
-                                myRealm.where(Artist.class).findFirst();
-                        Log.d("Realm Artist: ", artist.getName());
-//                   RealmResults<Event> results1 =
-//                           myRealm.where(Event.class).findAll();
+//                   RealmResults<Venue> results1 =
+//                           myRealm.where(Venue.class).findAll();
 //
-//                   for(Event c:results1) {
-//                       Log.d("Realm EventLngLats: ", c.getVenue().getLocation().getLng_lat().toString());
-//                       Log.d("Realm EventVenueName: ", c.getVenue().getName().toString());
+//                   for(Venue c:results1) {
+//                       Log.d("Realm VenueLngLats: ", c.getLocation().getLng_lat().toString());
+//                       Log.d("Realm VenueName: ", c.getName());
 //                       //Log.d("Realm EventName: ", c.getName().toString());
-//                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
-//                       Log.d("Realm EventID: ", c.getId().toString());
+//                       //Log.d("Realm EventStartTime: ", c.getStartTime().toString());
+//                       Log.d("Realm VenueID: ", c.getId());
 //                   }
 
 

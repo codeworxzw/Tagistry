@@ -27,6 +27,7 @@ import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedService;
+import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
 
 import java.util.List;
 
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(id == R.id.action_sync){
 
             DatabaseStartPaginatedService.startActionDownload(this, "hello", "hello");
+            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
             Log.d("MainActivity", "Sync service started");
             return true;
         }

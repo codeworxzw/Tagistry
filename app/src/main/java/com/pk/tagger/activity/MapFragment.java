@@ -416,58 +416,58 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
             expandState.append(i, false);
         }
 
-        eventsRealmAdapter =
-                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
-                        holder.expandableLayout.toggleExpansion();
-
-                        //store last expandstate for clicked item
-                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
-
-                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
-                        for (int i = 0; i < mItems.size(); i++) {
-                            expandState.append(i, false);
-                        }
-
-                        Log.d("ExpandResult", Boolean.toString(result));
-
-                        //set new expandstate for clicked item
-                        expandState.append(holder.getAdapterPosition(), result);
-                    }
-                }, new ExpandableLayout.OnExpandListener() {
-
-                    private boolean isScrollingToBottom = false;
-
-                    @Deprecated
-                    @Override
-                    public void onToggle(ExpandableLayout view, View child,
-                                         boolean isExpanded) {
-                    }
-
-                    @Override
-                    public void onExpandOffset(ExpandableLayout view, View child,
-                                               float offset, boolean isExpanding) {
-                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
-                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
-                            if (holder.getAdapterPosition() == mItems.size() - 1) {
-                                if (!isScrollingToBottom) {
-                                    isScrollingToBottom = true;
-                                    realmRecyclerView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            isScrollingToBottom = false;
-                                            realmRecyclerView.scrollToPosition(holder
-                                                    .getAdapterPosition());
-                                        }
-                                    }, 100);
-                                }
-                            }
-                        }
-                    }
-                }, expandState);
-        realmRecyclerView.setAdapter(eventsRealmAdapter);
+//        eventsRealmAdapter =
+//                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
+//                        holder.expandableLayout.toggleExpansion();
+//
+//                        //store last expandstate for clicked item
+//                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
+//
+//                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
+//                        for (int i = 0; i < mItems.size(); i++) {
+//                            expandState.append(i, false);
+//                        }
+//
+//                        Log.d("ExpandResult", Boolean.toString(result));
+//
+//                        //set new expandstate for clicked item
+//                        expandState.append(holder.getAdapterPosition(), result);
+//                    }
+//                }, new ExpandableLayout.OnExpandListener() {
+//
+//                    private boolean isScrollingToBottom = false;
+//
+//                    @Deprecated
+//                    @Override
+//                    public void onToggle(ExpandableLayout view, View child,
+//                                         boolean isExpanded) {
+//                    }
+//
+//                    @Override
+//                    public void onExpandOffset(ExpandableLayout view, View child,
+//                                               float offset, boolean isExpanding) {
+//                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
+//                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
+//                            if (holder.getAdapterPosition() == mItems.size() - 1) {
+//                                if (!isScrollingToBottom) {
+//                                    isScrollingToBottom = true;
+//                                    realmRecyclerView.postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            isScrollingToBottom = false;
+//                                            realmRecyclerView.scrollToPosition(holder
+//                                                    .getAdapterPosition());
+//                                        }
+//                                    }, 100);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }, expandState);
+//        realmRecyclerView.setAdapter(eventsRealmAdapter);
 
     }
 
