@@ -41,6 +41,7 @@ public class MyRealmResults {
         this.endDate = endDate;
         myRealm = Realm.getDefaultInstance();       //needs to be closed somewhere
 
+
     }
 
     public RealmResults getResults(){
@@ -96,7 +97,7 @@ public class MyRealmResults {
         }
 
         RealmResults<Event> events = query.findAllSorted(sortField, asc);
-        //RealmResults<Event> events = query.findAll();
+       // RealmResults<Event> events = query.findAll();
 //        myRealm.close();
         return events;
     }

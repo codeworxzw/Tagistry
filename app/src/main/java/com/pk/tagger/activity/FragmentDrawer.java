@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pk.tagger.R;
+import com.pk.tagger.adapter.DividerItemDecoration;
 import com.pk.tagger.adapter.NavigationDrawerAdapter;
+import com.pk.tagger.adapter.VerticalSpaceItemDecoration;
 import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.model.NavDrawerItem;
 
@@ -26,6 +28,8 @@ import java.util.List;
 public class FragmentDrawer extends Fragment {
 
     private static String TAG = FragmentDrawer.class.getSimpleName();
+
+    private static final int VERTICAL_ITEM_SPACE = 48;
 
     private RecyclerView recyclerView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -84,8 +88,17 @@ public class FragmentDrawer extends Fragment {
             logindrawer = 0;
         }
         adapter = new NavigationDrawerAdapter(getActivity(), getData(logindrawer));
-        recyclerView.setAdapter(adapter);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        //add ItemDecoration
+        //recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
+        //or
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        //or
+       // recyclerView.addItemDecoration(
+         //       new DividerItemDecoration(getActivity(), R.drawable.divider));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
