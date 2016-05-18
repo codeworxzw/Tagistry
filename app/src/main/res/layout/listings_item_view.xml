@@ -2,6 +2,7 @@
 
 <com.kyo.expandablelayout.ExpandableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:autofit="http://schemas.android.com/tools"
     android:id="@+id/expandablelayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -26,43 +27,67 @@
             <TextView
                 android:id="@+id/textView_listings_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="1dp"
                 android:textSize="20sp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textStyle="bold"
+                android:text="Title"
                 android:textColor="@android:color/black"/>
+
+            <!--Semi-works but mintextsize doesnt seem to be working yet-->
+            <!--<me.grantland.widget.AutofitTextView-->
+                <!--android:id="@+id/textView_listings_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:padding="1dp"-->
+                <!--android:textSize="20sp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--autofit:minTextSize="14sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="Title"-->
+                <!--android:textColor="@android:color/black"/>-->
             <TextView
                 android:id="@+id/textView_listings_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="1dp"
                 android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="Date"
                 android:textColor="@android:color/black"/>
             <TextView
                 android:id="@+id/textView_listings_venue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="1dp"
                 android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="Venue"
                 android:textColor="@android:color/black"/>
             <TextView
                 android:id="@+id/textView_listings_tickets"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="1dp"
                 android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="Tickets"
                 android:textColor="@android:color/black"/>
         </LinearLayout>
     </LinearLayout>

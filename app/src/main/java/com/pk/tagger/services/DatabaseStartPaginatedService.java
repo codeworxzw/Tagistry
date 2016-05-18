@@ -238,7 +238,7 @@ public class DatabaseStartPaginatedService extends IntentService {
             });
         }
         myRealm.commitTransaction();
-        myRealm.close();      //was causing a crash sometimes. seems to run ok without it. for now.
+        myRealm.close();
 
     }
 

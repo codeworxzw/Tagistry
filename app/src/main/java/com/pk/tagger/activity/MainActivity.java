@@ -134,9 +134,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                             Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
                             myRealm = Realm.getDefaultInstance();
                             myRealm.beginTransaction();
-                            myRealm.clear(Event.class);
-                            myRealm.clear(Artist.class);
-                            myRealm.clear(Venue.class);
+                            myRealm.delete(Event.class);
+                            myRealm.delete(Artist.class);
+                            myRealm.delete(Venue.class);
                             myRealm.commitTransaction();
                             myRealm.close();
                         }})

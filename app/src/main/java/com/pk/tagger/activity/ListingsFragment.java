@@ -180,7 +180,7 @@ public class ListingsFragment extends Fragment {
                         EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
                         holder.expandableLayout.toggleExpansion();
 
-                        //store last expandstate for clicked item
+                        //temporarily save current expandstate for clicked item
                         boolean result = !expandState.get(holder.getAdapterPosition(), false);
 
                         //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
@@ -190,7 +190,7 @@ public class ListingsFragment extends Fragment {
 
                         Log.d("ExpandResult", Boolean.toString(result));
 
-                        //set new expandstate for clicked item
+                        //save current expandstate for clicked item
                         expandState.append(holder.getAdapterPosition(), result);
                     }
                 }, new ExpandableLayout.OnExpandListener() {

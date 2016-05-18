@@ -176,31 +176,39 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                 artist_spotify.setText("Not found :<");
             }
             try {artist_website_official.setText(artist.getWebsite().getWebsite_official());
-            } catch (Exception e) {Log.d("Website", "No official website found");}
+            } catch (Exception e) {//Log.d("Website", "No official website found");
+            }
             try {artist_website_fb.setText(artist.getWebsite().getWebsite_fb());
-            } catch (Exception e) {Log.d("Website", "No facebook website found");}
+            } catch (Exception e) {//Log.d("Website", "No facebook website found");
+            }
             try {artist_website_twitter.setText(artist.getWebsite().getWebsite_twitter());
-            } catch (Exception e) {Log.d("Website", "No twitter website found");}
+            } catch (Exception e) {//Log.d("Website", "No twitter website found");
+            }
             try{artist_website_wiki.setText(artist.getWebsite().getWebsite_wiki());
-            } catch (Exception e) {Log.d("Website", "No wiki website found");}
+            } catch (Exception e) {//Log.d("Website", "No wiki website found");
+            }
 
             venue_title.setText(venue.getName());
 
             try{venue_website_official.setText(venue.getWebsite());
-            } catch (Exception e) {venue_website_official.setText("NA");}
+            } catch (Exception e) {venue_website_official.setText("N/A");}
             try{venue_website_sw.setText(venue.getSw_website());
-            } catch (Exception e) {venue_website_sw.setText("NA");}
+            } catch (Exception e) {venue_website_sw.setText("N/A");}
 
             String address, address1, address2, city, post_code;
             address = address1 = address2 = city = post_code = "";
             try {address1 = venue.getLocation().getAddress_1() + "\n";
-            } catch(Exception e){Log.d("Address", "No address1");}
+            } catch(Exception e){//Log.d("Address", "No address1");
+            }
             try {address2 = venue.getLocation().getAddress_2() +"\n";
-            } catch(Exception e){Log.d("Address", "No address2");}
+            } catch(Exception e){//Log.d("Address", "No address2");
+            }
             try {city = venue.getLocation().getCity() +"\n";
-            } catch(Exception e){Log.d("Address", "No city");}
+            } catch(Exception e){//Log.d("Address", "No city");
+            }
             try {post_code = venue.getLocation().getPost_code();
-            } catch(Exception e){Log.d("Address", "No post code");}
+            } catch(Exception e){//Log.d("Address", "No post code");
+            }
 
             address = address1 + address2 + city + post_code;
 
