@@ -25,6 +25,20 @@
         app:showAsAction="always" />   -->
 
     <item
+        android:id="@+id/action_mapview"
+        android:title="@string/action_mapview"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_map"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_listingsview"
+        android:title="@string/action_listingsview"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_listings"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_sync"
         android:title="@string/action_sync"
         android:orderInCategory="100"

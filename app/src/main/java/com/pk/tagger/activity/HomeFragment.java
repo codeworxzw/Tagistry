@@ -51,6 +51,9 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
         TAB_ITEMS = getResources().getStringArray(R.array.homepage);
+
+
+
        /* final FilterManager filterManager = new FilterManager(getContext());
         Resources res = getResources();
         //final String[] genresValues = res.getStringArray(R.array.genres_values);
@@ -264,6 +267,11 @@ public class HomeFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item=menu.findItem(R.id.action_mapview);
+        item.setVisible(true);
+        MenuItem item2=menu.findItem(R.id.action_listingsview);
+        item2.setVisible(false);
+
     }
 
     @Override

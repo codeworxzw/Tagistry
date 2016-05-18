@@ -171,6 +171,18 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             return true;
         }
 
+        if(id == R.id.action_listingsview){
+
+            displayView(1);
+            return true;
+        }
+
+        if(id == R.id.action_mapview){
+
+            displayView(3);
+            return true;
+        }
+
         return false;
         //return super.onOptionsItemSelected(item);
     }

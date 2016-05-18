@@ -83,12 +83,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+
+
+
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -120,21 +126,23 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                {
+//                    ft.replace(R.id.container_body, new HomeFragment(), "Home");
+//                    // Set title bar
+//                    ((MainActivity) getActivity())
+//                            .setActionBarTitle("Home");
+//                    ft.commit();
+//                }
+//
+//            }
+//        });
 
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                {
-                    ft.replace(R.id.container_body, new HomeFragment(), "Home");
-                    // Set title bar
-                    ((MainActivity) getActivity())
-                            .setActionBarTitle("Home");
-                    ft.commit();
-                }
-
-            }
-        });
+        fab.hide();
 
         View myView = rootView.findViewById(R.id.borderview);
 
@@ -208,6 +216,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
         lnrp.weight = 0f;
         lnr.setLayoutParams(lnrp);
+
         }
 
     }
@@ -221,6 +230,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         }
 
         final ClusterManager<ClusterMarkerLocation> clusterManager = new ClusterManager<ClusterMarkerLocation>( getContext(), googleMap );
+
         clusterManager.setRenderer(new ClusterMapRender(getContext(), googleMap, clusterManager));
         googleMap.setOnCameraChangeListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
@@ -260,7 +270,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
         MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
         RealmResults <Event> events = events2.getResults();
-
+        ((MainActivity) getActivity())
+                .setActionBarTitle(String.valueOf(events.size()) + " Events");
         try {
             for(Event c:events) {
                 //  Log.d("results1", c.getLatLng());
@@ -363,6 +374,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
                 getClusterList(events);
 
+
                 myRealm.close();
                 return false;
             }
@@ -396,6 +408,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //        int ticketMax = 1000;
 //        int ticketMin = 1;
           mItems = events;
+
 //        eventsRealmAdapter =
 //                new EventsAdapter(getContext(), events, true, true, new EventsAdapter.OnClickListener() {
 //                    @Override public void onItemClick(Event item) {
@@ -410,64 +423,62 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //        long count = events.getCount();
 //        Log.d("No. Events Found", String.valueOf(count));
 
-
-
         for (int i = 0; i < mItems.size(); i++) {
             expandState.append(i, false);
         }
 
-//        eventsRealmAdapter =
-//                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
-//                        holder.expandableLayout.toggleExpansion();
-//
-//                        //store last expandstate for clicked item
-//                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
-//
-//                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
-//                        for (int i = 0; i < mItems.size(); i++) {
-//                            expandState.append(i, false);
-//                        }
-//
-//                        Log.d("ExpandResult", Boolean.toString(result));
-//
-//                        //set new expandstate for clicked item
-//                        expandState.append(holder.getAdapterPosition(), result);
-//                    }
-//                }, new ExpandableLayout.OnExpandListener() {
-//
-//                    private boolean isScrollingToBottom = false;
-//
-//                    @Deprecated
-//                    @Override
-//                    public void onToggle(ExpandableLayout view, View child,
-//                                         boolean isExpanded) {
-//                    }
-//
-//                    @Override
-//                    public void onExpandOffset(ExpandableLayout view, View child,
-//                                               float offset, boolean isExpanding) {
-//                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
-//                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
-//                            if (holder.getAdapterPosition() == mItems.size() - 1) {
-//                                if (!isScrollingToBottom) {
-//                                    isScrollingToBottom = true;
-//                                    realmRecyclerView.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            isScrollingToBottom = false;
-//                                            realmRecyclerView.scrollToPosition(holder
-//                                                    .getAdapterPosition());
-//                                        }
-//                                    }, 100);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }, expandState);
-//        realmRecyclerView.setAdapter(eventsRealmAdapter);
+        eventsRealmAdapter =
+                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
+                        holder.expandableLayout.toggleExpansion();
+
+                        //store last expandstate for clicked item
+                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
+
+                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
+                        for (int i = 0; i < mItems.size(); i++) {
+                            expandState.append(i, false);
+                        }
+
+                        Log.d("ExpandResult", Boolean.toString(result));
+
+                        //set new expandstate for clicked item
+                        expandState.append(holder.getAdapterPosition(), result);
+                    }
+                }, new ExpandableLayout.OnExpandListener() {
+
+                    private boolean isScrollingToBottom = false;
+
+                    @Deprecated
+                    @Override
+                    public void onToggle(ExpandableLayout view, View child,
+                                         boolean isExpanded) {
+                    }
+
+                    @Override
+                    public void onExpandOffset(ExpandableLayout view, View child,
+                                               float offset, boolean isExpanding) {
+                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
+                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
+                            if (holder.getAdapterPosition() == mItems.size() - 1) {
+                                if (!isScrollingToBottom) {
+                                    isScrollingToBottom = true;
+                                    realmRecyclerView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isScrollingToBottom = false;
+                                            realmRecyclerView.scrollToPosition(holder
+                                                    .getAdapterPosition());
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        }
+                    }
+                }, expandState);
+        realmRecyclerView.setAdapter(eventsRealmAdapter);
 
     }
 
@@ -517,8 +528,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem item= menu.findItem(R.id.action_sync);
+        MenuItem item=menu.findItem(R.id.action_mapview);
         item.setVisible(false);
+        MenuItem item2=menu.findItem(R.id.action_listingsview);
+        item2.setVisible(true);
     }
 
     @Override

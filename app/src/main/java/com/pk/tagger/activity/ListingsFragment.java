@@ -66,22 +66,23 @@ public class ListingsFragment extends Fragment {
         realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                {
-                    ft.replace(R.id.container_body, new MapFragment(), "Map");
-                    // Set title bar
-                    ((MainActivity) getActivity())
-                            .setActionBarTitle("Map");
-                    ft.commit();
-                }
-
-            }
-        });
+//
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                {
+//                    ft.replace(R.id.container_body, new MapFragment(), "Map");
+//                    // Set title bar
+//                    ((MainActivity) getActivity())
+//                            .setActionBarTitle("Map");
+//                    ft.commit();
+//                }
+//
+//            }
+//        });
+        fab.hide();
 
         getListings();
 
@@ -135,8 +136,10 @@ public class ListingsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
-        //MenuItem item=menu.findItem(R.id.action_sync);
-        //item.setVisible(false);
+        MenuItem item=menu.findItem(R.id.action_mapview);
+        item.setVisible(true);
+        MenuItem item2=menu.findItem(R.id.action_listingsview);
+        item2.setVisible(false);
     }
 
     @Override
@@ -170,6 +173,7 @@ public class ListingsFragment extends Fragment {
 //        MyRealmResults myEvents = new MyRealmResults(getActivity(), "", searchGenres, false, 0, 1000, date, endDate);
 
 
+
         mItems = myEvents.getResults();
         long count = myEvents.getCount();
         Log.d("No. Events Found", String.valueOf(count));
@@ -177,6 +181,9 @@ public class ListingsFragment extends Fragment {
         for (int i = 0; i < mItems.size(); i++) {
             expandState.append(i, false);
         }
+
+        ((MainActivity) getActivity())
+                .setActionBarTitle(String.valueOf(mItems.size()) + " Events");
 
         eventsRealmAdapter =
                 new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
