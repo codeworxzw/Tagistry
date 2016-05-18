@@ -158,15 +158,6 @@ public class ListingsFragment extends Fragment {
         date = new Date(filterManager.getDateStart());
         endDate = new Date(filterManager.getDateEnd());
 
-        Realm myRealm = Realm.getDefaultInstance();
-        Venue venue =
-                myRealm.where(Venue.class).findFirst();
-        Log.d("Realm Venue: ", venue.getName());
-        Artist artist =
-                myRealm.where(Artist.class).findFirst();
-        Log.d("Realm Artist: ", artist.getName());
-        myRealm.close();
-
         String searchArtistVenue = filterManager.getSearchArtistVenue();
         Set<String> searchGenresTemp = filterManager.getSearchGenres();
         String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
@@ -239,6 +230,5 @@ public class ListingsFragment extends Fragment {
                     }
                 }, expandState);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
-
     }
 }
