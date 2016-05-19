@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.pk.tagger.services.DatabaseStartPaginatedService;
+import com.pk.tagger.services.DatabaseStartPaginatedServiceEvents;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Set;
 
 /**
  * Created by pk on 10/05/16.
@@ -41,7 +39,7 @@ public class StartUpManager {
             Log.d("Timestamp", String.valueOf(getTimeStamp()));
             FilterManager filterManager = new FilterManager(startContext);
             filterManager.setDefault();
-            DatabaseStartPaginatedService.startActionDownload(startContext, "hello", "hello");
+            DatabaseStartPaginatedServiceEvents.startActionDownload(startContext, "hello", "hello");
             Log.d("MainActivity", "Sync service started");
             setTimeStamp();
         }

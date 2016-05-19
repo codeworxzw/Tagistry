@@ -1,7 +1,5 @@
 package com.pk.tagger.activity;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -11,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -31,18 +28,14 @@ import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.user.User;
 import com.pk.tagger.realm.venue.Venue;
-import com.pk.tagger.services.DatabaseStartPaginatedService;
+import com.pk.tagger.services.DatabaseStartPaginatedServiceEvents;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceArtists;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import io.realm.RealmObject;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -153,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_sync){
 
-//            DatabaseStartPaginatedService.startActionDownload(this, "hello", "hello");
-//            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
+            DatabaseStartPaginatedServiceEvents.startActionDownload(this, "hello", "hello");
+            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
             DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
 
             Log.d("MainActivity", "Sync service started");
