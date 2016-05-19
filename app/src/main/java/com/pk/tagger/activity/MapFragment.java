@@ -4,6 +4,8 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -12,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -93,8 +96,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-
-
+        filterManager = new FilterManager(getContext());
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -532,15 +534,54 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         item.setVisible(false);
         MenuItem item2=menu.findItem(R.id.action_listingsview);
         item2.setVisible(true);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(filterManager.getSearchArtistVenue());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Onquery", query);
+
+                filterManager.setSearchArtistVenue(query);
+
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+                    ft.replace(R.id.container_body, new MapFragment(), "Event Map");
+                    // Set title bar
+                    ((MainActivity) getActivity())
+                            .setActionBarTitle("Event Map");
+                    ft.commit();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("OnChange", newText);
+                return false;
+            }
+        });
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-        switch(item.getItemId()) {
+
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                if(filterManager.getSearchArtistVenue()!="") {
+                    filterManager.setSearchArtistVenue("");
+
+                }
+                return true;
             default:
-                return false;
-            // /return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
     }
 

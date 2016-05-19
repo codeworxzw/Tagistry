@@ -3,6 +3,7 @@ package com.pk.tagger.activity;
 /**
  * Created by PK on 16/01/2016.
  */
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +40,9 @@ public class HomeFragment extends Fragment {
     ViewPager mPager;
     MyAdapter mAdapter;
     String[] TAB_ITEMS;
-    static final int NUM_ITEMS = 4;
+    TabLayout tabLayout;
+    FilterManager filterManager;
+    static final int NUM_ITEMS = 5;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,7 +136,7 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
 
-
+        filterManager = new FilterManager(getContext());
         mAdapter = new MyAdapter(getFragmentManager(), getContext());
 
         mPager = (ViewPager)rootView.findViewById(R.id.pager);
@@ -163,11 +168,12 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("This Week"));
         tabLayout.addTab(tabLayout.newTab().setText("This Month"));
         tabLayout.addTab(tabLayout.newTab().setText("Festivals"));
         tabLayout.addTab(tabLayout.newTab().setText("Tenner or Less"));
+        tabLayout.addTab(tabLayout.newTab().setText("Your Search"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         //mPager.setOffscreenPageLimit(0);
@@ -175,7 +181,6 @@ public class HomeFragment extends Fragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                FilterManager filterManager = new FilterManager(getContext());
 
                 switch (tab.getPosition()) {
                     case 0:
@@ -192,7 +197,7 @@ public class HomeFragment extends Fragment {
                         break;
                     case 3:
                         filterManager.setTennerorLess();
-
+                    case 4:
                         break;
                     default:
                         break;
@@ -211,7 +216,11 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
+        TabLayout.Tab tab = tabLayout.getTabAt(0);
+        tab.select();
+        filterManager.setOneWeek();
+        mPager.setCurrentItem(0);
+        mAdapter.notifyDataSetChanged();
         return rootView;
     }
 
@@ -271,6 +280,41 @@ public class HomeFragment extends Fragment {
         item.setVisible(true);
         MenuItem item2=menu.findItem(R.id.action_listingsview);
         item2.setVisible(false);
+
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(filterManager.getSearchArtistVenue());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Onquery", query);
+
+                    TabLayout.Tab tab = tabLayout.getTabAt(4);
+                    tab.select();
+                    filterManager.setSearchArtistVenue(query);
+                    mPager.setCurrentItem(4);
+                    mAdapter.notifyDataSetChanged();
+
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("OnChange", newText);
+
+
+
+                return false;
+            }
+        });
 
     }
 

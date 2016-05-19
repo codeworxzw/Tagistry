@@ -136,6 +136,10 @@ public class ListingsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
+
+
+
+
         MenuItem item=menu.findItem(R.id.action_mapview);
         item.setVisible(true);
         MenuItem item2=menu.findItem(R.id.action_listingsview);
