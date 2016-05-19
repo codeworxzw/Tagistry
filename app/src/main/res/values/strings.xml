@@ -8,7 +8,7 @@
     <string name="action_sync">Sync</string>
     <string name="action_mapview">Switch to Map</string>
     <string name="action_listingsview">Switch to Listings</string>
-    <string name="action_send_feedback">Switch View</string>
+    <string name="action_send_feedback">Send Feedback</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>

@@ -1,5 +1,8 @@
 package com.pk.tagger.realm.venue;
 
+import com.pk.tagger.realm.RealmString;
+
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,19 +17,12 @@ public class Venue extends RealmObject{
     private String website;
     private String sw_website;
     private String image_URL;
-//    private String[] currentEvents;
+//    private RealmList<RealmString> currentEvents;
+
 
     private boolean validated;
 
     private VenueLocation location;
-
-//    public String[] getCurrentEvents() {
-//        return currentEvents;
-//    }
-//
-//    public void setCurrentEvents(String[] currentEvents) {
-//        this.currentEvents = currentEvents;
-//    }
 
     public boolean isValidated() {
         return validated;
@@ -86,7 +82,11 @@ public class Venue extends RealmObject{
         this.location = location;
     }
 
-
-
-
+//    public RealmList<RealmString> getCurrentEvents() {
+//        return currentEvents;
+//    }
+//
+//    public void setCurrentEvents(RealmList<RealmString> currentEvents) {
+//        this.currentEvents = currentEvents;
+//    }
 }

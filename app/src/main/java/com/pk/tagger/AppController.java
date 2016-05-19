@@ -7,6 +7,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 /**
  * Created by Kieran on 27/01/2016.
  */
@@ -22,6 +25,13 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        RealmConfiguration config = new RealmConfiguration.Builder(this)
+                .name("gigit.realm")
+                //.schemaVersion(0)
+                //.migration(new MyRealmMigration()) // Migration to run instead of throwing an exception
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(config);
 
     }
 

@@ -1,10 +1,12 @@
 package com.pk.tagger.realm.event;
 
+import com.pk.tagger.realm.RealmString;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.venue.Venue;
 
 import java.util.Date;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -18,7 +20,8 @@ public class Event extends RealmObject {
     private String description;
     @PrimaryKey
     private String id;                 //have
-    //private String[] eventTags;
+//    private RealmList<RealmString> tags;
+
     private String url;
     private String image_URL;           //have
     private String score;
@@ -149,13 +152,13 @@ public class Event extends RealmObject {
     public void setCreated(Date created) {
         this.created = created;
     }
-
-//    public String[] getEventTags() {
-//        return eventTags;
+//
+//    public RealmList<RealmString> getTags() {
+//        return tags;
 //    }
 //
-//    public void setEventTags(String[] eventTags) {
-//        this.eventTags = eventTags;
+//    public void setTags(RealmList<RealmString> tags) {
+//        this.tags = tags;
 //    }
 
     public String getScore() {
@@ -190,13 +193,6 @@ public class Event extends RealmObject {
     public void setTickets(EventTickets tickets) {
         this.tickets = tickets;
     }
-//    public Date getStartTime() {
-//        return startTime;
-//    }
-//
-//    public void setStartTime(Date startTime) {
-//        this.startTime = startTime;
-//    }
 
 }
 

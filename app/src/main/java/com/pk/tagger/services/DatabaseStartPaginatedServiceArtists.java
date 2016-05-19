@@ -6,18 +6,34 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
+import com.google.gson.JsonArray;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.pk.tagger.realm.RealmString;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.restclient.ArtistRestClient;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.internal.IOException;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -124,6 +140,8 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     //Log.d("JSONObject", "JSONObject received");
+//                    JsonParser jsonParser = new JsonParser();
+//                    JsonObject gsonObject = (JsonObject)jsonParser.parse(response.toString());
 
                     try {
                         // Parsing json array response
@@ -134,6 +152,32 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
 
                         JSONArray docs = (JSONArray) response.get("docs");
                         Log.d("Docs.get(2)", docs.get(2).toString());
+
+//                        Type token = new TypeToken<RealmList<RealmString>>(){}.getType();
+//                        Gson gson = new GsonBuilder()
+//                                .setExclusionStrategies(new ExclusionStrategy() {
+//                                    @Override
+//                                    public boolean shouldSkipField(FieldAttributes f) {
+//                                        return f.getDeclaringClass().equals(RealmObject.class);
+//                                    }
+//
+//                                    @Override
+//                                    public boolean shouldSkipClass(Class<?> clazz) {
+//                                        return false;
+//                                    }
+//                                })
+//                                .registerTypeAdapter(token, new CustomTypeAdapter())
+//                                .create();
+//
+//                        // Convert JSON to objects as normal
+//                        List<Artist> objects = gson.fromJson(docs, new TypeToken<List<Artist>>(){}.getType());
+//                        Log.d("ObjectsCount", Integer.toString(objects.size()));
+//
+//                        // Copy objects to Realm
+//                        myRealm.beginTransaction();
+//                        myRealm.copyToRealm(objects);
+//                        myRealm.commitTransaction();
+
 
                         for (int i = 0; i < docs.length(); i++) {
 
@@ -162,15 +206,14 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
                         //  resultReceiver.send(JSONSENT, getFinished);
 
 
-//                   RealmResults<Venue> results1 =
-//                           myRealm.where(Venue.class).findAll();
+//                   RealmResults<Artist> results1 =
+//                           myRealm.where(Artist.class).findAll();
 //
-//                   for(Venue c:results1) {
-//                       Log.d("Realm VenueLngLats: ", c.getLocation().getLng_lat().toString());
-//                       Log.d("Realm VenueName: ", c.getName());
+//                   for(Artist c:results1) {
+//                       Log.d("Realm ArtistName: ", c.getName());
 //                       //Log.d("Realm EventName: ", c.getName().toString());
 //                       //Log.d("Realm EventStartTime: ", c.getStartTime().toString());
-//                       Log.d("Realm VenueID: ", c.getId());
+//                       Log.d("Realm ArtistID: ", c.getId());
 //                   }
 
 

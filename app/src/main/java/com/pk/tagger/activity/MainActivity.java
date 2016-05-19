@@ -26,17 +26,23 @@ import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.managers.StartUpManager;
+import com.pk.tagger.realm.RealmString;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.user.User;
 import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedService;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceArtists;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -63,13 +69,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         startUpManager = new StartUpManager(getApplicationContext());
         startUpManager.setUpApp();
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name("gigit.realm")
-                //.schemaVersion(0)
-                //.migration(new MyRealmMigration()) // Migration to run instead of throwing an exception
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
+
         screenManager = new ScreenManager(getApplicationContext());
 
         // Session class instance
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_sync){
 
-            DatabaseStartPaginatedService.startActionDownload(this, "hello", "hello");
-            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
+//            DatabaseStartPaginatedService.startActionDownload(this, "hello", "hello");
+//            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
             DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
 
             Log.d("MainActivity", "Sync service started");
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             } catch (android.content.ActivityNotFoundException ex) {
                 Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
             }
+
             return true;
         }
 
@@ -257,4 +258,33 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
 
+    public void addNewUser(){
+        myRealm = Realm.getDefaultInstance();
+        User userInput = new User();// = myRealm.createObject(User.class);
+        userInput.setId("0001");
+        userInput.setUsername("Michael");
+
+        RealmString starred1 = new RealmString();
+        starred1.setVal("777");
+        RealmString starred2 = new RealmString();
+        starred2.setVal("999");
+        RealmList<RealmString> genres = new RealmList<RealmString>();
+        genres.add(starred1);
+        genres.add(starred2);
+
+        userInput.setStarredArtists(genres);
+
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(userInput);
+        myRealm.commitTransaction();
+
+        User user = myRealm.where(User.class).findFirst();
+        Log.d("Artist", user.getId());
+        Log.d("Artist", user.getUsername());
+        Log.d("Artist", user.getStarredArtists().first().getVal());
+        Log.d("Artist", user.getStarredArtists().last().getVal());
+
+
+        myRealm.close();
+    }
 }

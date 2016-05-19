@@ -5,13 +5,13 @@ import io.realm.RealmObject;
 /**
  * Created by uk on 05/02/2016.
  */
-public class SimilarArtist<RealmList> extends RealmObject {
+public class SimilarArtists extends RealmObject {
 
     private String id;
     private String name;
     private String spotify_id;
 
-    public SimilarArtist(){}
+    public SimilarArtists(){}
 
     public String getSpotify_id() {
         return spotify_id;
