@@ -8,9 +8,9 @@ import com.loopj.android.http.SyncHttpClient;
 /**
  * Created by PK on 25/02/2016.
  */
-public class ArtistRestClient {
+public class EventsRestClient {
 
-    private static final String BASE_URL = "http://52.31.31.106:9000/api/artists";
+    private static final String BASE_URL = "http://52.31.31.106:9000/api/events";
 
     private static AsyncHttpClient client = new SyncHttpClient();
 

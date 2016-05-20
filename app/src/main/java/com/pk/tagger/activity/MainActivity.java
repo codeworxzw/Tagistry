@@ -30,6 +30,7 @@ import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceEvents;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceArtists;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
+import com.pk.tagger.services.DatabaseStartServiceEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -130,13 +131,16 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
                             myRealm = Realm.getDefaultInstance();
-                            myRealm.beginTransaction();
-                            myRealm.delete(Event.class);
-                            myRealm.delete(Artist.class);
-                            myRealm.delete(Venue.class);
-                            myRealm.commitTransaction();
+                            myRealm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    myRealm.delete(Event.class);
+                                    myRealm.delete(Artist.class);
+                                    myRealm.delete(Venue.class);
+                                    Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             myRealm.close();
                         }})
                     .setNegativeButton(android.R.string.no, null).show();
@@ -166,8 +170,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 //                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 //            }
 
-//            addNewUser();
-            getUserStarredEventsArray();
+//            getUserStarredEventsArray();
 
             return true;
         }

@@ -10,7 +10,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
-import com.pk.tagger.restclient.EventRestClient;
+import com.pk.tagger.restclient.EventsRestClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -121,7 +121,7 @@ public class DatabaseStartPaginatedServiceEvents extends IntentService {
         for(int j = 1; j<=pageCount; j++ ) {
             Log.d("pageNumber", Integer.toString(j));
 
-            EventRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
+            EventsRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

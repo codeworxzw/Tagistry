@@ -182,8 +182,7 @@ public class ListingsFragment extends Fragment {
 
 
         mItems = myEvents.getResults();
-        long count = myEvents.getCount();
-        Log.d("No. Events Found", String.valueOf(count));
+        Log.d("No. Events Found", String.valueOf(mItems.size()));
 
         for (int i = 0; i < mItems.size(); i++) {
             expandState.append(i, false);

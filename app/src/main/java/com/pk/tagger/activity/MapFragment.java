@@ -414,8 +414,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //                });
 //        realmRecyclerView.setAdapter(eventsRealmAdapter);
 
-//        long count = events.getCount();
-//        Log.d("No. Events Found", String.valueOf(count));
 
         for (int i = 0; i < mItems.size(); i++) {
             expandState.append(i, false);

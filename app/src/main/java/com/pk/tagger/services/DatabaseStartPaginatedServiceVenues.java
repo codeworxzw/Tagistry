@@ -7,10 +7,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
-import com.pk.tagger.restclient.EventRestClient;
-import com.pk.tagger.restclient.VenueRestClient;
+import com.pk.tagger.restclient.VenuesRestClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +18,6 @@ import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -121,7 +118,7 @@ public class DatabaseStartPaginatedServiceVenues extends IntentService {
         for(int j = 1; j<=pageCount; j++ ) {
             Log.d("pageNumber", Integer.toString(j));
 
-            VenueRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
+            VenuesRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

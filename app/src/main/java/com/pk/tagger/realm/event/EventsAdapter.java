@@ -32,6 +32,7 @@ import com.pk.tagger.R;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.user.User;
 import com.pk.tagger.realm.venue.Venue;
+import com.pk.tagger.services.DatabaseStartServiceEvent;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -114,7 +115,17 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         }
         public void bind(final Event event) {
 
-//            myRealm = Realm.getDefaultInstance();
+            try{
+                if(event.getUrl()==null){           //TODO: needs to update to get latest ticket info, maybe a timestamp check to be added/separate api route for ticket info
+                    DatabaseStartServiceEvent.startActionDownload(context, event.getId(), "hello");
+                    Log.d("Adapter", "Requesting full data...");
+                } else {
+//                    Log.d("Adapter", "Already has full data");
+                }
+            } catch (Exception e){
+                Log.d("Adapter", e.toString());
+            }
+
             final Artist artist = myRealm
                     .where(Artist.class)
                     .equalTo("id", event.getArtist().getId())
@@ -271,7 +282,6 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                                     user.removeStarredEvent(event.getId());
                                 }
                             });
-
                         } else {
                             event_star.setImageResource(R.drawable.ic_star_black_36dp);
                             myRealm.executeTransaction(new Realm.Transaction() {

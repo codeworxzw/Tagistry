@@ -9,7 +9,7 @@ import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.restclient.EventRestClient;
+import com.pk.tagger.restclient.EventsRestClient;
 import com.pk.tagger.realm.event.Event;
 
 import org.json.JSONArray;
@@ -20,7 +20,6 @@ import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.exceptions.RealmException;
 
 public class DatabaseSyncService extends IntentService {
@@ -64,7 +63,7 @@ public class DatabaseSyncService extends IntentService {
         Log.d("Date in DSyncService", myDate.toString());
         myRealm = Realm.getDefaultInstance();
 
-        EventRestClient.get("", null, new JsonHttpResponseHandler() {
+        EventsRestClient.get("", null, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

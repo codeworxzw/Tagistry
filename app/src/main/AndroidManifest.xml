@@ -76,6 +76,9 @@
         <service
             android:name=".services.DatabaseStartPaginatedServiceArtists"
             android:exported="false"/>
+        <service
+            android:name=".services.DatabaseStartServiceEvent"
+            android:exported="false"/>
     </application>
 
 </manifest>

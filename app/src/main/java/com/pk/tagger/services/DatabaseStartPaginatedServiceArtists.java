@@ -6,34 +6,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.TypeAdapter;
-import com.google.gson.JsonArray;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.realm.RealmString;
 import com.pk.tagger.realm.artist.Artist;
-import com.pk.tagger.restclient.ArtistRestClient;
+import com.pk.tagger.restclient.ArtistsRestClient;
 
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.RealmResults;
-import io.realm.internal.IOException;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -134,7 +118,7 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
         for(int j = 1; j<=pageCount; j++ ) {
             Log.d("pageNumber", Integer.toString(j));
 
-            ArtistRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
+            ArtistsRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
