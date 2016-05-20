@@ -21,7 +21,6 @@ public class MyRealmResults {
 
     private Context context;
     private Realm myRealm;
-//    private Realm myRealm2;
     private String searchArtistVenue;
     private int ticketMin, ticketMax;
     private Date startDate;
@@ -29,7 +28,7 @@ public class MyRealmResults {
     private boolean ticketsAvailable;
     private String[] searchGenres;
 
-    public MyRealmResults(Context context, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate, Date endDate){
+    public MyRealmResults(Context context, Realm realm, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate, Date endDate){
 
         this.context = context;
         this.searchArtistVenue = searchArtistVenue;
@@ -39,13 +38,11 @@ public class MyRealmResults {
         this.ticketMax = ticketMax;
         this.startDate = startDate;
         this.endDate = endDate;
-        myRealm = Realm.getDefaultInstance();       //needs to be closed somewhere
-
-
+        this.myRealm = realm;
     }
 
     public RealmResults getResults(){
-//        myRealm = Realm.getDefaultInstance();
+
         Log.d("SearchDate", startDate.toString());
         Log.d("EndDate", endDate.toString());
         Log.d("SearchArtist/Venue", searchArtistVenue);
@@ -98,12 +95,10 @@ public class MyRealmResults {
 
         RealmResults<Event> events = query.findAllSorted(sortField, asc);
        // RealmResults<Event> events = query.findAll();
-//        myRealm.close();
         return events;
     }
 
     public long getCount(){
-//        myRealm2 = Realm.getDefaultInstance();
         int ticketCheck = 0;
         if(ticketsAvailable){
             ticketCheck = 1;
@@ -144,8 +139,6 @@ public class MyRealmResults {
         }
 
         long count = query.count();
-
-//        myRealm.close();
 
         return count;
     }

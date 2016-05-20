@@ -30,8 +30,11 @@ import com.kyo.expandablelayout.ExpandableLayout;
 import com.pk.tagger.Fx;
 import com.pk.tagger.R;
 import com.pk.tagger.realm.artist.Artist;
+import com.pk.tagger.realm.user.User;
 import com.pk.tagger.realm.venue.Venue;
 import com.squareup.picasso.Picasso;
+
+import java.util.Arrays;
 
 
 public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAdapter.ViewHolder> {
@@ -60,7 +63,8 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                              boolean animateResults,
                              View.OnClickListener clickListener,
                              ExpandableLayout.OnExpandListener expandListener,
-                             SparseBooleanArray expandState) {
+                             SparseBooleanArray expandState,
+                          Realm realm) {
 
         super(context, realmResults, automaticUpdate, animateResults);
         this.context = context;
@@ -68,14 +72,14 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         this.clickListener = clickListener;
         this.expandListener = expandListener;
         this.expandState = expandState;
-
+        this.myRealm = realm;
     }
 
     public class ViewHolder extends RealmViewHolder {
         public ExpandableLayout expandableLayout;
         public LinearLayout llexpand, artist_websites;
 
-        public ImageView listingsImage;
+        public ImageView listingsImage, event_star;
         public TextView listingsTitle, listingsDate, listingsVenue, listingsTickets;
         public TextView artist_title, artist_desc, artist_genre, artist_spotify, artist_website_official, artist_website_fb, artist_website_twitter, artist_website_wiki;
         public TextView venue_title, venue_address, venue_website_sw, venue_website_official;
@@ -105,21 +109,22 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             this.venue_website_official = (TextView) container.findViewById(R.id.textView_venue_website_official);
             this.event_tickets_price = (TextView) container.findViewById(R.id.textView_event_tickets_price);
             this.event_tickets_buy = (TextView) container.findViewById(R.id.textView_event_tickets_buy);
+            this.event_star = (ImageView) container.findViewById(R.id.event_star);
 
         }
         public void bind(final Event event) {
 
-            myRealm = Realm.getDefaultInstance();
+//            myRealm = Realm.getDefaultInstance();
             final Artist artist = myRealm
                     .where(Artist.class)
                     .equalTo("id", event.getArtist().getId())
                     .findFirst();
-            Log.d("Artist", artist.toString());
+//            Log.d("Artist", artist.toString());
             final Venue venue = myRealm
                     .where(Venue.class)
                     .equalTo("id", event.getVenue().getId())
                     .findFirst();
-            Log.d("Venue", venue.toString());
+//            Log.d("Venue", venue.toString());
 
             String IMAGE_URL = "";
 
@@ -167,7 +172,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     artist_spotify.setText("Not found :<");
                 } else {
                     String spotifyURL = "<a href='" + context.getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
-                    Log.d("spotifyURl:", spotifyURL);
+//                    Log.d("spotifyURl:", spotifyURL);
                     artist_spotify.setText(Html.fromHtml(spotifyURL));
                     artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
                 }
@@ -245,7 +250,42 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     }
                 }
             });
-            myRealm.close();
+
+            final User user = myRealm.where(User.class).findFirst();
+            //check if user has saved event before
+            if (Arrays.asList(user.getStarredEventsArray()).contains(event.getId())) {
+                event_star.setImageResource(R.drawable.ic_star_black_36dp);
+                Log.d("Starred", event.getArtist().getName());
+            } else {
+                event_star.setImageResource(R.drawable.ic_star_border_black_36dp);
+            }
+            event_star.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        if (Arrays.asList(user.getStarredEventsArray()).contains(event.getId())) {
+                            event_star.setImageResource(R.drawable.ic_star_border_black_36dp);
+                            myRealm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    user.removeStarredEvent(event.getId());
+                                }
+                            });
+
+                        } else {
+                            event_star.setImageResource(R.drawable.ic_star_black_36dp);
+                            myRealm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    user.addStarredEvent(event.getId());
+                                }
+                            });
+                        }
+                    }catch(Exception e){
+                        Log.d("Catch", e.toString());
+                    }
+                }
+            });
         }
     }
 
@@ -268,7 +308,6 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         holder.expandableLayout.setExpanded(false);
         holder.expandableLayout.setOnExpandListener(expandListener);
         return holder;
-
     }
 
     @Override

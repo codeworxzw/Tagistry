@@ -86,15 +86,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        myRealm = Realm.getDefaultInstance();
 
         filterManager = new FilterManager(getContext());
 
@@ -270,7 +268,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         int ticketMax = filterManager.getMaxPrice();
         int ticketMin = 1;
 
-        MyRealmResults events2 = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+        MyRealmResults events2 = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
         RealmResults <Event> events = events2.getResults();
         ((MainActivity) getActivity())
                 .setActionBarTitle(String.valueOf(events.size()) + " Events");
@@ -311,7 +309,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 }
                 realmRecyclerView = (RealmRecyclerView) getActivity().findViewById(R.id.realmCluster_recycler_view2);
 
-                myRealm = Realm.getDefaultInstance();
 
                 int eSize = bulk.size();
                 Log.i("Size of arrayList: ", String.valueOf(eSize));
@@ -333,7 +330,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 .equalTo("eventID", eventID)
                 .findAll();  */
 
-                myRealm.close();
 
 
                 //clusterMapInfoWindow.setData(cluster);
@@ -368,16 +364,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 lnr.setLayoutParams(lnrp);
                 realmRecyclerView = (RealmRecyclerView) getActivity().findViewById(R.id.realmCluster_recycler_view2);
 
-                myRealm = Realm.getDefaultInstance();
-
                 RealmResults<Event> events = myRealm.where(Event.class)
                         .equalTo("id", clusterMarkerLocation.getEventID())
                         .findAll();
 
                 getClusterList(events);
 
-
-                myRealm.close();
                 return false;
             }
         });
@@ -479,7 +471,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                             }
                         }
                     }
-                }, expandState);
+                }, expandState, myRealm);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
 
     }
@@ -513,6 +505,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        myRealm.close();
+
     }
 
     @Override

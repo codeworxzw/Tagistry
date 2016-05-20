@@ -23,7 +23,6 @@ import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.managers.SessionManager;
 import com.pk.tagger.managers.StartUpManager;
-import com.pk.tagger.realm.RealmString;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.user.User;
@@ -32,10 +31,10 @@ import com.pk.tagger.services.DatabaseStartPaginatedServiceEvents;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceArtists;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -59,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        myRealm = Realm.getDefaultInstance();
+        addNewUser();                                   // creates a test user (id: 0001, username: Michael)
         startUpManager = new StartUpManager(getApplicationContext());
         startUpManager.setUpApp();
 
@@ -156,15 +156,18 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.send_feedback){
 
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("message/rfc822");
-            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
-            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-            try {
-                startActivity(Intent.createChooser(i, "Send mail..."));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-            }
+//            Intent i = new Intent(Intent.ACTION_SEND);
+//            i.setType("message/rfc822");
+//            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+//            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+//            try {
+//                startActivity(Intent.createChooser(i, "Send mail..."));
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+//            }
+
+//            addNewUser();
+            getUserStarredEventsArray();
 
             return true;
         }
@@ -251,33 +254,39 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
 
+
     public void addNewUser(){
-        myRealm = Realm.getDefaultInstance();
-        User userInput = new User();// = myRealm.createObject(User.class);
-        userInput.setId("0001");
-        userInput.setUsername("Michael");
+        try{
+            User user = myRealm.where(User.class).findFirst();
+            Log.d("User", "Already exists: " +user.getUsername());
 
-        RealmString starred1 = new RealmString();
-        starred1.setVal("777");
-        RealmString starred2 = new RealmString();
-        starred2.setVal("999");
-        RealmList<RealmString> genres = new RealmList<RealmString>();
-        genres.add(starred1);
-        genres.add(starred2);
+        } catch (Exception e){
+            User newUser = new User();
+            newUser.setId("0001");
+            newUser.setUsername("Michael");
 
-        userInput.setStarredArtists(genres);
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate(newUser);
+            myRealm.commitTransaction();
+            Log.d("User", "Created new user: " +newUser.getUsername());
 
-        myRealm.beginTransaction();
-        myRealm.copyToRealmOrUpdate(userInput);
-        myRealm.commitTransaction();
+        }
 
+    }
+
+    public void getUserStarredEventsArray(){
         User user = myRealm.where(User.class).findFirst();
-        Log.d("Artist", user.getId());
-        Log.d("Artist", user.getUsername());
-        Log.d("Artist", user.getStarredArtists().first().getVal());
-        Log.d("Artist", user.getStarredArtists().last().getVal());
 
+        Log.d("Id", user.getId());
+        Log.d("Username", user.getUsername());
 
+        Log.d("StarredEvents", Arrays.toString(user.getStarredEventsArray()));
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         myRealm.close();
     }
 }

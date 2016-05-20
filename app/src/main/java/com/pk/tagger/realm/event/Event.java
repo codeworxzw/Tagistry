@@ -8,6 +8,7 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -20,7 +21,8 @@ public class Event extends RealmObject {
     private String description;
     @PrimaryKey
     private String id;                 //have
-//    private RealmList<RealmString> tags;
+    @Ignore
+    private RealmList<RealmString> tags;
 
     private String url;
     private String image_URL;           //have
@@ -152,14 +154,14 @@ public class Event extends RealmObject {
     public void setCreated(Date created) {
         this.created = created;
     }
-//
-//    public RealmList<RealmString> getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(RealmList<RealmString> tags) {
-//        this.tags = tags;
-//    }
+
+    public RealmList<RealmString> getTags() {
+        return tags;
+    }
+
+    public void setTags(RealmList<RealmString> tags) {
+        this.tags = tags;
+    }
 
     public String getScore() {
         return score;
@@ -168,7 +170,6 @@ public class Event extends RealmObject {
     public void setScore(String score) {
         this.score = score;
     }
-
 
     public EventPoster getPoster() {
         return poster;
@@ -193,6 +194,15 @@ public class Event extends RealmObject {
     public void setTickets(EventTickets tickets) {
         this.tickets = tickets;
     }
+
+    public String[] getTagsArray(){
+        String[] array = new String [getTags().size()];
+        for(int i =0; i<array.length; i++){
+            array[i] = getTags().get(i).getVal();
+        }
+        return array;
+    }
+
 
 }
 

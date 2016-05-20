@@ -4,6 +4,7 @@ import com.pk.tagger.realm.RealmString;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -24,10 +25,14 @@ public class Artist extends RealmObject {
     private int spotify_popularity;
     private boolean validated;
 
-//    private RealmList<RealmString> tags;
-//    private RealmList<RealmString> spotify_genre;
-//    private RealmList<RealmString> similarArtists;
-//    private RealmList<RealmString> currentEvents;
+    @Ignore
+    private RealmList<RealmString> tags;
+    @Ignore
+    private RealmList<RealmString> spotify_genre;
+    @Ignore
+    private RealmList<RealmString> similarArtists;
+    @Ignore
+    private RealmList<RealmString> currentEvents;
 
     private ArtistWebsite website;
 
@@ -124,35 +129,59 @@ public class Artist extends RealmObject {
         this.spotify_popularity = spotify_popularity;
     }
 
-//    public RealmList<RealmString> getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(RealmList<RealmString> tags) {
-//        this.tags = tags;
-//    }
-//
-//    public RealmList<RealmString> getSpotify_genre() {
-//        return spotify_genre;
-//    }
-//
-//    public void setSpotify_genre(RealmList<RealmString> spotify_genre) {
-//        this.spotify_genre = spotify_genre;
-//    }
-//
-//    public RealmList<RealmString> getSimilarArtists() {
-//        return similarArtists;
-//    }
-//
-//    public void setSimilarArtists(RealmList<RealmString> similarArtists) {
-//        this.similarArtists = similarArtists;
-//    }
-//
-//    public RealmList<RealmString> getCurrentEvents() {
-//        return currentEvents;
-//    }
-//
-//    public void setCurrentEvents(RealmList<RealmString> currentEvents) {
-//        this.currentEvents = currentEvents;
-//    }
+    public RealmList<RealmString> getTags() {
+        return tags;
+    }
+
+    public void setTags(RealmList<RealmString> tags) {
+        this.tags = tags;
+    }
+
+    public RealmList<RealmString> getSpotify_genre() {
+        return spotify_genre;
+    }
+
+    public void setSpotify_genre(RealmList<RealmString> spotify_genre) {
+        this.spotify_genre = spotify_genre;
+    }
+
+    public RealmList<RealmString> getSimilarArtists() {
+        return similarArtists;
+    }
+
+    public void setSimilarArtists(RealmList<RealmString> similarArtists) {
+        this.similarArtists = similarArtists;
+    }
+
+    public RealmList<RealmString> getCurrentEvents() {
+        return currentEvents;
+    }
+
+    public void setCurrentEvents(RealmList<RealmString> currentEvents) {
+        this.currentEvents = currentEvents;
+    }
+
+    public String[] getCurrentEventsArray(){
+        String[] array = new String [getCurrentEvents().size()];
+        for(int i =0; i<array.length; i++){
+            array[i] = getCurrentEvents().get(i).getVal();
+        }
+        return array;
+    }
+
+    public String[] getTagsArray(){
+        String[] array = new String [getTags().size()];
+        for(int i =0; i<array.length; i++){
+            array[i] = getTags().get(i).getVal();
+        }
+        return array;
+    }
+
+    public String[] getSpotifyGenreArray(){
+        String[] array = new String [getSpotify_genre().size()];
+        for(int i =0; i<array.length; i++){
+            array[i] = getSpotify_genre().get(i).getVal();
+        }
+        return array;
+    }
 }

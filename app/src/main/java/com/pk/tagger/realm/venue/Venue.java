@@ -4,12 +4,14 @@ import com.pk.tagger.realm.RealmString;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+        import io.realm.annotations.Ignore;
+        import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Kobi on 08/02/2016.
  */
 public class Venue extends RealmObject{
+    public Venue(){};
 
     @PrimaryKey
     private String id;
@@ -17,8 +19,9 @@ public class Venue extends RealmObject{
     private String website;
     private String sw_website;
     private String image_URL;
-//    private RealmList<RealmString> currentEvents;
 
+    @Ignore
+    private RealmList<RealmString> currentEvents;
 
     private boolean validated;
 
@@ -32,7 +35,6 @@ public class Venue extends RealmObject{
         this.validated = validated;
     }
 
-    public Venue(){};
 
     public String getName() {
         return name;
@@ -82,11 +84,19 @@ public class Venue extends RealmObject{
         this.location = location;
     }
 
-//    public RealmList<RealmString> getCurrentEvents() {
-//        return currentEvents;
-//    }
-//
-//    public void setCurrentEvents(RealmList<RealmString> currentEvents) {
-//        this.currentEvents = currentEvents;
-//    }
+    public RealmList<RealmString> getCurrentEvents() {
+        return currentEvents;
+    }
+
+    public void setCurrentEvents(RealmList<RealmString> currentEvents) {
+        this.currentEvents = currentEvents;
+    }
+
+    public String[] getCurrentEventsArray(){
+        String[] array = new String [getCurrentEvents().size()];
+        for(int i =0; i<array.length; i++){
+            array[i] = getCurrentEvents().get(i).getVal();
+        }
+        return array;
+    }
 }

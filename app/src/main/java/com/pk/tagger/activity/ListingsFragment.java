@@ -38,6 +38,7 @@ import io.realm.RealmResults;
 
 public class ListingsFragment extends Fragment {
 
+    private Realm myRealm;
     private RealmRecyclerView realmRecyclerView;
     private EventsAdapter eventsRealmAdapter;
     private SparseBooleanArray expandState = new SparseBooleanArray();
@@ -64,6 +65,7 @@ public class ListingsFragment extends Fragment {
         Log.d("ListingsFragment", "onCreateView called");
 
         realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
+        myRealm = Realm.getDefaultInstance();
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 //
@@ -98,6 +100,7 @@ public class ListingsFragment extends Fragment {
     public void onDestroyView(){
         Log.d("Realm Tag onDV", "open");
         super.onDestroyView();
+        myRealm.close();
     }
 
     @Override
@@ -173,7 +176,7 @@ public class ListingsFragment extends Fragment {
         int ticketMax = filterManager.getMaxPrice();;
         int ticketMin = 1;
 
-        MyRealmResults myEvents = new MyRealmResults(getActivity(), searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+        MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
 //        MyRealmResults myEvents = new MyRealmResults(getActivity(), "", searchGenres, false, 0, 1000, date, endDate);
 
 
@@ -239,7 +242,7 @@ public class ListingsFragment extends Fragment {
                             }
                         }
                     }
-                }, expandState);
+                }, expandState, myRealm);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
     }
 }

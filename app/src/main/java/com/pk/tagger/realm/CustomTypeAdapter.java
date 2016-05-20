@@ -11,6 +11,7 @@
 //
 ///**
 // * Created by Kieran on 19/05/2016.
+// * adopted from https://gist.github.com/cmelchior/1a97377df0c49cd4fca9
 // */
 //public class CustomTypeAdapter extends TypeAdapter<RealmList<RealmString>> {
 //
