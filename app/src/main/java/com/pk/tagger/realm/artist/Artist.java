@@ -27,7 +27,7 @@ public class Artist extends RealmObject {
 
     @Ignore
     private RealmList<RealmString> tags;
-    @Ignore
+//    @Ignore
     private RealmList<RealmString> spotify_genre;
     @Ignore
     private RealmList<RealmString> similarArtists;

@@ -3,30 +3,14 @@ package com.pk.tagger.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.pk.tagger.activity.MyApiEndpointInterface;
-import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
-import com.pk.tagger.realm.venue.Venue;
-import com.pk.tagger.restclient.EventRestClient;
-import com.pk.tagger.restclient.EventsRestClient;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
-
-import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
-import io.realm.exceptions.RealmException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in

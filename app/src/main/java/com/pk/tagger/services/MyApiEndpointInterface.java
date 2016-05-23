@@ -1,10 +1,9 @@
-package com.pk.tagger.activity;
+package com.pk.tagger.services;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
-import com.pk.tagger.realm.event.EventResponse;
 import com.pk.tagger.realm.venue.Venue;
 
 import org.json.JSONObject;
@@ -23,7 +22,8 @@ import retrofit2.http.Path;
 public interface MyApiEndpointInterface {
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://gigitch.duckdns.org/api/")
+//            .baseUrl("https://gigitch.duckdns.org/api/")
+            .baseUrl("http://52.31.31.106:9000/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     // Request method and URL specified in the annotation
@@ -39,6 +39,14 @@ public interface MyApiEndpointInterface {
     Call<Venue> getVenue(@Path("id") String venueID);
 
     @GET("events/{page}")
-    Call<EventResponse> getAllEvents(@Path("page") int pageNumber);
+    Call<JsonObject> getAllEvents(@Path("page") int pageNumber);
+
+    @GET("artists/{page}")
+    Call<JsonObject> getAllArtists(@Path("page") int pageNumber);
+
+    @GET("venues/{page}")
+    Call<JsonObject> getAllVenues(@Path("page") int pageNumber);
+
+
 
 }

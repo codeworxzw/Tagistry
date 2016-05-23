@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.pk.tagger.realm.CustomGsonBuilder;
 import com.pk.tagger.realm.artist.Artist;
-import com.pk.tagger.restclient.ArtistsRestClient;
 
-import org.json.JSONException;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -111,14 +114,13 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
         Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DStartService", myDate.toString());
-        myRealm = Realm.getDefaultInstance();
-
-        myRealm.beginTransaction();
+//        myRealm = Realm.getDefaultInstance();
+//        myRealm.beginTransaction();
 
         for(int j = 1; j<=pageCount; j++ ) {
             Log.d("pageNumber", Integer.toString(j));
 
-            ArtistsRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
+        /*    ArtistsRestClient.get("/" + j, null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -244,7 +246,7 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
 //                        //  resultReceiver.send(JSONSENT, getFinished);
 //
 //
-///*                   RealmResults<Event> results1 =
+//                   RealmResults<Event> results1 =
 //                           myRealm.where(Event.class).findAll();
 //
 //                   for(Event c:results1) {
@@ -253,7 +255,7 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
 //                       Log.d("Realm EventName: ", c.getName().toString());
 //                       Log.d("Realm EventStartTime: ", c.getStartTime().toString());
 //                       Log.d("Realm EventID: ", c.getId().toString());
-//                   } */
+//                   }
 //
 //
 //                    } catch (JSONException e) {
@@ -261,9 +263,61 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
 //                    }
 //                }
             });
+            */
+
+
+            MyApiEndpointInterface service = MyApiEndpointInterface.retrofit.create(MyApiEndpointInterface.class);
+            Call<JsonObject> call = service.getAllArtists(j);
+
+            //Executing Call
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse (Call<JsonObject> call, final Response<JsonObject> response) {
+
+                    try {
+
+//                        Log.d("Response", response.toString());
+                        Log.d("Response body", response.body().toString());
+//                        Log.d("Response raw", response.raw().toString());
+                        Log.d("Response pages", response.body().get("pages").toString());
+                        pageCount = Integer.parseInt(response.body().get("pages").toString());
+                        Log.d("PageCount", Integer.toString(pageCount));
+
+                        Gson gson = new CustomGsonBuilder().create();
+                        JsonArray json = response.body().getAsJsonArray("docs");
+                        final List<Artist> objects = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
+//                        Log.d("Response json", json.toString());
+
+
+                        myRealm = Realm.getDefaultInstance();
+                        myRealm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                myRealm.copyToRealmOrUpdate(objects);
+                            }
+                        });
+
+                        Artist result =
+                                myRealm.where(Artist.class).equalTo("id", "9790").findFirst();
+                        Log.d("Full Artist", result.toString());
+                        Log.d("Genres", Arrays.toString(result.getSpotifyGenreArray()));
+
+                        myRealm.close();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.d("Throw", t.toString());
+                }
+            });
+
         }
-        myRealm.commitTransaction();
-        myRealm.close();
+//        myRealm.commitTransaction();
+//        myRealm.close();
 
     }
 

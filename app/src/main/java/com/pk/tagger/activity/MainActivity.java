@@ -152,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 //            DatabaseStartServiceEvent.startActionDownload(this, "1005164", "hello");
 
-            DatabaseStartPaginatedServiceEvents.startActionDownload(this, "hello", "hello");
-//            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
-//            DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
+            DatabaseStartPaginatedServiceEvents.startActionDownload(this, "hello", "hello");      //issues running all three together
+            DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
+            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
 
             Log.d("MainActivity", "Sync service started");
             return true;
@@ -162,17 +162,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.send_feedback){
 
-//            Intent i = new Intent(Intent.ACTION_SEND);
-//            i.setType("message/rfc822");
-//            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
-//            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-//            try {
-//                startActivity(Intent.createChooser(i, "Send mail..."));
-//            } catch (android.content.ActivityNotFoundException ex) {
-//                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-//            }
-
-//            getUserStarredEventsArray();
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
 
             return true;
         }
