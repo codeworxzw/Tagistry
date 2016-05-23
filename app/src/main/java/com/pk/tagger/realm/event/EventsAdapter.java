@@ -27,7 +27,6 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 
 import com.kyo.expandablelayout.ExpandableLayout;
-import com.pk.tagger.Fx;
 import com.pk.tagger.R;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.user.User;
@@ -163,7 +162,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             String tickets = "Tickets Unavailable";
             try {
                 if(event.getTickets().getTicket_count()!=0){
-                    tickets = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
+                    tickets = "Tickets from: £" + String.valueOf(Math.round(event.getPurchasePrice()));
                 }
             } catch(Exception e){
                 //Log.d(TAG, "No ticket price");
@@ -234,7 +233,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
 
             try {
                 if(event.getTickets().getTicket_count()!=0){
-                    tickets2 = "Tickets from: £" + String.valueOf(event.getPurchasePrice());
+                    tickets2 = "Tickets from: £" + String.valueOf(Math.round(event.getPurchasePrice()));
                     event_tickets_price.setText(tickets2);
                     event_tickets_buy.setVisibility(View.VISIBLE);
                 }else {

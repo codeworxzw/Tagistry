@@ -9,10 +9,10 @@ import io.realm.RealmObject;
  */
 public class EventTickets extends RealmObject {
 
-    private int lowest_price;
-    private int commission;
-    private int purchase_price = 0;
-    private int face_value;
+    private float lowest_price;
+    private float commission;
+    private float purchase_price;
+    private float face_value;
     private int ticket_count;
 
     private String currency;
@@ -21,27 +21,35 @@ public class EventTickets extends RealmObject {
 
     public EventTickets(){}
 
-    public int getLowest_price() { return lowest_price; }
+    public float getLowest_price() {
+        return lowest_price;
+    }
 
-    public void setLowest_price(int lowest_price) {
+    public void setLowest_price(float lowest_price) {
         this.lowest_price = lowest_price;
     }
 
-    public int getCommission() { return commission; }
+    public float getCommission() {
+        return commission;
+    }
 
-    public void setCommission(int commission) {
+    public void setCommission(float commission) {
         this.commission = commission;
     }
 
-    public int getPurchase_price() { return purchase_price; }
+    public float getPurchase_price() {
+        return purchase_price;
+    }
 
-    public void setPurchase_price(int purchase_price) {
+    public void setPurchase_price(float purchase_price) {
         this.purchase_price = purchase_price;
     }
 
-    public int getFace_value() { return face_value; }
+    public float getFace_value() {
+        return face_value;
+    }
 
-    public void setFace_value(int face_value) {
+    public void setFace_value(float face_value) {
         this.face_value = face_value;
     }
 

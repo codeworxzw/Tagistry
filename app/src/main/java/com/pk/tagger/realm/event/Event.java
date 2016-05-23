@@ -28,7 +28,7 @@ public class Event extends RealmObject {
     private String image_URL;           //have
     private String score;
 
-    private int purchasePrice;     //have
+    private float purchasePrice;     //have
 
     private Date created;
     private Date lastUpdated;
@@ -62,13 +62,14 @@ public class Event extends RealmObject {
         this.venue = venue;
     }
 
-    public int getPurchasePrice() {
+    public float getPurchasePrice() {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(int purchasePrice) {
+    public void setPurchasePrice(float purchasePrice) {
         this.purchasePrice = purchasePrice;
     }
+
     public Date getDate() {
         return date;
     }

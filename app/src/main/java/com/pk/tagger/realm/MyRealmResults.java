@@ -22,7 +22,7 @@ public class MyRealmResults {
     private Context context;
     private Realm myRealm;
     private String searchArtistVenue;
-    private int ticketMin, ticketMax;
+    private float ticketMin, ticketMax;
     private Date startDate;
     private Date endDate;
     private boolean ticketsAvailable;
@@ -34,8 +34,8 @@ public class MyRealmResults {
         this.searchArtistVenue = searchArtistVenue;
         this.searchGenres = searchGenres;
         this.ticketsAvailable = ticketsAvailable;
-        this.ticketMin = ticketMin;
-        this.ticketMax = ticketMax;
+        this.ticketMin = (float) ticketMin;
+        this.ticketMax = (float) ticketMax;
         this.startDate = startDate;
         this.endDate = endDate;
         this.myRealm = realm;

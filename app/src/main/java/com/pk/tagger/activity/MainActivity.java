@@ -150,9 +150,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_sync){
 
+//            DatabaseStartServiceEvent.startActionDownload(this, "1005164", "hello");
+
             DatabaseStartPaginatedServiceEvents.startActionDownload(this, "hello", "hello");
-            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
-            DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
+//            DatabaseStartPaginatedServiceVenues.startActionDownload(this, "hello", "hello");
+//            DatabaseStartPaginatedServiceArtists.startActionDownload(this, "hello", "hello");
 
             Log.d("MainActivity", "Sync service started");
             return true;

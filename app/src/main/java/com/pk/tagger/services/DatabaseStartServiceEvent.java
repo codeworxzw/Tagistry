@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.pk.tagger.activity.MyApiEndpointInterface;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.venue.Venue;
@@ -22,6 +23,10 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
 import io.realm.exceptions.RealmException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -108,37 +113,76 @@ public class DatabaseStartServiceEvent extends IntentService {
 
         final String eventID = param1;
 
-        myRealm = Realm.getDefaultInstance();
 
 
 //        final String test = "1005164";
-        EventRestClient.get("/" +eventID, null, new JsonHttpResponseHandler() {
+//        EventRestClient.get("/" +eventID, null, new JsonHttpResponseHandler() {
+//
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+////                Log.d("JSONObject", "JSONObject received");
+//                final JSONObject event = response;
+//
+//                try {
+//                    myRealm.getDefaultInstance();
+//                    myRealm.executeTransaction(new Realm.Transaction() {
+//                        @Override
+//                        public void execute(Realm realm) {
+//                            myRealm.createOrUpdateObjectFromJson(Event.class, event);
+//                        }
+//                    });
+//
+//                    Event result =
+//                            myRealm.where(Event.class).contains("id", eventID).findFirst();
+//                    myRealm.close();
 
+//                    Log.d("Full Event", result.toString());
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
+        MyApiEndpointInterface service = MyApiEndpointInterface.retrofit.create(MyApiEndpointInterface.class);
+
+        Call<Event> call = service.getEvent(eventID);
+
+        //Executing Call
+        call.enqueue(new Callback<Event>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-//                Log.d("JSONObject", "JSONObject received");
-                final JSONObject event = response;
+            public void onResponse (Call<Event> call, final Response<Event> response) {
 
                 try {
+                    Log.d("Response body1", response.body().toString());
+
+                    myRealm = Realm.getDefaultInstance();
+
                     myRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            myRealm.createOrUpdateObjectFromJson(Event.class, event);
+                            myRealm.copyToRealmOrUpdate(response.body());
                         }
                     });
-
                     Event result =
-                            myRealm.where(Event.class).contains("id", eventID).findFirst();
-                    Log.d("Full Event", result.toString());
+                            myRealm.where(Event.class).equalTo("id", eventID).findFirst();
+                    myRealm.close();
 
+                    Log.d("Full Event", result.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            }
+
+            @Override
+            public void onFailure(Call<Event> call, Throwable t) {
+                Log.d("Throw", t.toString());
             }
         });
-        myRealm.close();
+
 
     }
 
