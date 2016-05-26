@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.pk.tagger.realm.CustomGsonBuilder;
 import com.pk.tagger.realm.venue.Venue;
 
 import java.util.Date;
@@ -41,8 +40,6 @@ public class DatabaseStartPaginatedServiceVenues extends IntentService {
     // temporary string to show the parsed response
     private String jsonResponse;
     private Realm myRealm;
-
-
 
     private int pageCount = 1;       //total page count (initialize as 1, then update from response)
 
@@ -254,7 +251,7 @@ public class DatabaseStartPaginatedServiceVenues extends IntentService {
                         pageCount = Integer.parseInt(response.body().get("pages").toString());
                         Log.d("PageCount", Integer.toString(pageCount));
 
-                        Gson gson = new CustomGsonBuilder().create();
+                        Gson gson = new CustomGsonBuilder().createArtistVenue();
                         JsonArray json = response.body().getAsJsonArray("docs");
                         final List<Venue> objects = gson.fromJson(json, new TypeToken<List<Venue>>() {}.getType());
 //                        Log.d("Response json", json.toString());

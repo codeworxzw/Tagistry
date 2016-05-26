@@ -10,11 +10,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.pk.tagger.realm.CustomGsonBuilder;
 import com.pk.tagger.realm.event.Event;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -110,7 +111,7 @@ public class DatabaseStartPaginatedServiceEvents extends IntentService {
         editor.putLong("time", date.getTime());
         editor.commit();
 
-        Date myDate = new Date(sharedPreferences.getLong("time", 0));
+        final Date myDate = new Date(sharedPreferences.getLong("time", 0));
 
         Log.d("Date in DStartService", myDate.toString());
 
@@ -201,13 +202,15 @@ public class DatabaseStartPaginatedServiceEvents extends IntentService {
                         pageCount = Integer.parseInt(response.body().get("pages").toString());
                         Log.d("PageCount", Integer.toString(pageCount));
 
-                        Gson gson = new CustomGsonBuilder().create();
-                        JsonArray json = response.body().getAsJsonArray("docs");
-                        final List<Event> objects = gson.fromJson(json, new TypeToken<List<Event>>() {}.getType());
-//                        Log.d("Response json", json.toString());
-
 
                         myRealm = Realm.getDefaultInstance();
+
+                        Gson gson = new CustomGsonBuilder().createEvent(myRealm);
+                        JsonArray json = response.body().getAsJsonArray("docs");
+                        final List<Event> objects = gson.fromJson(json, new TypeToken<List<Event>>() {}.getType());
+                        Log.d("Response objects", objects.toString());
+
+
                         myRealm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
@@ -216,7 +219,7 @@ public class DatabaseStartPaginatedServiceEvents extends IntentService {
                         });
 
                         Event result =
-                                myRealm.where(Event.class).equalTo("id", "1005164").findFirst();
+                                myRealm.where(Event.class).findFirst();
                         Log.d("Full Event", result.toString());
                         myRealm.close();
 

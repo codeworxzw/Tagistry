@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.pk.tagger.realm.CustomGsonBuilder;
 import com.pk.tagger.realm.artist.Artist;
 
 import java.util.Arrays;
@@ -283,7 +282,7 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
                         pageCount = Integer.parseInt(response.body().get("pages").toString());
                         Log.d("PageCount", Integer.toString(pageCount));
 
-                        Gson gson = new CustomGsonBuilder().create();
+                        Gson gson = new CustomGsonBuilder().createArtistVenue();
                         JsonArray json = response.body().getAsJsonArray("docs");
                         final List<Artist> objects = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 //                        Log.d("Response json", json.toString());
@@ -298,7 +297,7 @@ public class DatabaseStartPaginatedServiceArtists extends IntentService {
                         });
 
                         Artist result =
-                                myRealm.where(Artist.class).equalTo("id", "9790").findFirst();
+                                myRealm.where(Artist.class).findFirst();
                         Log.d("Full Artist", result.toString());
                         Log.d("Genres", Arrays.toString(result.getSpotifyGenreArray()));
 

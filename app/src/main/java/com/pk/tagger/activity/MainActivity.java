@@ -162,15 +162,20 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.send_feedback){
 
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("message/rfc822");
-            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
-            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-            try {
-                startActivity(Intent.createChooser(i, "Send mail..."));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-            }
+//            Intent i = new Intent(Intent.ACTION_SEND);
+//            i.setType("message/rfc822");
+//            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+//            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+//            try {
+//                startActivity(Intent.createChooser(i, "Send mail..."));
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+//            }
+            final Artist artist = myRealm
+                    .where(Artist.class)
+                    .equalTo("id", "53877")
+                    .findFirst();
+            Log.d("Artist", artist.toString());
 
             return true;
         }

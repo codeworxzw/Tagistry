@@ -46,7 +46,8 @@ dependencies {
     compile project(':libraries:Expandablelayout-library')
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-//    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    compile 'com.bkromhout:realm-recyclerview-lite:2.0.3'
+    //    compile 'com.squareup.okhttp3:okhttp:3.1.2'
 }
 
 

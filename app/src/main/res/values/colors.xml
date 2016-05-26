@@ -7,7 +7,12 @@
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#FF80AB</color>
     <color name="lightGrey">#e6e6e6</color>
-    <color name="darkGrey">#cccccc</color>
+    <color name="poprock">#96FF6E</color>
+    <color name="hardrockmetal">#6EDFFF</color>
+    <color name="indiealternative">#D78EFF</color>
+    <color name="edmibiza">#FF8E6E</color>
+    <color name="rnbhiphop">#FFFB6E</color>
+
 
 
 </resources>

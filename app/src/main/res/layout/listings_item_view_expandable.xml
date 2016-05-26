@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     app:canExpand="true">
-    <ImageView
-        android:id="@+id/event_star"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_star_border_black_36dp"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/event_star"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:src="@drawable/ic_star_border_black_36dp"/>-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#cccccc"
         android:id="@+id/toggle_artist_desc">
@@ -54,7 +54,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#e6e6e6">
         <ImageView
@@ -75,7 +75,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#cccccc">
         <ImageView
@@ -110,7 +110,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:id="@+id/toggle_artist_websites"
         android:background="#e6e6e6">
@@ -121,13 +121,43 @@
             android:src="@drawable/ic_link_black_24dp"/>
 
         <TextView
-            android:text="Websites:"
+            android:text="Links:"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="18sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/icon_official"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_web"/>
+        <ImageView
+            android:id="@+id/icon_fb"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_facebook"/>
+        <ImageView
+            android:id="@+id/icon_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_twitter"/>
+        <ImageView
+            android:id="@+id/icon_wiki"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+
+            android:src="@drawable/ic_wikipedia"/>
+
         <!--<Space-->
         <!--android:layout_width="0dp"-->
         <!--android:layout_weight="1"-->
@@ -139,124 +169,124 @@
         <!--android:gravity="end"-->
         <!--android:src="@drawable/ic_expand_more_black_24dp"/>-->
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/artist_websites">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Official: "
-                android:maxLines="1"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"/>
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/textView_artist_website_official"
-                android:text="website"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:ellipsize="end"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="12sp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Facebook: "
-                android:maxLines="1"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"/>
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/textView_artist_website_facebook"
-                android:text="website"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:ellipsize="end"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="12sp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Twitter: "
-                android:maxLines="1"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"/>
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/textView_artist_website_twitter"
-                android:text="website"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:ellipsize="end"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="12sp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Wiki: "
-                android:maxLines="1"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"/>
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/textView_artist_website_wiki"
-                android:text="website"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:ellipsize="middle"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="12sp"/>
-        </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:id="@+id/artist_websites">-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Official: "-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18sp"/>-->
+            <!--<Space-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="match_parent" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/textView_artist_website_official"-->
+                <!--android:text="website"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center"-->
+                <!--android:ellipsize="end"-->
+                <!--android:layout_marginEnd="4dp"-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/holo_blue_dark"-->
+                <!--android:textSize="12sp"/>-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Facebook: "-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18sp"/>-->
+            <!--<Space-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="match_parent" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/textView_artist_website_facebook"-->
+                <!--android:text="website"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center"-->
+                <!--android:ellipsize="end"-->
+                <!--android:layout_marginEnd="4dp"-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/holo_blue_dark"-->
+                <!--android:textSize="12sp"/>-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Twitter: "-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18sp"/>-->
+            <!--<Space-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="match_parent" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/textView_artist_website_twitter"-->
+                <!--android:text="website"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center"-->
+                <!--android:ellipsize="end"-->
+                <!--android:layout_marginEnd="4dp"-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/holo_blue_dark"-->
+                <!--android:textSize="12sp"/>-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Wiki: "-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18sp"/>-->
+            <!--<Space-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="match_parent" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/textView_artist_website_wiki"-->
+                <!--android:text="website"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center"-->
+                <!--android:ellipsize="middle"-->
+                <!--android:layout_marginEnd="4dp"-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@android:color/holo_blue_dark"-->
+                <!--android:textSize="12sp"/>-->
+        <!--</LinearLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#cccccc">
         <ImageView
@@ -279,7 +309,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
 
         android:background="#e6e6e6">
@@ -319,7 +349,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#cccccc">
         <ImageView
@@ -356,7 +386,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#e6e6e6">
         <ImageView
@@ -390,7 +420,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#e6e6e6">
         <ImageView

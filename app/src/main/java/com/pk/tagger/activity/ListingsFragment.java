@@ -60,6 +60,7 @@ public class ListingsFragment extends Fragment {
         Log.d("ListingsFragment", "onCreateView called");
 
         realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
+
         myRealm = Realm.getDefaultInstance();
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);

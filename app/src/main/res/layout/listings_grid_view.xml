@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.kyo.expandablelayout.ExpandableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/expandablelayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
         android:orientation="horizontal"
         android:id="@+id/llexpand">
-        <ImageView
-            android:id="@+id/event_star"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_star_border_black_36dp"/>
 
         <ImageView
             android:id="@+id/imageView_listings"
-            android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_width="145dp"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             android:src="@drawable/note_listings"/>
 
         <LinearLayout
-            android:id="@+id/llinfo"
-            android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_width="145dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -96,9 +89,12 @@
                 android:text="Tickets"
                 android:textColor="@android:color/black"/>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <include layout="@layout/listings_item_view_expandable"
-        android:id="@+id/container_expandable"/>
+        android:id="@+id/container_expandable"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:canExpand="true"/>
 
 </com.kyo.expandablelayout.ExpandableLayout>
