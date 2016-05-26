@@ -23,8 +23,34 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.pk.tagger.BuildConfig;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.SessionManager;
+import com.stormpath.sdk.Stormpath;
+import com.stormpath.sdk.StormpathCallback;
+import com.stormpath.sdk.StormpathConfiguration;
+import com.stormpath.sdk.StormpathLogger;
+import com.stormpath.sdk.models.SocialProviderConfiguration;
+import com.stormpath.sdk.models.SocialProvidersResponse;
+import com.stormpath.sdk.models.StormpathError;
+import com.stormpath.sdk.models.UserProfile;
+import com.stormpath.sdk.providers.FacebookLoginProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,19 +64,23 @@ import butterknife.ButterKnife;
 /**
  * Created by Kieran on 26/01/2016.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements FacebookCallback<LoginResult>, GoogleApiClient.OnConnectionFailedListener {
 
     //called on Login page
     SessionManager session;
 
+    private GoogleApiClient mGoogleApiClient;
+
+    private static final int RC_SIGN_IN = 9001;
+
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_REGISTER = 0;
-    private static final String LOGIN_URL = "http://52.31.31.106:9000/oauth/token";
+    private static final String LOGIN_URL = "https://gigitch.duckdns.org/oauth/token";
     public static final String KEY_EMAIL = "username";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_GRANT_TYPE = "grant_type";
 
-
+    CallbackManager callbackManager;
     // temporary string to show the parsed response
     private String jsonResponse;
 
@@ -61,12 +91,37 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.link_register) TextView _registerLink;
     @Bind(R.id.link_skiplogin) TextView _skiploginLink;
 
+    //used to intercept the social media oauth callbacks
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // getIntent() should always return the most recent
+        setIntent(intent);
+
+        //check contents of intent
+        if (getIntent().getData() != null && getIntent().getData().getScheme() != null) {
+                Log.d("catch", "this");
+            if (getIntent().getData().getScheme().contentEquals(getString(R.string.facebook_app_id))) {
+
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         session = new SessionManager(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginManager.getInstance().registerCallback(callbackManager, this);
+
+        if (BuildConfig.DEBUG) {
+            // we only want to show the logs in debug builds, for easier debugging
+            Stormpath.setLogLevel(StormpathLogger.VERBOSE);
+        }
 
         //initialise login button below
         _loginButton.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +151,31 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
 
+        String serverClientId = getString(R.string.goog_app_id);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(new Scope(Scopes.EMAIL))
+                .requestServerAuthCode(serverClientId, false)
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setScopes(gso.getScopeArray());
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("google click", "test ");
+                signIn();
+            }
+        });
+
+    }
     // login method
 
     public void login() {
@@ -204,9 +282,13 @@ public class LoginActivity extends AppCompatActivity {
     //retrieves the intent from RegisterActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //send this to the facebook button
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_REGISTER) {
             if (resultCode == RESULT_OK) {
                 String name = data.getStringExtra("Name");
+                Log.d("this just kicked in", "");
                 // TODO: Implement successful register logic here
                 // By default we just finish the Activity and log them in automatically
                 //this.finish();
@@ -216,6 +298,10 @@ public class LoginActivity extends AppCompatActivity {
                 session.clearRegistrationDetails();
                 login();
             }
+        }
+       else if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
     }
 
@@ -239,6 +325,45 @@ public class LoginActivity extends AppCompatActivity {
 
        // intent.putExtra("Username", name);
         startActivity(intent);
+        //finish();
+    }
+
+    public void onLoginSuccessStormpath() {
+        _loginButton.setEnabled(true);
+        //TODO: save token in shared prefs
+        //SharedPreferences sharedPref = getBaseContext().getSharedPreferences("com.pk.tagger.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        // SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putString(getString(R.string.access_token), token);
+        //editor.commit();
+
+        Log.d("Success Stormpath", "this worked");
+
+        Stormpath.getUserProfile(new StormpathCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                // user data ready
+
+                Log.d("success", userProfile.getEmail());
+                Log.d("success", Stormpath.accessToken());
+                session.createLoginSession(userProfile.getEmail(), Stormpath.accessToken());
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                // intent.putExtra("Username", name);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(StormpathError error) {
+                // something went wrong
+                Log.d("success", "this didn't work");
+            }
+        });
+
+        //Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
+        //Intent intent = new Intent(getBaseContext(), MainActivity.class);
+
+
+        // intent.putExtra("Username", name);
+        //startActivity(intent);
         //finish();
     }
 
@@ -272,5 +397,90 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    @Override
+    public void onSuccess(final LoginResult loginResult) {
+        Log.d("something", "2");
+        Stormpath.socialLogin(SocialProvidersResponse.FACEBOOK, loginResult.getAccessToken().getToken(), null,
+                new StormpathCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // we are logged in via fb!
+                        Toast.makeText(LoginActivity.this, "Success! " + loginResult.getAccessToken().getToken(), Toast.LENGTH_LONG).show();
+                        onLoginSuccessStormpath();
+                    }
+
+                    @Override
+                    public void onFailure(StormpathError error) {
+                        Toast.makeText(LoginActivity.this, error.message(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    @Override
+    public void onCancel() {
+// fb login was cancelled ny the user
+        Toast.makeText(LoginActivity.this, "Canceled!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError(FacebookException error) {
+        Log.d("something", "3");
+        // an error occurred while logging in via fb
+        Toast.makeText(LoginActivity.this, "Error!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    // [START signIn]
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    // [START handleSignInResult]
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d("Test ", "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            String authCode = acct.getServerAuthCode();
+            Log.d("code", authCode);
+            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            //updateUI(true);
+
+            Stormpath.socialGoogleCodeAuth(SocialProvidersResponse.GOOGLE, new SocialProviderConfiguration(getString(R.string.goog_app_id), getString(R.string.goog_app_id)), new StormpathCallback<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    Log.d("THis worked", s);
+                }
+
+                @Override
+                public void onFailure(StormpathError error) {
+
+                }
+            });
+
+//            Stormpath.socialLogin(SocialProvidersResponse.GOOGLE, null, authCode,
+//                    new StormpathCallback<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(StormpathError error) {
+//                            Toast.makeText(getBaseContext(), "Log in failed", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+
+        } else {
+            // Signed out, show unauthenticated UI.
+            //updateUI(false);
+        }
     }
 }

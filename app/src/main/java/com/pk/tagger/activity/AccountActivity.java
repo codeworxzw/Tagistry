@@ -7,8 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.SessionManager;
+import com.stormpath.sdk.Stormpath;
 
 import java.util.HashMap;
 
@@ -54,8 +58,21 @@ public class AccountActivity extends AppCompatActivity {
                 // This will clear all session data and
                 // redirect user to LoginActivity
                 session.logoutUser();
+
+                if (isLoggedIn()) {
+                    Stormpath.logout();
+                    LoginManager.getInstance().logOut();
+                }
             }
         });
+
+
+        }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+
     }
 
 

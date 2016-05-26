@@ -9,7 +9,7 @@
     <string name="action_mapview">Switch to Map</string>
     <string name="action_listingsview">Switch to Listings</string>
     <string name="action_send_feedback">Send Feedback</string>
-
+    <string name="action_publish_event">Publish Event</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
@@ -130,4 +130,8 @@
         <item>55</item>
         <item>67</item>
     </string-array>
+
+    <string name="facebook_app_id">fb135022110243891</string>
+    <string name="goog_app_id">616404377847-vp0ulrje62vr2oq41ifnq1a531oovht5.apps.googleusercontent.com</string>
+
 </resources>

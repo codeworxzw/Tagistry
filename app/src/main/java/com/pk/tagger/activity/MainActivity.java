@@ -18,6 +18,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.managers.ScreenManager;
@@ -33,13 +45,14 @@ import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
 import com.pk.tagger.services.DatabaseStartServiceEvent;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
-
-    private FragmentDrawer drawerFragment;
+    private static final int PROFILE_SETTING = 1;
+   // private FragmentDrawer drawerFragment;
     private Realm myRealm;
 
     // Startup Manager
@@ -50,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     FilterManager filterManager;
     //Screen Manager Class
     ScreenManager screenManager;
-
+    private IProfile profile;
     // Widget GUI
+    private AccountHeader headerResult = null;
     Button btnCalendar, btnTimePicker;
     EditText txtDate, txtTime;
 
@@ -59,8 +73,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myRealm = Realm.getDefaultInstance();
-        addNewUser();                                   // creates a test user (id: 0001, username: Michael)
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         startUpManager = new StartUpManager(getApplicationContext());
         startUpManager.setUpApp();
 
@@ -68,24 +84,108 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         // Session class instance
         session = new SessionManager(getApplicationContext());
+
+        profile = new ProfileDrawerItem().withName("Log In").withIcon(getResources().getDrawable(R.drawable.ic_profile)).withIdentifier(PROFILE_SETTING);
+
+        // Create the AccountHeader
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.colorPrimary)
+                .addProfiles(
+                        profile
+                      //  new ProfileSettingDrawerItem().withName("Add Account").withDescription("Add Account").withIdentifier(PROFILE_SETTING)
+                ).withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+
+                        if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == PROFILE_SETTING) {
+                            //IProfile newProfile = new ProfileDrawerItem().withNameShown(true).withName("Batman").withEmail("batman@gmail.com").withIcon(getResources().getDrawable(R.drawable.ic_profile));
+                            if (headerResult.getProfiles() != null) {
+                                displayView(0);
+                                //we know that there are 2 setting elements. set the new profile above them ;)
+                                //headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 1);
+                            } else {
+                                displayView(0);
+                               // headerResult.addProfiles(newProfile);
+                            }
+                        }
+                        displayView(0);
+                        return false;
+                    }
+                })
+                .build();
+
+        if (session.isLoggedIn()) {
+                HashMap<String, String> user = session.getUserDetails();
+                String email = user.get(SessionManager.KEY_EMAIL);
+            headerResult.removeProfileByIdentifier(PROFILE_SETTING);
+            //headerResult.addProfile(new ProfileDrawerItem().withEmail(email).withIcon(getResources().getDrawable(R.drawable.ic_profile)), headerResult.getProfiles().size() - 1);
+            // headerResult.addProfiles(new ProfileSettingDrawerItem().withName("View Account").withDescription("View Account").withIdentifier(PROFILE_SETTING));
+            headerResult.addProfiles(new ProfileDrawerItem().withEmail(email).withIcon(getResources().getDrawable(R.drawable.ic_profile)).withIdentifier(PROFILE_SETTING));
+        } else {
+                //headerResult.addProfile(profile, headerResult.getProfiles().size() - 1);
+            }
+
+        //if you want to update the items at a later time it is recommended to keep it in a variable
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.title_home);
+       // PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(R.string.title_listings);
+       // PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(R.string.title_map);
+
+        SecondaryDrawerItem item4 = new SecondaryDrawerItem();
+        item4.withName(R.string.action_publish_event);
+        SecondaryDrawerItem item5 = new SecondaryDrawerItem();
+        item5.withName(R.string.action_settings);
+
+//create the drawer and remember the `Drawer` result object
+        Drawer result = new DrawerBuilder()
+                .withAccountHeader(headerResult)
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .addDrawerItems(
+                        item1,
+                      //  item2,
+                      //  item3,
+                        new DividerDrawerItem(),
+                        item4,
+                        item5
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        Log.d("clicked: ", String.valueOf(position));
+                        switch (position) {
+
+                            case 1:
+                                displayView(2);
+                                break;
+                            case 3:
+                                displayView(4);
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+
+        myRealm = Realm.getDefaultInstance();
+        addNewUser();                                   // creates a test user (id: 0001, username: Michael)
+
         //session.checkLogin();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        //inflate the drawerFragment using the recyclerview fragment
-        drawerFragment = (FragmentDrawer)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
-        drawerFragment.setDrawerListener(this);
+//        //inflate the drawerFragment using the recyclerview fragment
+//        drawerFragment = (FragmentDrawer)
+//                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+//        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+//        drawerFragment.setDrawerListener(this);
 
         // display the first navigation drawer view on app launch
         if (screenManager.getCurrentFragment()!=-1) {
             displayView(screenManager.getCurrentFragment());
         } else {
-            displayView(1);
+            displayView(2);
         }
 
     }
@@ -182,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.action_listingsview){
 
-            displayView(1);
+            displayView(2);
             return true;
         }
 
@@ -215,7 +315,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 }
             case 1:
                 fragment = new HomeFragment();
-                title = getString(R.string.title_home);
+                //title = getString(R.string.title_home);
+                title = getString(R.string.title_listings);
                 break;
             case 2:
                 fragment = new ListingsFragment();
@@ -241,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             fragmentTransaction.commit();
 
             // set the toolbar title
-            setActionBarTitle(title);
+//            setActionBarTitle(title);
         }
     }
 
@@ -258,10 +359,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
     public void setActionBarTitle(String title){
-        getSupportActionBar().setTitle(title);
+//        getSupportActionBar().setTitle(title);
     }
-
-
 
     public void addNewUser(){
         try{

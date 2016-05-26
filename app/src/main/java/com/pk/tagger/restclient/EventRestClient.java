@@ -10,7 +10,8 @@ import com.loopj.android.http.SyncHttpClient;
  */
 public class EventRestClient {
 
-    private static final String BASE_URL = "http://52.31.31.106:9000/api/event";
+    //private static final String BASE_URL = "http://52.31.31.106:9000/api/events";
+    private static final String BASE_URL = "https://gigitch.duckdns.org/api/events";
 
     private static AsyncHttpClient client = new SyncHttpClient();
 

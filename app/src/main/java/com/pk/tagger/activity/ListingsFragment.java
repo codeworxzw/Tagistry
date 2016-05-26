@@ -4,9 +4,13 @@ package com.pk.tagger.activity;
  * Created by PK on 16/01/2016.
  */
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -28,6 +32,7 @@ import java.util.Set;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 
@@ -42,6 +47,7 @@ public class ListingsFragment extends Fragment {
     private Date date;
     private Date endDate;
     FloatingActionButton fab;
+    FilterManager filterManager;
 
     public ListingsFragment() {
         // Required empty public constructor
@@ -136,13 +142,44 @@ public class ListingsFragment extends Fragment {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
 
-
-
-
         MenuItem item=menu.findItem(R.id.action_mapview);
         item.setVisible(true);
         MenuItem item2=menu.findItem(R.id.action_listingsview);
         item2.setVisible(false);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+
+        filterManager = new FilterManager(getContext());
+
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+       // searchView.setQueryHint(filterManager.getSearchArtistVenue());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Onquery", query);
+
+                filterManager.setSearchArtistVenue(query);
+                getListings();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("OnChange", newText);
+
+                filterManager.setSearchArtistVenue(newText);
+                getListings();
+
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -239,5 +276,7 @@ public class ListingsFragment extends Fragment {
                     }
                 }, expandState, myRealm);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
+        eventsRealmAdapter.updateRealmResults(mItems);
     }
+
 }

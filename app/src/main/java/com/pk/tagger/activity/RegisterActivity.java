@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
-    private static final String REGISTER_URL = "http://52.31.31.106:9000/register";
+    private static final String REGISTER_URL = "https://gigitch.duckdns.org/register";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
 
