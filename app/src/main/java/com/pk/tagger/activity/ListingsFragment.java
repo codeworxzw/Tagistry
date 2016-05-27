@@ -3,14 +3,19 @@ package com.pk.tagger.activity;
 /**
  * Created by PK on 16/01/2016.
  */
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -26,8 +31,13 @@ import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.realm.MyRealmResults;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.event.EventsAdapter;
+import com.pk.tagger.recyclerview.MyScrollListener;
 
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -88,7 +98,9 @@ public class ListingsFragment extends Fragment {
 //        });
         fab.hide();
 
-        getListings();
+
+
+        getListings(false);
 
         return rootView;
     }
@@ -164,7 +176,7 @@ public class ListingsFragment extends Fragment {
                 Log.d("Onquery", query);
 
                 filterManager.setSearchArtistVenue(query);
-                getListings();
+                getListings(true);
 
                 return true;
             }
@@ -174,11 +186,34 @@ public class ListingsFragment extends Fragment {
                 Log.d("OnChange", newText);
 
                 filterManager.setSearchArtistVenue(newText);
-                getListings();
+                getListings(true);
 
                 return true;
             }
         });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                getListings(false);
+                return true;
+            }
+        });
+
+        MenuItem item3=menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(item3, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                getListings(false);
+                return true;
+            }
+        });
+
 
     }
 
@@ -192,29 +227,55 @@ public class ListingsFragment extends Fragment {
         }
     }
 
-    public void getListings(){
-        FilterManager filterManager = new FilterManager(getContext());
-        if (filterManager.getDateStart()==0) {
-            filterManager.setDefault();
+    public void getListings(boolean textSearch){
+
+
+        if (textSearch) {
+
+            FilterManager filterManager = new FilterManager(getContext());
+            if (filterManager.getDateStart() == 0) {
+                filterManager.setDefault();
+            } else {
+            }
+
+            Calendar calendarDate = new GregorianCalendar();
+            date = new Date(calendarDate.getTimeInMillis());
+            calendarDate.add(Calendar.MONTH, 6);
+            endDate = new Date(calendarDate.getTimeInMillis());
+            String searchArtistVenue = filterManager.getSearchArtistVenue();
+            boolean ticketsAvailable = false;
+            int ticketMax = 0;
+            int ticketMin = 1;
+            Set<String> Genres = new HashSet<String>(Arrays.asList(getContext().getResources().getStringArray(R.array.genres_values)));
+            String[] searchGenres = Genres.toArray(new String[Genres.size()]);
+            MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+            mItems = myEvents.getResults();
+
         } else {
+
+            FilterManager filterManager = new FilterManager(getContext());
+            if (filterManager.getDateStart() == 0) {
+                filterManager.setDefault();
+            } else {
+            }
+            date = new Date(filterManager.getDateStart());
+            endDate = new Date(filterManager.getDateEnd());
+
+            String searchArtistVenue = filterManager.getSearchArtistVenue();
+            Set<String> searchGenresTemp = filterManager.getSearchGenres();
+            String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+            boolean ticketsAvailable = filterManager.getTicketsAvailable();
+
+            int ticketMax = filterManager.getMaxPrice();
+
+            int ticketMin = 1;
+
+            MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+            mItems = myEvents.getResults();
         }
-        date = new Date(filterManager.getDateStart());
-        endDate = new Date(filterManager.getDateEnd());
 
-        String searchArtistVenue = filterManager.getSearchArtistVenue();
-        Set<String> searchGenresTemp = filterManager.getSearchGenres();
-        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-        boolean ticketsAvailable = filterManager.getTicketsAvailable();
-
-        int ticketMax = filterManager.getMaxPrice();;
-        int ticketMin = 1;
-
-        MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
 //        MyRealmResults myEvents = new MyRealmResults(getActivity(), "", searchGenres, false, 0, 1000, date, endDate);
 
-
-
-        mItems = myEvents.getResults();
         Log.d("No. Events Found", String.valueOf(mItems.size()));
 
         for (int i = 0; i < mItems.size(); i++) {
@@ -224,8 +285,7 @@ public class ListingsFragment extends Fragment {
         ((MainActivity) getActivity())
                 .setActionBarTitle(String.valueOf(mItems.size()) + " Events");
 
-        eventsRealmAdapter =
-                new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
+        eventsRealmAdapter = new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
@@ -277,6 +337,17 @@ public class ListingsFragment extends Fragment {
                 }, expandState, myRealm);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
         eventsRealmAdapter.updateRealmResults(mItems);
+
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
+
+
     }
+
+    public void searchListings() {
+
+
+    }
+
 
 }

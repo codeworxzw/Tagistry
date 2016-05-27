@@ -2,6 +2,7 @@ package com.pk.tagger.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,25 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     // instantiate genres and listener
     private List<Genre> mGenres;
     private final OnItemClickListener listener;
+
+    private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
+    private Boolean mIsSelectable = false;
+
+    private void setItemChecked(int position, boolean isChecked) {
+        mSelectedPositions.put(position, isChecked);
+    }
+
+    private boolean isItemChecked(int position) {
+        return mSelectedPositions.get(position);
+    }
+
+    private void setSelectable(boolean selectable) {
+        mIsSelectable = selectable;
+    }
+
+    private boolean isSelectable() {
+        return mIsSelectable;
+    }
 
     public GenreAdapter(List<Genre> genres, OnItemClickListener listener) {
         this.listener = listener;

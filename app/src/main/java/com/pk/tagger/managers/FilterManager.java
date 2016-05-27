@@ -93,7 +93,7 @@ public class FilterManager {
     }
 
     public void setMaxPrice(int MaxPrice) {
-        editor.putInt(MAX_PRICE, 0);
+        editor.putInt(MAX_PRICE, MaxPrice);
         // commit changes
         editor.commit();
     }

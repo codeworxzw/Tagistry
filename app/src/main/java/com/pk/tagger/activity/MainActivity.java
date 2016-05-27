@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private static final int PROFILE_SETTING = 1;
    // private FragmentDrawer drawerFragment;
     private Realm myRealm;
-
+    private boolean isChecked = false;
     // Startup Manager
     StartUpManager startUpManager;
     // Session Manager Class
@@ -204,13 +204,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         int id = item.getItemId();
 
         if(id == R.id.action_options){
-            Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
-            intent.putExtra("TAG", getVisibleFragment().getTag());
-            screenManager.setCurrentFragment(getVisibleFragment().getTag());
-            startActivity(intent);
-            Log.d("MainActivity", "options selected");
-            Log.i("Open Fragment", getVisibleFragment().getTag());
-            Log.i("Open Fragment", String.valueOf(screenManager.getCurrentFragment()));
+            //Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
+            //intent.putExtra("TAG", getVisibleFragment().getTag());
+            //screenManager.setCurrentFragment(getVisibleFragment().getTag());
+//            startActivity(intent);
+//            Log.d("MainActivity", "options selected");
+//            Log.i("Open Fragment", getVisibleFragment().getTag());
+//            Log.i("Open Fragment", String.valueOf(screenManager.getCurrentFragment()));
+            displayView(5);
             return true;
         }
 
@@ -330,6 +331,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 Intent intent = new Intent(getApplicationContext(), SendEventActivity.class);
                 startActivity(intent);
                 break;
+            case 5:
+                fragment = new FilterFragment();
+                title = getString(R.string.title_filters);
+                break;
             default:
                 break;
         }
@@ -337,8 +342,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            if (title == getString(R.string.title_filters)) {
+                fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+            } else if (title == getString(R.string.title_listings)) {
+                fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+            }
             fragmentTransaction.replace(R.id.container_body, fragment, title);
             fragmentTransaction.addToBackStack(title);
+
             fragmentTransaction.commit();
 
             // set the toolbar title
