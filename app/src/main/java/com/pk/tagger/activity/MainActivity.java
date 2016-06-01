@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -26,7 +24,6 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
@@ -42,7 +39,6 @@ import com.pk.tagger.realm.venue.Venue;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceEvents;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceArtists;
 import com.pk.tagger.services.DatabaseStartPaginatedServiceVenues;
-import com.pk.tagger.services.DatabaseStartServiceEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -128,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         //if you want to update the items at a later time it is recommended to keep it in a variable
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.title_home);
-       // PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(R.string.title_listings);
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(R.string.title_my_gigfm);
        // PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(R.string.title_map);
 
         SecondaryDrawerItem item4 = new SecondaryDrawerItem();
@@ -143,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 .withToolbar(toolbar)
                 .addDrawerItems(
                         item1,
-                      //  item2,
+                        item2,
                       //  item3,
                         new DividerDrawerItem(),
                         item4,
@@ -156,10 +152,16 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         switch (position) {
 
                             case 1:
-                                displayView(2);
+                                displayView(2);     //Listings
                                 break;
-                            case 3:
-                                displayView(4);
+                            case 2:
+                                displayView(1);     //Home
+                                break;
+                            case 4:
+                                displayView(4);     //Publish Event
+                                break;
+                            case 5:
+                                Toast.makeText(getApplicationContext(),"Settings clicked", Toast.LENGTH_SHORT).show();
                                 break;
                             default:
                                 break;
@@ -263,20 +265,20 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.send_feedback){
 
-//            Intent i = new Intent(Intent.ACTION_SEND);
-//            i.setType("message/rfc822");
-//            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
-//            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-//            try {
-//                startActivity(Intent.createChooser(i, "Send mail..."));
-//            } catch (android.content.ActivityNotFoundException ex) {
-//                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-//            }
-            final Artist artist = myRealm
-                    .where(Artist.class)
-                    .equalTo("id", "53877")
-                    .findFirst();
-            Log.d("Artist", artist.toString());
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+//            final Artist artist = myRealm
+//                    .where(Artist.class)
+//                    .equalTo("id", "53877")
+//                    .findFirst();
+//            Log.d("Artist", artist.toString());
 
             return true;
         }
@@ -315,9 +317,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     startActivity(intent);
                 }
             case 1:
-                fragment = new HomeFragment();
+                fragment = new MyGigFMFragment();
                 //title = getString(R.string.title_home);
-                title = getString(R.string.title_listings);
+                title = getString(R.string.title_my_gigfm);
                 break;
             case 2:
                 fragment = new ListingsFragment();
@@ -373,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 //        getSupportActionBar().setTitle(title);
     }
 
+    //create new dummy user to save starred to, TODO: replace with logged in user when working
     public void addNewUser(){
         try{
             User user = myRealm.where(User.class).findFirst();
@@ -389,16 +392,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             Log.d("User", "Created new user: " +newUser.getUsername());
 
         }
-
-    }
-
-    public void getUserStarredEventsArray(){
-        User user = myRealm.where(User.class).findFirst();
-
-        Log.d("Id", user.getId());
-        Log.d("Username", user.getUsername());
-
-        Log.d("StarredEvents", Arrays.toString(user.getStarredEventsArray()));
 
     }
 

@@ -53,6 +53,8 @@ public class ListingsFragment extends Fragment {
     private EventsAdapter eventsRealmAdapter;
     private SparseBooleanArray expandState = new SparseBooleanArray();
 
+    private String resultsQuery = "none";
+
     private RealmResults<Event> mItems;
     private Date date;
     private Date endDate;
@@ -74,6 +76,13 @@ public class ListingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_listings, container, false);
         Log.d("ListingsFragment", "onCreateView called");
+
+        Bundle args = getArguments();
+        if(args!=null){
+            resultsQuery = args.getString("query", "");
+        }
+
+        Log.d("ListingsFragment Query", resultsQuery);
 
         realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
 
@@ -100,7 +109,7 @@ public class ListingsFragment extends Fragment {
 
 
 
-        getListings(false);
+        getListings(getActivity(), false);
 
         return rootView;
     }
@@ -176,7 +185,7 @@ public class ListingsFragment extends Fragment {
                 Log.d("Onquery", query);
 
                 filterManager.setSearchArtistVenue(query);
-                getListings(true);
+                getListings(getActivity(), true);
 
                 return true;
             }
@@ -186,7 +195,7 @@ public class ListingsFragment extends Fragment {
                 Log.d("OnChange", newText);
 
                 filterManager.setSearchArtistVenue(newText);
-                getListings(true);
+                getListings(getActivity(), true);
 
                 return true;
             }
@@ -195,7 +204,7 @@ public class ListingsFragment extends Fragment {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getListings(false);
+                getListings(getActivity(), false);
                 return true;
             }
         });
@@ -209,7 +218,7 @@ public class ListingsFragment extends Fragment {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                getListings(false);
+                getListings(getActivity(), false);
                 return true;
             }
         });
@@ -227,52 +236,66 @@ public class ListingsFragment extends Fragment {
         }
     }
 
-    public void getListings(boolean textSearch){
+    public void getListings(Context context, boolean textSearch){
 
-
-        if (textSearch) {
-
-            FilterManager filterManager = new FilterManager(getContext());
-            if (filterManager.getDateStart() == 0) {
-                filterManager.setDefault();
-            } else {
-            }
-
-            Calendar calendarDate = new GregorianCalendar();
-            date = new Date(calendarDate.getTimeInMillis());
-            calendarDate.add(Calendar.MONTH, 6);
-            endDate = new Date(calendarDate.getTimeInMillis());
-            String searchArtistVenue = filterManager.getSearchArtistVenue();
-            boolean ticketsAvailable = false;
-            int ticketMax = 0;
-            int ticketMin = 1;
-            Set<String> Genres = new HashSet<String>(Arrays.asList(getContext().getResources().getStringArray(R.array.genres_values)));
-            String[] searchGenres = Genres.toArray(new String[Genres.size()]);
-            MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
-            mItems = myEvents.getResults();
-
-        } else {
-
-            FilterManager filterManager = new FilterManager(getContext());
-            if (filterManager.getDateStart() == 0) {
-                filterManager.setDefault();
-            } else {
-            }
-            date = new Date(filterManager.getDateStart());
-            endDate = new Date(filterManager.getDateEnd());
-
-            String searchArtistVenue = filterManager.getSearchArtistVenue();
-            Set<String> searchGenresTemp = filterManager.getSearchGenres();
-            String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-            boolean ticketsAvailable = filterManager.getTicketsAvailable();
-
-            int ticketMax = filterManager.getMaxPrice();
-
-            int ticketMin = 1;
-
-            MyRealmResults myEvents = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
-            mItems = myEvents.getResults();
+        FilterManager filterManager = new FilterManager(context);
+        if (filterManager.getDateStart() == 0) {
+            filterManager.setDefault();
         }
+        Calendar calendarDate = new GregorianCalendar();
+        date = new Date(calendarDate.getTimeInMillis());
+        calendarDate.add(Calendar.MONTH, 6);
+        endDate = new Date(calendarDate.getTimeInMillis());
+        String searchArtistVenue = filterManager.getSearchArtistVenue();
+        boolean ticketsAvailable = true;
+        int ticketMax = 0;
+        int ticketMin = 1;
+        Set<String> Genres = new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.genres_values)));
+        String[] searchGenres = Genres.toArray(new String[Genres.size()]);
+        String sortField = "date";
+
+        switch(resultsQuery){
+            case "Cheapest":
+                Log.d("ResultsQuery", "Cheapest");
+
+                sortField = "purchasePrice";
+                mItems = new MyRealmResults(context, myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField).getResults();
+                break;
+            case "Festivals":
+                Log.d("ResultsQuery", "Festivals");
+
+                String[] searchFestivals = {"35"};
+                mItems = new MyRealmResults(context, myRealm, searchArtistVenue, searchFestivals, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField).getFestivals();
+                break;
+            case "Starred":
+                Log.d("ResultsQuery", "Starred");
+
+                mItems = new MyRealmResults(context, myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField).getMyStarredEvents();
+                break;
+            default:
+                if (textSearch) {
+
+                    mItems = new MyRealmResults(context, myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField).getResults();
+
+                } else {
+                    //use all values from sharedprefs
+                    date = new Date(filterManager.getDateStart());
+                    endDate = new Date(filterManager.getDateEnd());
+
+//                    searchArtistVenue = filterManager.getSearchArtistVenue();
+                    Set<String> searchGenresTemp = filterManager.getSearchGenres();
+                    searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                    ticketsAvailable = filterManager.getTicketsAvailable();
+
+                    ticketMax = filterManager.getMaxPrice();
+//
+//                ticketMin = 1;
+//                String sortField = "date";
+
+                    mItems = new MyRealmResults(context, myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField).getResults();
+                }
+        }
+
 
 //        MyRealmResults myEvents = new MyRealmResults(getActivity(), "", searchGenres, false, 0, 1000, date, endDate);
 
@@ -340,14 +363,6 @@ public class ListingsFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
-
-
     }
-
-    public void searchListings() {
-
-
-    }
-
 
 }

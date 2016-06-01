@@ -3,7 +3,10 @@ package com.pk.tagger.realm;
 import android.content.Context;
 import android.util.Log;
 
+import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.event.Event;
+import com.pk.tagger.realm.user.User;
+import com.pk.tagger.realm.venue.Venue;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -27,8 +30,9 @@ public class MyRealmResults {
     private Date endDate;
     private boolean ticketsAvailable;
     private String[] searchGenres;
+    private String sortField;
 
-    public MyRealmResults(Context context, Realm realm, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate, Date endDate){
+    public MyRealmResults(Context context, Realm realm, String searchArtistVenue, String[] searchGenres, boolean ticketsAvailable, int ticketMin, int ticketMax, Date startDate, Date endDate, String sortField){
 
         this.context = context;
         this.searchArtistVenue = searchArtistVenue;
@@ -38,8 +42,10 @@ public class MyRealmResults {
         this.ticketMax = (float) ticketMax;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.sortField = sortField;
         this.myRealm = realm;
     }
+
 
     public RealmResults getResults(){
 
@@ -57,7 +63,10 @@ public class MyRealmResults {
             ticketMax = 1001;
         }
 
-        String sortField = "date";     //placeholder to allow sorting by other fields later
+        if(sortField.isEmpty()){
+            sortField = "date";     //placeholder to allow sorting by other fields later
+        }
+
         Sort asc = Sort.ASCENDING;
         Sort des = Sort.DESCENDING;
 
@@ -98,4 +107,99 @@ public class MyRealmResults {
         return events;
     }
 
+    public RealmResults getFestivals(){
+
+        RealmResults<Event> events = myRealm.where(Event.class).equalTo("artist.sw_genre_id", "35").findAllSorted(sortField, Sort.ASCENDING);
+
+        return events;
+
+    }
+
+    public RealmResults getMyStarredEvents(){
+
+        User user = myRealm.where(User.class).findFirst();
+        String[] starred = user.getStarredEventsArray();
+
+
+        RealmQuery<Event> query = myRealm.where(Event.class);
+
+        if (starred.length!=0) {
+            query.beginGroup();
+            if (starred.length==1) {
+                query.equalTo("id", starred[0]);
+            }
+            else {
+                for (int i = 0; i < starred.length; i++) {
+                    query.or().equalTo("id", starred[i]);
+                }
+            }
+            query.endGroup();
+        }
+        else {
+            query = query.equalTo("id", "0");
+        }
+
+        RealmResults<Event> events = query.findAllSorted(sortField, Sort.ASCENDING);
+
+        return events;
+
+    }
+
+
+
+    public RealmResults getMyStarredArtists(){
+
+        User user = myRealm.where(User.class).findFirst();
+        String[] starred = user.getStarredArtistsArray();
+
+        RealmQuery<Artist> query = myRealm.where(Artist.class);
+
+        if (starred.length!=0) {
+            query.beginGroup();
+            if (starred.length==1) {
+                query.equalTo("id", starred[0]);
+            }
+            else {
+                for (int i = 0; i < starred.length; i++) {
+                    query.or().equalTo("id", starred[i]);
+                }
+            }
+            query.endGroup();
+        }
+        else {
+            query = query.equalTo("id", "0");
+        }
+
+        RealmResults<Artist> artists = query.findAllSorted(sortField, Sort.ASCENDING);
+
+        return artists;
+    }
+
+    public RealmResults getMyStarredVenues(){
+
+        User user = myRealm.where(User.class).findFirst();
+        String[] starred = user.getStarredVenuesArray();
+
+        RealmQuery<Venue> query = myRealm.where(Venue.class);
+
+        if (starred.length!=0) {
+            query.beginGroup();
+            if (starred.length==1) {
+                query.equalTo("id", starred[0]);
+            }
+            else {
+                for (int i = 0; i < starred.length; i++) {
+                    query.or().equalTo("id", starred[i]);
+                }
+            }
+            query.endGroup();
+        }
+        else {
+            query = query.equalTo("id", "0");
+        }
+
+        RealmResults<Venue> venues = query.findAllSorted(sortField, Sort.ASCENDING);
+
+        return venues;
+    }
 }

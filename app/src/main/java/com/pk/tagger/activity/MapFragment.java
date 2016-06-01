@@ -131,7 +131,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 //
 //                final FragmentTransaction ft = getFragmentManager().beginTransaction();
 //                {
-//                    ft.replace(R.id.container_body, new HomeFragment(), "Home");
+//                    ft.replace(R.id.container_body, new MyGigFMFragment(), "Home");
 //                    // Set title bar
 //                    ((MainActivity) getActivity())
 //                            .setActionBarTitle("Home");
@@ -267,7 +267,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         int ticketMax = filterManager.getMaxPrice();
         int ticketMin = 1;
 
-        MyRealmResults events2 = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate);
+        String sortField = "date";
+        MyRealmResults events2 = new MyRealmResults(getActivity(), myRealm, searchArtistVenue, searchGenres, ticketsAvailable, ticketMin, ticketMax, date, endDate, sortField);
         RealmResults <Event> events = events2.getResults();
         ((MainActivity) getActivity())
                 .setActionBarTitle(String.valueOf(events.size()) + " Events");
