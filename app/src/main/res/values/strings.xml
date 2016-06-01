@@ -137,4 +137,6 @@
     <string name="facebook_app_id">fb135022110243891</string>
     <string name="goog_app_id">616404377847-vp0ulrje62vr2oq41ifnq1a531oovht5.apps.googleusercontent.com</string>
 
+    <string name="filter_available_tickets">Only show events with tickets?</string>
+    <string name="filter_max_price">Maximum Ticket Price</string>
 </resources>

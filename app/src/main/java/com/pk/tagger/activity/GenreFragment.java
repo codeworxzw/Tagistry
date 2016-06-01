@@ -123,7 +123,7 @@ public GenreFragment () {
         String[] genres = res.getStringArray(R.array.genres);
 
         for (int i=0; i<genres.length; i++) {
-            items.add(new Genre(genres[i]));
+            items.add(new Genre(genres[i], false));
         }
         return items;
 

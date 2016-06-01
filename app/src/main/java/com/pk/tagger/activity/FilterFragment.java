@@ -12,8 +12,10 @@ import android.support.design.widget.FloatingActionButton;
 
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -34,9 +38,15 @@ import com.pk.tagger.recyclerview.Genre;
 import com.pk.tagger.recyclerview.GenreAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+import butterknife.ButterKnife;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
+import me.angrybyte.numberpicker.view.ActualNumberPicker;
 
 /**
  * Created by pk on 26/05/16.
@@ -44,10 +54,16 @@ import io.realm.Realm;
 public class FilterFragment extends Fragment {
 
     FilterManager filterManager;
-
+    GenreAdapter adapter;
     ScreenManager screenManager;
 
+    private ActualNumberPicker mPicker;
     ArrayList<Genre> tiles;
+    TextView genreTextView;
+    String genreText = "";
+    String gChosen = "<b>" + "Genres Chosen:" + "</b> ";
+
+    Map<String, String> sets;
 
     public FilterFragment() {
         // Required empty public constructor
@@ -63,10 +79,14 @@ public class FilterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_filter, container, false);
         Log.d("Filter Fragment", "onCreateView called");
 
+        genreTextView = (TextView) rootView.findViewById(R.id.genreschosen);
+
         filterManager = new FilterManager(getContext());
-        ToggleButton toggle = (ToggleButton) rootView.findViewById(R.id.toggle_tickets);
-        toggle.setChecked(filterManager.getTicketsAvailable());
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        Switch ticketSwitch = (Switch) rootView.findViewById(R.id.switchId);
+        ticketSwitch.setChecked(filterManager.getTicketsAvailable());
+
+        ticketSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     filterManager.setTicketsAvailable(true);
@@ -75,6 +95,20 @@ public class FilterFragment extends Fragment {
                 }
             }
         });
+
+        sets = new HashMap<String,String>();
+
+//        ToggleButton toggle = (ToggleButton) rootView.findViewById(R.id.toggle_tickets);
+//        toggle.setChecked(filterManager.getTicketsAvailable());
+//        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    filterManager.setTicketsAvailable(true);
+//                } else {
+//                    filterManager.setTicketsAvailable(false);
+//                }
+//            }
+//        });
 
         Button button = (Button) rootView.findViewById(R.id.btn_close);
 
@@ -102,6 +136,7 @@ public class FilterFragment extends Fragment {
         NumberPicker np = (NumberPicker) rootView.findViewById(R.id.pricePicker);
         np.setMaxValue(200);
         np.setMinValue(0);
+
         np.setValue(filterManager.getMaxPrice());
         Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
         np.setWrapSelectorWheel(true);
@@ -109,51 +144,77 @@ public class FilterFragment extends Fragment {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal){
                 //Display the newly selected number from picker
+
                 Log.d("number", String.valueOf(newVal));
                 filterManager.setMaxPrice(newVal);
                 Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
             }
         });
 
+
+        genreTextView.setText(Html.fromHtml(gChosen));
+
         RecyclerView rvGenres = (RecyclerView) rootView.findViewById(R.id.rvGenres);
         tiles = getSampleArrayList();
 
-        GenreAdapter adapter = new GenreAdapter(tiles, new GenreAdapter.OnItemClickListener() {
+        adapter = new GenreAdapter(tiles, new GenreAdapter.OnItemClickListener() {
 
             @Override
             public void onItemClick(Genre mGenre, int position) {
                 Log.d("Tile: ", mGenre.getName());
                 Log.d("Tile Number: ", String.valueOf(position));
+                String[] genresV = getResources().getStringArray(R.array.genres_values);
 
-                if (position == 0) {
+                mGenre.setgSelected(!mGenre.getgSelected());
+                Log.d("genre", String.valueOf(mGenre.getgSelected()));
+                Set<String> searchGenresTemp = filterManager.getSearchGenres();
+                if (mGenre.getgSelected()){
+                    searchGenresTemp.add(genresV[position]);
+                    String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                    Log.d("true", Arrays.toString(searchGenres));
+                    filterManager.setSearchGenres(searchGenresTemp);
+                } else {
+                    searchGenresTemp.remove(genresV[position]);
+                    String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                    Log.d("false", Arrays.toString(searchGenres));
+                    filterManager.setSearchGenres(searchGenresTemp);
+                }
+                refresh();
 
-                }
-                else if (position == 1) {
-
-                }
-                else if (position == 2) {
-
-                }
-                else if (position == 3) {
-
-                }
-                else if (position == 4) {
-
-                }
-                else if (position == 5) {
-                    Toast.makeText(getContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-
-                }
             }
         });
 
         rvGenres.setAdapter(adapter);
-        rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        //rvGenres.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        rvGenres.setLayoutManager(new LinearLayoutManager(getContext()));
 
             return rootView;
+    }
+
+    public void refresh() {
+        adapter.notifyDataSetChanged();
+        String[] genres = getResources().getStringArray(R.array.genres);
+        Set<String> searchGenresTemp = filterManager.getSearchGenres();
+        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+
+        String updated = "";
+        if (searchGenres.length == genres.length) {
+            updated = "All";
+        } else if (searchGenres.length == 0) {
+            updated = "None";
+        }
+
+        else {
+
+            for (int i = 0; i < searchGenres.length; i++) {
+                if (i < searchGenres.length - 1) {
+                    updated = updated + sets.get(searchGenres[i]) + ", ";
+                } else {
+                    updated = updated + sets.get(searchGenres[i]);
+                }
+            }
+        }
+        genreTextView.setText(Html.fromHtml(gChosen + updated));
     }
 
     @Override
@@ -232,11 +293,59 @@ public class FilterFragment extends Fragment {
         ArrayList<Genre> items = new ArrayList<>();
 
         Resources res = getResources();
-        String[] genres = res.getStringArray(R.array.homepage);
+        String[] genres = res.getStringArray(R.array.genres);
+        String[] genresV = res.getStringArray(R.array.genres_values);
 
-        for (int i=0; i<genres.length; i++) {
-            items.add(new Genre(genres[i]));
+        for(int i=0;i<genres.length;i++) {
+            sets.put(genresV[i], genres[i]);
         }
+
+        filterManager = new FilterManager(getContext());
+
+        Set<String> searchGenresTemp = filterManager.getSearchGenres();
+        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+
+        Log.d("searchFilters", Arrays.toString(searchGenres));
+        Log.d("searches", Arrays.toString(genres));
+
+        for (int i=0; i<genresV.length;) {
+            //12
+            for (String s : genresV) if (Arrays.asList(searchGenres).contains(s))
+            //12
+            {
+                items.add(new Genre(genres[i], true));
+                Log.d("search true", (genres[i]));
+                genreText = genreText + genres[i] + " ";
+                i++;
+            }
+            else {
+                items.add(new Genre(genres[i], false));
+                Log.d("search false", (genres[i]));
+                genreText = genreText + genres[i] + " ";
+                i++;
+            }
+
+        }
+
+        String updated = "";
+        if (searchGenres.length == genres.length) {
+            updated = "All";
+        } else if (searchGenres.length == 0) {
+            updated = "None";
+        }
+
+        else {
+
+            for (int i = 0; i < searchGenres.length; i++) {
+                if (i < searchGenres.length - 1) {
+                    updated = updated + sets.get(searchGenres[i]) + ", ";
+                } else {
+                    updated = updated + sets.get(searchGenres[i]);
+                }
+            }
+        }
+        genreTextView.setText(Html.fromHtml(gChosen + updated));
+
         return items;
 
     }

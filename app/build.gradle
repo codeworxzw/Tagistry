@@ -51,6 +51,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.2.7@aar') {
         transitive = true
     }
+    compile 'me.angrybyte.picker:picker:1.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.10.0'
     compile 'com.stormpath.sdk:stormpath-sdk-android:1.1.2'
     compile 'com.google.android.gms:play-services-maps:8.3.0'

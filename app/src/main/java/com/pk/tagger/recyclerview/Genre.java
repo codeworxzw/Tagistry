@@ -7,8 +7,18 @@ public class Genre {
 
     private String gName;
 
-    public Genre(String name) {
+    public Boolean getgSelected() {
+        return gSelected;
+    }
 
+    public void setgSelected(Boolean gSelected) {
+        this.gSelected = gSelected;
+    }
+
+    private Boolean gSelected;
+
+    public Genre(String name, Boolean selected) {
+        gSelected = selected;
         gName = name;
     }
 

@@ -1,6 +1,7 @@
 package com.pk.tagger.recyclerview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -29,22 +30,6 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
     private Boolean mIsSelectable = false;
 
-    private void setItemChecked(int position, boolean isChecked) {
-        mSelectedPositions.put(position, isChecked);
-    }
-
-    private boolean isItemChecked(int position) {
-        return mSelectedPositions.get(position);
-    }
-
-    private void setSelectable(boolean selectable) {
-        mIsSelectable = selectable;
-    }
-
-    private boolean isSelectable() {
-        return mIsSelectable;
-    }
-
     public GenreAdapter(List<Genre> genres, OnItemClickListener listener) {
         this.listener = listener;
         mGenres = genres;
@@ -53,13 +38,13 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nameTextView;
-        public ImageView imageView;
+        //public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             nameTextView = (TextView) itemView.findViewById(R.id.genre_name);
-            imageView = (ImageView) itemView.findViewById(R.id.genre_image);
+            //imageView = (ImageView) itemView.findViewById(R.id.genre_image);
         }
 
         public void bind(final Genre genre, final OnItemClickListener listener, final int position) {
@@ -91,9 +76,14 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         Genre genre = mGenres.get(position);
         TextView textView = viewHolder.nameTextView;
         textView.setText(genre.getName());
-        ImageView imageView = viewHolder.imageView;
-        imageView.setImageResource(R.drawable.note2);
-
+        //ImageView imageView = viewHolder.imageView;
+        if (genre.getgSelected()) {
+            textView.setBackgroundColor(Color.rgb(245, 0, 87));
+            //imageView.setImageResource(R.drawable.note2);
+        } else {
+            textView.setBackgroundColor(Color.rgb(0, 0, 0));
+            //imageView.setImageResource(R.drawable.note2invert);
+        }
         viewHolder.bind(mGenres.get(position), listener, position);
 
     }

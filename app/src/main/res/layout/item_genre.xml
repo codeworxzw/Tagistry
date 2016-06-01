@@ -5,20 +5,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
-    <ImageView
-        android:id="@+id/genre_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_centerInParent="true"
-        android:scaleType="centerCrop"
-        />
+    <!--<ImageView-->
+        <!--android:id="@+id/genre_image"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="16dp"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--/>-->
     <TextView
         android:id="@+id/genre_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="#b65a5a"
+        android:textColor="@color/colorPrimaryLight"
         android:gravity="center"
         android:textStyle="bold"
         android:layout_centerInParent="true"

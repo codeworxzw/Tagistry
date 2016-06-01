@@ -1,37 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        >
 
-    <ToggleButton
+    <TextView
         android:id="@+id/toggle_tickets"
+        android:text="@string/filter_available_tickets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
-
-
-    <NumberPicker
-        android:id="@+id/pricePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_weight="1"/>
-    </LinearLayout>
+
+        android:textColor="@color/colorPrimaryLight"
+        />
+    <Switch
+        android:id="@+id/switchId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/toggle_tickets"
+        android:layout_marginEnd="10dp"
+        />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        >
+
+        <TextView
+            android:id="@+id/maxPrice"
+            android:text="@string/filter_max_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorPrimaryLight"
+            />
+
+        <NumberPicker
+            android:id="@+id/pricePicker"
+            android:layout_below="@id/maxPrice"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="@color/colorPrimaryLight"
+            android:layout_margin="10dp">
+
+        </NumberPicker>
+
+        <TextView
+            android:id="@+id/genreschosen"
+            android:layout_below="@id/pricePicker"
+            android:layout_width="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryLight"
+            />
+    </RelativeLayout>
+
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvGenres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        />
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_close"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:text="close"/>
