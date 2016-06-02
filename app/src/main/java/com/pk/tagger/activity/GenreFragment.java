@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +14,6 @@ import android.view.ViewGroup;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.recyclerview.Genre;
-import com.pk.tagger.recyclerview.GenreAdapter;
 
 import java.util.ArrayList;
 
@@ -45,7 +40,7 @@ public GenreFragment () {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_my_gigfm, container, false);
         ButterKnife.bind(this, rootView);
 
         filterManager = new FilterManager(getContext());

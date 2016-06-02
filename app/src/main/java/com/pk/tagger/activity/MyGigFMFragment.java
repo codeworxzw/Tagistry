@@ -3,17 +3,13 @@ package com.pk.tagger.activity;
 /**
  * Created by PK on 16/01/2016.
  */
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,14 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pk.tagger.NonSwipeViewPager;
 import com.pk.tagger.R;
-import com.pk.tagger.managers.FilterManager;
-import com.pk.tagger.realm.MyRealmResults;
-import com.pk.tagger.recyclerview.Genre;
-
-import java.sql.Date;
-import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -42,16 +31,10 @@ public class MyGigFMFragment extends Fragment {
         // Required empty public constructor
     }
 
-    ArrayList<Genre> tiles;
     ViewPager mPager;
     MyAdapter mAdapter;
-    String[] TAB_ITEMS;
+//    String[] TAB_ITEMS;
     TabLayout tabLayout;
-    FilterManager filterManager;
-    FilterManager filterManager2;
-    private Realm myRealm;
-    private RealmResults mItems;
-    private Date date, endDate;
 
     static final int NUM_ITEMS = 5;
 
@@ -64,17 +47,15 @@ public class MyGigFMFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_my_gigfm, container, false);
         ButterKnife.bind(this, rootView);
-        TAB_ITEMS = getResources().getStringArray(R.array.homepage);
-
-        myRealm = Realm.getDefaultInstance();
+//        TAB_ITEMS = getResources().getStringArray(R.array.homepage);
 
         // Inflate the layout for this fragment
         mAdapter = new MyAdapter(getFragmentManager(), getActivity());
 
         mPager = (ViewPager)rootView.findViewById(R.id.pager);
-        mAdapter.setFragments(getActivity(), null, null);
+        mAdapter.setFragments(getActivity());
         mPager.setAdapter(mAdapter);
 
         tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
@@ -132,36 +113,36 @@ public class MyGigFMFragment extends Fragment {
 
     public static class MyAdapter extends FragmentStatePagerAdapter {
 
-        ListingsFragment fragA;
-        ListingsFragment fragB;
-        ListingsFragment fragC;
-        ListingsFragment fragD;
-        ListingsFragment fragE;
+        ListingsFragment frag1;
+        ListingsFragment frag2;
+        ListingsFragment frag3;
+        ListingsFragment frag4;
+        ListingsFragment frag5;
 
         public MyAdapter(FragmentManager fm, Context context) {
             super(fm);
         }
 
-        public void setFragments(Context context, RealmResults realmResults, Realm myRealm){
+        public void setFragments(Context context){
 
             // Set up the simple base fragments
-            fragA = new ListingsFragment();
-            fragB = new ListingsFragment();
-            fragC = new ListingsFragment();
-            fragD = new ListingsFragment();
-            fragE = new ListingsFragment();
+            frag1 = new ListingsFragment();
+            frag2 = new ListingsFragment();
+            frag3 = new ListingsFragment();
+            frag4 = new ListingsFragment();
+            frag5 = new ListingsFragment();
 
             Bundle args2 = new Bundle();
             args2.putString("query", "Festivals");
-            fragC.setArguments(args2);
+            frag3.setArguments(args2);
 
             Bundle args = new Bundle();
             args.putString("query", "Cheapest");
-            fragD.setArguments(args);
+            frag4.setArguments(args);
 
             Bundle args3 = new Bundle();
             args3.putString("query", "Starred");
-            fragE.setArguments(args3);
+            frag5.setArguments(args3);
 
         }
 
@@ -176,22 +157,22 @@ public class MyGigFMFragment extends Fragment {
             Fragment frag;
             switch(position){
                 case 0:
-                    frag = fragA;
+                    frag = frag1;
                     break;
                 case 1:
-                    frag = fragB;
+                    frag = frag2;
                     break;
                 case 2:
-                    frag = fragC;
+                    frag = frag3;
                     break;
                 case 3:
-                    frag = fragD;
+                    frag = frag4;
                     break;
                 case 4:
-                    frag = fragE;
+                    frag = frag5;
                     break;
                 default:
-                    frag = fragA;
+                    frag = frag1;
             }
 
             return frag;
@@ -219,7 +200,6 @@ public class MyGigFMFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        myRealm.close();
     }
 
     @Override

@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.kyo.expandablelayout.ExpandableLayout;
+import com.pk.tagger.ChromeTabsInterface;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.maps.ClusterMapRender;
@@ -76,6 +77,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     private RealmRecyclerView realmRecyclerView;
     private RealmResults<Event> mItems;
     private Realm myRealm;
+    private ChromeTabsInterface chromeTabsListener;
+
     private int height, top, bottom, width;
     public MapFragment() {
         // Required empty public constructor
@@ -469,7 +472,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                             }
                         }
                     }
-                }, expandState, myRealm);
+                }, expandState, myRealm, chromeTabsListener);
         realmRecyclerView.setAdapter(eventsRealmAdapter);
 
     }

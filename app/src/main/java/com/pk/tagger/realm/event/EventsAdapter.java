@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +29,11 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 
 import com.kyo.expandablelayout.ExpandableLayout;
+import com.pk.tagger.ChromeTabsInterface;
 import com.pk.tagger.R;
 import com.pk.tagger.realm.artist.Artist;
 import com.pk.tagger.realm.user.User;
 import com.pk.tagger.realm.venue.Venue;
-import com.pk.tagger.services.DatabaseStartServiceEvent;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -48,6 +46,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
     private View.OnClickListener clickListener;
     private ExpandableLayout.OnExpandListener expandListener;
     private Realm myRealm;
+    private ChromeTabsInterface chromeTabsListener;
 
     public interface OnClickListener {
         void onClick(View v);
@@ -62,13 +61,14 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
     }
 
     public EventsAdapter (Context context,
-                             RealmResults<Event> realmResults,
-                             boolean automaticUpdate,
-                             boolean animateResults,
-                             View.OnClickListener clickListener,
-                             ExpandableLayout.OnExpandListener expandListener,
-                             SparseBooleanArray expandState,
-                          Realm realm) {
+                          RealmResults<Event> realmResults,
+                          boolean automaticUpdate,
+                          boolean animateResults,
+                          View.OnClickListener clickListener,
+                          ExpandableLayout.OnExpandListener expandListener,
+                          SparseBooleanArray expandState,
+                          Realm realm,
+                          ChromeTabsInterface chromeTabsListener) {
 
         super(context, realmResults, automaticUpdate, animateResults);
         this.context = context;
@@ -77,6 +77,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         this.expandListener = expandListener;
         this.expandState = expandState;
         this.myRealm = realm;
+        this.chromeTabsListener = chromeTabsListener;
     }
 
     public class ViewHolder extends RealmViewHolder {
@@ -111,46 +112,9 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         @Bind (R.id.textView_event_tickets_price) TextView event_tickets_price;
         @Bind (R.id.textView_event_tickets_buy) TextView event_tickets_buy;
 
-
-
-//        public ExpandableLayout expandableLayout;
-//        public LinearLayout llexpand, llinfo;
-//        public LinearLayout artist_websites;
-
-//        public ImageView listingsImage, event_star;
-//        public TextView listingsTitle, listingsDate, listingsVenue, listingsTickets;
-//        public TextView artist_title, artist_desc, artist_genre, artist_spotify, artist_website_official, artist_website_fb, artist_website_twitter, artist_website_wiki;
-//        public TextView venue_title, venue_address, venue_website_sw, venue_website_official;
-//        public TextView event_tickets_price, event_tickets_buy;
-
         public ViewHolder(LinearLayout container) {
             super(container);
             ButterKnife.bind(this, container);
-//            this.expandableLayout = (ExpandableLayout) container.findViewById(R.id.expandablelayout);
-//            this.llexpand = (LinearLayout) container.findViewById(R.id.llexpand);
-//            this.llinfo = (LinearLayout) container.findViewById(R.id.llinfo);
-//            this.listingsImage = (ImageView) container.findViewById(R.id.imageView_listings);
-//            this.listingsTitle = (TextView) container.findViewById(R.id.textView_listings_title);
-//            this.listingsDate = (TextView) container.findViewById(R.id.textView_listings_date);
-//            this.listingsVenue = (TextView) container.findViewById(R.id.textView_listings_venue);
-//            this.listingsTickets = (TextView) container.findViewById(R.id.textView_listings_tickets);
-//            this.artist_title = (TextView) container.findViewById(R.id.textView_artist_title);
-//            this.artist_desc = (TextView) container.findViewById(R.id.textView_artist_description);
-//            this.artist_genre = (TextView) container.findViewById(R.id.textView_artist_genre);
-//            this.artist_spotify = (TextView) container.findViewById(R.id.textView_artist_spotify);
-//            this.artist_websites = (LinearLayout) container.findViewById(R.id.artist_websites);
-//            this.artist_website_official = (TextView) container.findViewById(R.id.textView_artist_website_official);
-//            this.artist_website_fb = (TextView) container.findViewById(R.id.textView_artist_website_facebook);
-//            this.artist_website_twitter = (TextView) container.findViewById(R.id.textView_artist_website_twitter);
-//            this.artist_website_wiki = (TextView) container.findViewById(R.id.textView_artist_website_wiki);
-//            this.venue_title = (TextView) container.findViewById(R.id.textView_venue_title);
-//            this.venue_address = (TextView) container.findViewById(R.id.textView_venue_address);
-//            this.venue_website_sw = (TextView) container.findViewById(R.id.textView_venue_website_sw);
-//            this.venue_website_official = (TextView) container.findViewById(R.id.textView_venue_website_official);
-//            this.event_tickets_price = (TextView) container.findViewById(R.id.textView_event_tickets_price);
-//            this.event_tickets_buy = (TextView) container.findViewById(R.id.textView_event_tickets_buy);
-//            this.event_star = (ImageView) container.findViewById(R.id.event_star);
-
         }
         public void bind(final Event event) {
 
@@ -256,11 +220,11 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     try{
                         if (artist.getWebsite().getWebsite_official() != null) {
                             Toast.makeText(context, artist.getWebsite().getWebsite_official(), Toast.LENGTH_SHORT).show();
-                            Log.d("Buying", artist.getWebsite().getWebsite_official());
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(artist.getWebsite().getWebsite_official()));
-                            context.startActivity(browserIntent);
+                            Log.d("Link", artist.getWebsite().getWebsite_official());
+                            chromeTabsListener.openLink(artist.getWebsite().getWebsite_official());
+
                         } else {
-                            Toast.makeText(context, "No ticket link :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No link :(", Toast.LENGTH_SHORT).show();
                             Log.d("Adapter", "No url");
                         }
                     }catch(Exception e){
@@ -274,9 +238,9 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     try{
                         if (artist.getWebsite().getWebsite_fb() != null) {
                             Toast.makeText(context, artist.getWebsite().getWebsite_fb(), Toast.LENGTH_SHORT).show();
-                            Log.d("Buying", artist.getWebsite().getWebsite_fb());
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(artist.getWebsite().getWebsite_fb()));
-                            context.startActivity(browserIntent);
+                            Log.d("Link", artist.getWebsite().getWebsite_fb());
+                            chromeTabsListener.openLink(artist.getWebsite().getWebsite_fb());
+
                         } else {
                             Toast.makeText(context, "No link :(", Toast.LENGTH_SHORT).show();
                             Log.d("Adapter", "No link");
@@ -292,9 +256,9 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     try{
                         if (artist.getWebsite().getWebsite_twitter() != null) {
                             Toast.makeText(context, artist.getWebsite().getWebsite_twitter(), Toast.LENGTH_SHORT).show();
-                            Log.d("Buying", artist.getWebsite().getWebsite_twitter());
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(artist.getWebsite().getWebsite_twitter()));
-                            context.startActivity(browserIntent);
+                            Log.d("Link", artist.getWebsite().getWebsite_twitter());
+                            chromeTabsListener.openLink(artist.getWebsite().getWebsite_twitter());
+
                         } else {
                             Toast.makeText(context, "No link :(", Toast.LENGTH_SHORT).show();
                             Log.d("Adapter", "No link");
@@ -310,9 +274,9 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                     try{
                         if (artist.getWebsite().getWebsite_wiki() != null) {
                             Toast.makeText(context, artist.getWebsite().getWebsite_wiki(), Toast.LENGTH_SHORT).show();
-                            Log.d("Buying", artist.getWebsite().getWebsite_wiki());
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(artist.getWebsite().getWebsite_wiki()));
-                            context.startActivity(browserIntent);
+                            Log.d("Link", artist.getWebsite().getWebsite_wiki());
+                            chromeTabsListener.openLink(artist.getWebsite().getWebsite_wiki());
+
                         } else {
                             Toast.makeText(context, "No link :(", Toast.LENGTH_SHORT).show();
                             Log.d("Adapter", "No link");
@@ -323,18 +287,26 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                 }
             });
 
-
-//            try {artist_website_fb.setText(artist.getWebsite().getWebsite_fb());
-//            } catch (Exception e) {//Log.d("Website", "No facebook website found");
-//            }
-//            try {artist_website_twitter.setText(artist.getWebsite().getWebsite_twitter());
-//            } catch (Exception e) {//Log.d("Website", "No twitter website found");
-//            }
-//            try{artist_website_wiki.setText(artist.getWebsite().getWebsite_wiki());
-//            } catch (Exception e) {//Log.d("Website", "No wiki website found");
-//            }
-
             venue_title.setText(venue.getName());
+
+            venue_website_official.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        if (venue.getWebsite() != null) {
+                            Toast.makeText(context, venue.getWebsite(), Toast.LENGTH_SHORT).show();
+                            Log.d("Link", venue.getWebsite());
+                            chromeTabsListener.openLink(venue.getWebsite());
+
+                        } else {
+                            Toast.makeText(context, "No link :(", Toast.LENGTH_SHORT).show();
+                            Log.d("Adapter", "No link");
+                        }
+                    }catch(Exception e){
+                        Log.d("Catch", e.toString());
+                    }
+                }
+            });
 
             try{venue_website_official.setText(venue.getWebsite());
             } catch (Exception e) {venue_website_official.setText("N/A");}
@@ -457,6 +429,5 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         holder.expandableLayout.setExpanded(expandState.get(position), false);
 
     }
-
 
 }

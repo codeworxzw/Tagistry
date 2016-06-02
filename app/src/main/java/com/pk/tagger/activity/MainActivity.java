@@ -2,6 +2,8 @@ package com.pk.tagger.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -265,20 +267,26 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         if(id == R.id.send_feedback){
 
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("message/rfc822");
-            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
-            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
-            try {
-                startActivity(Intent.createChooser(i, "Send mail..."));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-            }
+//            Intent i = new Intent(Intent.ACTION_SEND);
+//            i.setType("message/rfc822");
+//            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"elasmolabs.feedback@gmail.com"});
+//            i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+//            try {
+//                startActivity(Intent.createChooser(i, "Send mail..."));
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+//            }
 //            final Artist artist = myRealm
 //                    .where(Artist.class)
 //                    .equalTo("id", "53877")
 //                    .findFirst();
 //            Log.d("Artist", artist.toString());
+
+            String url = "https://www.google.com/";
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            builder.setToolbarColor(getResources().getColor(R.color.primary));
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse(url));
 
             return true;
         }

@@ -5,10 +5,16 @@ package com.pk.tagger.activity;
  */
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,14 +30,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kyo.expandablelayout.ExpandableLayout;
+import com.pk.tagger.ChromeTabsInterface;
 import com.pk.tagger.R;
 import com.pk.tagger.managers.FilterManager;
 import com.pk.tagger.realm.MyRealmResults;
 import com.pk.tagger.realm.event.Event;
 import com.pk.tagger.realm.event.EventsAdapter;
-import com.pk.tagger.recyclerview.MyScrollListener;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -52,6 +59,10 @@ public class ListingsFragment extends Fragment {
     private RealmRecyclerView realmRecyclerView;
     private EventsAdapter eventsRealmAdapter;
     private SparseBooleanArray expandState = new SparseBooleanArray();
+    private ChromeTabsInterface chromeTabsListener;
+    private CustomTabActivityHelper mCustomTabActivityHelper;
+
+
 
     private String resultsQuery = "none";
 
@@ -68,7 +79,6 @@ public class ListingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -81,12 +91,14 @@ public class ListingsFragment extends Fragment {
         if(args!=null){
             resultsQuery = args.getString("query", "");
         }
-
         Log.d("ListingsFragment Query", resultsQuery);
 
-        realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
+        mCustomTabActivityHelper = new CustomTabActivityHelper();
+        mCustomTabActivityHelper.setConnectionCallback(mConnectionCallback);
+//        mCustomTabActivityHelper.mayLaunchUrl(Uri.parse(MY_URL), null, null);
 
         myRealm = Realm.getDefaultInstance();
+        realmRecyclerView = (RealmRecyclerView) rootView.findViewById(R.id.realm_recycler_view);
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 //
@@ -107,8 +119,6 @@ public class ListingsFragment extends Fragment {
 //        });
         fab.hide();
 
-
-
         getListings(getActivity(), false);
 
         return rootView;
@@ -117,6 +127,8 @@ public class ListingsFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+        mCustomTabActivityHelper.bindCustomTabsService(getActivity());
+
     }
 
     @Override
@@ -130,7 +142,6 @@ public class ListingsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d("ListingsFragment", "onAttach called");
-
     }
 
     @Override
@@ -143,11 +154,12 @@ public class ListingsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d("ListingsFragment", "onPause called");
-
     }
+
     @Override
     public void onStop() {
         super.onStop();
+        mCustomTabActivityHelper.unbindCustomTabsService(getActivity());
         Log.d("ListingsFragment", "onStop called");
     }
 
@@ -183,20 +195,16 @@ public class ListingsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("Onquery", query);
-
                 filterManager.setSearchArtistVenue(query);
                 getListings(getActivity(), true);
-
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("OnChange", newText);
-
                 filterManager.setSearchArtistVenue(newText);
                 getListings(getActivity(), true);
-
                 return true;
             }
         });
@@ -222,8 +230,6 @@ public class ListingsFragment extends Fragment {
                 return true;
             }
         });
-
-
     }
 
     @Override
@@ -309,60 +315,98 @@ public class ListingsFragment extends Fragment {
                 .setActionBarTitle(String.valueOf(mItems.size()) + " Events");
 
         eventsRealmAdapter = new EventsAdapter(getContext(), mItems, true, true, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
-                        holder.expandableLayout.toggleExpansion();
+            @Override
+            public void onClick(View v) {
+                EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) v.getTag();
+                holder.expandableLayout.toggleExpansion();
 
-                        //temporarily save current expandstate for clicked item
-                        boolean result = !expandState.get(holder.getAdapterPosition(), false);
+                //temporarily save current expandstate for clicked item
+                boolean result = !expandState.get(holder.getAdapterPosition(), false);
 
-                        //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
-                        for (int i = 0; i < mItems.size(); i++) {
-                            expandState.append(i, false);
-                        }
+                //set all others to collapsed state i.e. only allow one expanded at a time, comment out to allow multiple expanded
+                for (int i = 0; i < mItems.size(); i++) {
+                    expandState.append(i, false);
+                }
 
-                        Log.d("ExpandResult", Boolean.toString(result));
+                Log.d("ExpandResult", Boolean.toString(result));
 
-                        //save current expandstate for clicked item
-                        expandState.append(holder.getAdapterPosition(), result);
-                    }
-                }, new ExpandableLayout.OnExpandListener() {
+                //save current expandstate for clicked item
+                expandState.append(holder.getAdapterPosition(), result);
+            }
+        }, new ExpandableLayout.OnExpandListener() {
 
-                    private boolean isScrollingToBottom = false;
+            private boolean isScrollingToBottom = false;
 
-                    @Deprecated
-                    @Override
-                    public void onToggle(ExpandableLayout view, View child,
-                                         boolean isExpanded) {
-                    }
+            @Deprecated
+            @Override
+            public void onToggle(ExpandableLayout view, View child,
+                                 boolean isExpanded) {
+            }
 
-                    @Override
-                    public void onExpandOffset(ExpandableLayout view, View child,
-                                               float offset, boolean isExpanding) {
-                        if (view.getTag() instanceof EventsAdapter.ViewHolder) {
-                            final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
-                            if (holder.getAdapterPosition() == mItems.size() - 1) {
-                                if (!isScrollingToBottom) {
-                                    isScrollingToBottom = true;
-                                    realmRecyclerView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            isScrollingToBottom = false;
-                                            realmRecyclerView.scrollToPosition(holder
-                                                    .getAdapterPosition());
-                                        }
-                                    }, 100);
+            @Override
+            public void onExpandOffset(ExpandableLayout view, View child,
+                                       float offset, boolean isExpanding) {
+                if (view.getTag() instanceof EventsAdapter.ViewHolder) {
+                    final EventsAdapter.ViewHolder holder = (EventsAdapter.ViewHolder) view.getTag();
+                    if (holder.getAdapterPosition() == mItems.size() - 1) {
+                        if (!isScrollingToBottom) {
+                            isScrollingToBottom = true;
+                            realmRecyclerView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isScrollingToBottom = false;
+                                    realmRecyclerView.scrollToPosition(holder
+                                            .getAdapterPosition());
                                 }
-                            }
+                            }, 100);
                         }
                     }
-                }, expandState, myRealm);
+                }
+            }
+        }, expandState, myRealm, new ChromeTabsInterface() {
+            @Override
+            public void openLink(String url) {
+//                url = "https://www.google.com/";
+//                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                builder.setToolbarColor(getResources().getColor(R.color.primary));
+                openCustomTab(url);
+//                CustomTabsIntent customTabsIntent = openCustomTab(url);
+//                customTabsIntent.launchUrl(getActivity(), Uri.parse(url), new WebviewFallback());
+            }
+        });
         realmRecyclerView.setAdapter(eventsRealmAdapter);
         eventsRealmAdapter.updateRealmResults(mItems);
-
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-
     }
+
+    public void openCustomTab(String url) {
+        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+        // Show the title
+        intentBuilder.setShowTitle(true);
+
+        // Set the color
+        intentBuilder.setToolbarColor(getResources().getColor(R.color.primary));
+
+        intentBuilder.setStartAnimations(getActivity(),
+                android.R.anim.fade_in, android.R.anim.fade_out);
+        intentBuilder.setExitAnimations(getActivity(),
+                android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+        CustomTabActivityHelper.openCustomTab(
+                getActivity(), intentBuilder.build(), Uri.parse(url), new WebviewFallback());
+    }
+
+    // You can use this callback to make UI changes
+    private CustomTabActivityHelper.ConnectionCallback mConnectionCallback = new CustomTabActivityHelper.ConnectionCallback() {
+        @Override
+        public void onCustomTabsConnected() {
+            Toast.makeText(getActivity(), "Connected to service", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCustomTabsDisconnected() {
+            Toast.makeText(getActivity(), "Disconnected from service", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 }
