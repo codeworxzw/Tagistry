@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.LogWriter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,9 +39,12 @@ import com.pk.tagger.managers.ScreenManager;
 import com.pk.tagger.recyclerview.Genre;
 import com.pk.tagger.recyclerview.GenreAdapter;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,6 +61,9 @@ public class FilterFragment extends Fragment {
     FilterManager filterManager;
     GenreAdapter adapter;
     ScreenManager screenManager;
+    ArrayList<Genre> items;
+    SeekBar seekBar;
+    TextView seekBarTextView;
 
     private ActualNumberPicker mPicker;
     ArrayList<Genre> tiles;
@@ -133,24 +141,45 @@ public class FilterFragment extends Fragment {
             }
         });
 
-        NumberPicker np = (NumberPicker) rootView.findViewById(R.id.pricePicker);
-        np.setMaxValue(200);
-        np.setMinValue(0);
+//        NumberPicker np = (NumberPicker) rootView.findViewById(R.id.pricePicker);
+//        np.setMaxValue(200);
+//        np.setMinValue(0);
+//
+//        np.setValue(filterManager.getMaxPrice());
+//        Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
+//        np.setWrapSelectorWheel(true);
+//        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+//            @Override
+//            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+//                //Display the newly selected number from picker
+//
+//                Log.d("number", String.valueOf(newVal));
+//                filterManager.setMaxPrice(newVal);
+//                Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
+//            }
+//        });
 
-        np.setValue(filterManager.getMaxPrice());
-        Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
-        np.setWrapSelectorWheel(true);
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        seekBarTextView = (TextView) rootView.findViewById(R.id.priceSliderValue);
+        seekBarTextView.setText("£" + filterManager.getMaxPrice());
+
+        seekBar = (SeekBar) rootView.findViewById(R.id.priceSlider);
+        seekBar.setProgress(filterManager.getMaxPrice());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                //Display the newly selected number from picker
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateTextValue(progress);
+            }
 
-                Log.d("number", String.valueOf(newVal));
-                filterManager.setMaxPrice(newVal);
-                Log.d("fragment", String.valueOf(filterManager.getMaxPrice()));
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
-
 
         genreTextView.setText(Html.fromHtml(gChosen));
 
@@ -160,28 +189,80 @@ public class FilterFragment extends Fragment {
         adapter = new GenreAdapter(tiles, new GenreAdapter.OnItemClickListener() {
 
             @Override
-            public void onItemClick(Genre mGenre, int position) {
+            public void onItemClick(Genre mGenre, int position, List<Genre> mGenres) {
                 Log.d("Tile: ", mGenre.getName());
                 Log.d("Tile Number: ", String.valueOf(position));
                 String[] genresV = getResources().getStringArray(R.array.genres_values);
-
-                mGenre.setgSelected(!mGenre.getgSelected());
-                Log.d("genre", String.valueOf(mGenre.getgSelected()));
+                String[] genres = getResources().getStringArray(R.array.genres);
                 Set<String> searchGenresTemp = filterManager.getSearchGenres();
-                if (mGenre.getgSelected()){
+                String[] searchGenresTempArray = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                if (!mGenre.getName().equals(genres[0])) {
+                    mGenre.setgSelected(!mGenre.getgSelected());
+                } else {
+                    if(!mGenre.getgSelected()) {
+                        mGenre.setgSelected(!mGenre.getgSelected());
+                    }
+                }
+                Log.d("genre", String.valueOf(mGenre.getgSelected()));
+                if (mGenre.getgSelected()) {
+                    if (mGenre.getName().equals(genres[0])) {
+                        Log.d("mGenre Name", mGenre.getName() + " = " + genresV[0]);
+                        searchGenresTemp = new HashSet<>(Arrays.asList(getContext().getResources().getStringArray(R.array.genres_values)));
+                        filterManager.setSearchGenres(searchGenresTemp);
+                        mGenres.clear();
+                        for (int i=0; i<genresV.length; i++) {
+                            //12
+                                mGenres.add(new Genre(genres[i], true));
+                                Log.d("search true", (genres[i]));
+                                genreText = genreText + genres[i] + " ";
+
+                        }
+                       // adapter.setGenres(mGenres);
+                        //searchGenresTemp.
+                        //filterManager.setSearchGenres(genresV);
+
+                    } else {
+                        searchGenresTemp.add(genresV[position]);
+                        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                        Log.d("true", Arrays.toString(searchGenres));
+                        filterManager.setSearchGenres(searchGenresTemp);
+                    }
+                } else {
+                    if (searchGenresTemp.size()==genres.length) {
+                    searchGenresTemp.clear();
                     searchGenresTemp.add(genresV[position]);
                     String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-                    Log.d("true", Arrays.toString(searchGenres));
                     filterManager.setSearchGenres(searchGenresTemp);
-                } else {
-                    searchGenresTemp.remove(genresV[position]);
-                    String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
-                    Log.d("false", Arrays.toString(searchGenres));
-                    filterManager.setSearchGenres(searchGenresTemp);
+                        mGenres.clear();
+                        for (int i=0; i<genresV.length;) {
+                            //12
+                            for (String s : genresV) if (Arrays.asList(searchGenres).contains(s))
+                            //12
+                            {
+                                mGenres.add(new Genre(genres[i], true));
+                                Log.d("search true", (genres[i]));
+                                genreText = genreText + genres[i] + " ";
+                                i++;
+                            }
+                            else {
+                                mGenres.add(new Genre(genres[i], false));
+                                Log.d("search false", (genres[i]));
+                                genreText = genreText + genres[i] + " ";
+                                i++;
+                            }
+                            adapter.setGenres(mGenres);
+                        }
+
+                    } else {
+                        searchGenresTemp.remove(genresV[position]);
+                        String[] searchGenres = searchGenresTemp.toArray(new String[searchGenresTemp.size()]);
+                        Log.d("false", Arrays.toString(searchGenres));
+                        filterManager.setSearchGenres(searchGenresTemp);
+                    }
                 }
                 refresh();
-
             }
+
         });
 
         rvGenres.setAdapter(adapter);
@@ -191,7 +272,18 @@ public class FilterFragment extends Fragment {
             return rootView;
     }
 
+    public void updateTextValue(int progress) {
+        Log.d("seekBarValue", String.valueOf(progress));
+        if (progress==0) {
+            seekBarTextView.setText("-");
+        } else {
+            seekBarTextView.setText("£" + progress);
+        }
+        filterManager.setMaxPrice(progress);
+    }
+
     public void refresh() {
+
         adapter.notifyDataSetChanged();
         String[] genres = getResources().getStringArray(R.array.genres);
         Set<String> searchGenresTemp = filterManager.getSearchGenres();
@@ -290,7 +382,7 @@ public class FilterFragment extends Fragment {
 
     private ArrayList<Genre> getSampleArrayList() {
 
-        ArrayList<Genre> items = new ArrayList<>();
+        items = new ArrayList<>();
 
         Resources res = getResources();
         String[] genres = res.getStringArray(R.array.genres);
@@ -324,7 +416,6 @@ public class FilterFragment extends Fragment {
                 genreText = genreText + genres[i] + " ";
                 i++;
             }
-
         }
 
         String updated = "";

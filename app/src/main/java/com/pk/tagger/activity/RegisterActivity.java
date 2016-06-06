@@ -42,6 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     private static final String REGISTER_URL = "https://gigitch.duckdns.org/register";
     public static final String KEY_EMAIL = "email";
+    public static final String KEY_FIRST_NAME = "firstname";
+    public static final String KEY_SECOND_NAME = "secondname";
     public static final String KEY_PASSWORD = "password";
 
     // temporary string to show the parsed response

@@ -358,9 +358,18 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
             }
             fragmentTransaction.replace(R.id.container_body, fragment, title);
+
             fragmentTransaction.addToBackStack(title);
 
+            fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                @Override
+                public void onBackStackChanged() {
+                    if(getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+                }
+            });
+
             fragmentTransaction.commit();
+
 
             // set the toolbar title
 //            setActionBarTitle(title);

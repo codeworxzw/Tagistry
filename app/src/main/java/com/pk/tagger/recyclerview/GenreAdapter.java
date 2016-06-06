@@ -21,7 +21,7 @@ import java.util.List;
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(Genre mGenre, int position);
+        void onItemClick(Genre mGenre, int position, List<Genre> mGenres);
     }
     // instantiate genres and listener
     private List<Genre> mGenres;
@@ -47,12 +47,12 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
             //imageView = (ImageView) itemView.findViewById(R.id.genre_image);
         }
 
-        public void bind(final Genre genre, final OnItemClickListener listener, final int position) {
+        public void bind(final Genre genre, final OnItemClickListener listener, final int position, final List<Genre> genresL) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(genre, position);
+                    listener.onItemClick(genre, position, genresL);
                 }
             });
         }
@@ -84,12 +84,16 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
             textView.setBackgroundColor(Color.rgb(0, 0, 0));
             //imageView.setImageResource(R.drawable.note2invert);
         }
-        viewHolder.bind(mGenres.get(position), listener, position);
+        viewHolder.bind(mGenres.get(position), listener, position, mGenres);
 
     }
 
     @Override
     public int getItemCount() {
         return mGenres.size();
+    }
+
+    public void setGenres(List<Genre> genresL) {
+        mGenres = genresL;
     }
 }

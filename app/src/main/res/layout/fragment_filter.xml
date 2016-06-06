@@ -48,20 +48,50 @@
             android:textColor="@color/colorPrimaryLight"
             />
 
-        <NumberPicker
-            android:id="@+id/pricePicker"
-            android:layout_below="@id/maxPrice"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textColor="@color/colorPrimaryLight"
-            android:layout_margin="10dp">
+        <!--<NumberPicker-->
+            <!--android:id="@+id/pricePicker"-->
+            <!--android:layout_below="@id/maxPrice"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:textColor="@color/colorPrimaryLight"-->
+            <!--android:layout_margin="10dp">-->
 
-        </NumberPicker>
+        <!--</NumberPicker>-->
+    <RelativeLayout
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_margin="10dp"
+        android:layout_below="@id/maxPrice"
+        >
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/priceSliderValue"
+            android:id="@+id/priceSlider"
+            android:max="250"
+            android:progress="50"
+            android:layout_alignParentStart="true"
+            />
+
+        <TextView
+            android:id="@+id/priceSliderValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/genreschosen"
-            android:layout_below="@id/pricePicker"
+            android:layout_below="@id/seekBar"
             android:layout_width="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_height="wrap_content"

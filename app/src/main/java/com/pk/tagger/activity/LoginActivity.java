@@ -55,6 +55,7 @@ import com.stormpath.sdk.providers.FacebookLoginProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,6 +117,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         session = new SessionManager(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("user_status", "email"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email"));
         LoginManager.getInstance().registerCallback(callbackManager, this);
 
         if (BuildConfig.DEBUG) {
@@ -175,6 +178,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
             }
         });
 
+
+
     }
     // login method
 
@@ -198,8 +203,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         }
 
         _loginButton.setEnabled(false);
-
-
 
         // get fields and TODO: insert into HTTP POST request below
         final String email = _emailText.getText().toString();
@@ -284,6 +287,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //send this to the facebook button
+
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_REGISTER) {
             if (resultCode == RESULT_OK) {
@@ -346,7 +350,9 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                 Log.d("success", userProfile.getEmail());
                 Log.d("success", Stormpath.accessToken());
                 session.createLoginSession(userProfile.getEmail(), Stormpath.accessToken());
+
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 // intent.putExtra("Username", name);
                 startActivity(intent);
             }
@@ -402,6 +408,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     @Override
     public void onSuccess(final LoginResult loginResult) {
         Log.d("something", "2");
+        loginResult.getRecentlyDeniedPermissions();
+
         Stormpath.socialLogin(SocialProvidersResponse.FACEBOOK, loginResult.getAccessToken().getToken(), null,
                 new StormpathCallback<Void>() {
                     @Override
@@ -453,30 +461,30 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
 
-            Stormpath.socialGoogleCodeAuth(SocialProvidersResponse.GOOGLE, new SocialProviderConfiguration(getString(R.string.goog_app_id), getString(R.string.goog_app_id)), new StormpathCallback<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    Log.d("THis worked", s);
-                }
-
-                @Override
-                public void onFailure(StormpathError error) {
-
-                }
-            });
-
-//            Stormpath.socialLogin(SocialProvidersResponse.GOOGLE, null, authCode,
-//                    new StormpathCallback<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
+//            Stormpath.socialGoogleCodeAuth(SocialProvidersResponse.GOOGLE, new SocialProviderConfiguration(getString(R.string.goog_app_id), getString(R.string.goog_app_id)), new StormpathCallback<String>() {
+//                @Override
+//                public void onSuccess(String s) {
+//                    Log.d("THis worked", s);
+//                }
 //
-//                        }
+//                @Override
+//                public void onFailure(StormpathError error) {
 //
-//                        @Override
-//                        public void onFailure(StormpathError error) {
-//                            Toast.makeText(getBaseContext(), "Log in failed", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
+//                }
+//            });
+
+            Stormpath.socialLogin(SocialProvidersResponse.GOOGLE, null, authCode,
+                    new StormpathCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            onLoginSuccessStormpath();
+                        }
+
+                        @Override
+                        public void onFailure(StormpathError error) {
+                            Toast.makeText(getBaseContext(), "Log in failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
         } else {
             // Signed out, show unauthenticated UI.

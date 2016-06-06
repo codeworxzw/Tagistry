@@ -45,10 +45,12 @@
 
 
     <string name="email">Email</string>
+    <string name="firstname">First Name</string>
+    <string name="secondname">Second Name</string>
     <string name="password">Password</string>
     <string name="confirmpassword">Enter Password Again</string>
     <string name="link_login"><u>Already a member? Login</u></string>
-    <string name="link_register"><u>No account yet? Register</u></string>
+    <string name="link_register"><u>Register with your Email</u></string>
     <string name="skip_login"><u>Browse as guest</u></string>
     <string name="create_account">Create Account</string>
     <string name="login">Login</string>
@@ -86,56 +88,44 @@
     </string-array>
 
     <string-array name="genres">
+        <item>All</item>
         <item>Blues</item>
-        <item>Cantautores</item>
         <item>Classic Rock</item>
         <item>Classical and Opera</item>
         <item>Country</item>
         <item>Cover Bands</item>
         <item>EDM and Ibiza</item>
         <item>Festivals</item>
-        <item>Flamenco</item>
         <item>Folk and World Music</item>
-        <item>Gregorianisch</item>
         <item>Hard Rock and Metal</item>
         <item>Indie and Alternative</item>
         <item>Jazz and Reggae</item>
-        <item>Nederlandstalig</item>
         <item>Other</item>
         <item>Pop and Rock</item>
         <item>RnB and Hip-Hop</item>
-        <item>Scene Francaise</item>
-        <item>Schlager</item>
         <item>Soul</item>
-        <item>Variete Francaise</item>
     </string-array>
     <string-array name="genres_values">
+        <item>1001</item>
         <item>91</item>
-        <item>74</item>
         <item>54</item>
         <item>6</item>
         <item>58</item>
         <item>61</item>
         <item>14</item>
         <item>35</item>
-        <item>73</item>
         <item>17</item>
-        <item>63</item>
         <item>11</item>
         <item>12</item>
         <item>15</item>
-        <item>62</item>
         <item>18</item>
         <item>10</item>
         <item>13</item>
-        <item>78</item>
-        <item>41</item>
         <item>55</item>
-        <item>67</item>
     </string-array>
 
     <string name="facebook_app_id">fb135022110243891</string>
-    <string name="goog_app_id">616404377847-vp0ulrje62vr2oq41ifnq1a531oovht5.apps.googleusercontent.com</string>
+    <string name="goog_app_id">616404377847-barfukv3ubu8vlbtvorsac3rtqainf6v.apps.googleusercontent.com</string>
 
     <string name="filter_available_tickets">Only show events with tickets?</string>
     <string name="filter_max_price">Maximum Ticket Price</string>

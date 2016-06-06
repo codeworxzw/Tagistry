@@ -9,7 +9,7 @@ import android.webkit.WebViewClient;
 
 import com.pk.tagger.R;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebviewActivity extends AppCompatActivity {
 
     public static final String EXTRA_URL =
             "com.pk.tagger.activity.WebViewActivity.EXTRA_URL";
