@@ -61,6 +61,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     private static String TAG = MainActivity.class.getSimpleName();
 
     MapView mMapView;
+    public static boolean mMapIsTouched = false;
     private GoogleMap googleMap;
     private SparseBooleanArray expandState = new SparseBooleanArray();
     FloatingActionButton fab;
@@ -70,6 +71,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     private int mYear, mMonth, mDay, mHour, mMinute;
     Rect rectf;
     static final float IMAGE_SIZE_RATIO = .15f; //define how big your marker is relative to the total screen
+    private OnEventListener listener;
+
+    public interface OnEventListener {
+        void hideToolbar() ;
+        void showToolbar();
+    }
+
+    public void setOnEventListener(OnEventListener listener) {
+        this.listener = listener;
+    }
 
     FilterManager filterManager;
 
@@ -88,6 +99,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        listener.hideToolbar();
+
     }
 
     @Override
@@ -126,25 +139,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 }
         );
 
+
+
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                {
-//                    ft.replace(R.id.container_body, new MyGigFMFragment(), "Home");
-//                    // Set title bar
-//                    ((MainActivity) getActivity())
-//                            .setActionBarTitle("Home");
-//                    ft.commit();
-//                }
-//
-//            }
-//        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStackImmediate();
+            }
+        });
 
-        fab.hide();
+        fab.show();
 
         View myView = rootView.findViewById(R.id.borderview);
 
@@ -192,6 +198,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         }
 
         googleMap = mMapView.getMap();
+
         setUpMap();
         // Inflate the layout for this fragment
         return rootView;
@@ -298,7 +305,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
                 Toast.makeText(getContext(), "Multiple Cluster Marker Clicked", Toast.LENGTH_SHORT).show();
                 LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
                 LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
-                lnrp.weight = 2f;
+                lnrp.weight = 1.5f;
                 lnr.setLayoutParams(lnrp);
 
                 Collection<ClusterMarkerLocation> items = cluster.getItems();
@@ -363,7 +370,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
                 LinearLayout lnr = (LinearLayout) getActivity().findViewById(R.id.llview1);
                 LinearLayout.LayoutParams lnrp = (LinearLayout.LayoutParams) getActivity().findViewById(R.id.llview1).getLayoutParams();
-                lnrp.weight = 1f;
+                lnrp.weight = 0.6f;
                 lnr.setLayoutParams(lnrp);
                 realmRecyclerView = (RealmRecyclerView) getActivity().findViewById(R.id.realmCluster_recycler_view2);
 
@@ -494,11 +501,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
 
     @Override
     public void onDetach() {
-
+        listener.showToolbar();
         super.onDetach();
     }
     @Override
     public void onResume() {
+        //listener.hideToolbar();
         super.onResume();
         //setUpMap();
     }
@@ -506,6 +514,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        listener.showToolbar();
         myRealm.close();
 
     }
@@ -524,7 +533,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
     @Override
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         // Do something that differs the Activity's menu here
+
         super.onCreateOptionsMenu(menu, inflater);
+
         MenuItem item=menu.findItem(R.id.action_mapview);
         item.setVisible(false);
         MenuItem item2=menu.findItem(R.id.action_listingsview);
@@ -580,5 +591,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLongClickLis
         }
     }
 
+
 }
+
 

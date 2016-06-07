@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
    final public void displayView(int position) {
         Fragment fragment = null;
+       MapFragment mapFragment = new MapFragment();
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
@@ -332,9 +333,23 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case 2:
                 fragment = new ListingsFragment();
                 title = getString(R.string.title_listings);
+
                 break;
             case 3:
-                fragment = new MapFragment();
+
+                mapFragment.setOnEventListener(new MapFragment.OnEventListener() {
+                    @Override
+                    public void hideToolbar() {
+
+                        getSupportActionBar().hide();
+                    }
+
+                    @Override
+                    public void showToolbar() {
+
+                        getSupportActionBar().show();
+                    }
+                });
                 title = getString(R.string.title_map);
                 break;
             case 4:
@@ -349,9 +364,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 break;
         }
 
+       FragmentManager fragmentManager = getSupportFragmentManager();
+       FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
             if (title == getString(R.string.title_filters)) {
                 fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
             } else if (title == getString(R.string.title_listings)) {
@@ -359,21 +376,23 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
             fragmentTransaction.replace(R.id.container_body, fragment, title);
 
-            fragmentTransaction.addToBackStack(title);
-
-            fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-                @Override
-                public void onBackStackChanged() {
-                    if(getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
-                }
-            });
-
-            fragmentTransaction.commit();
-
-
             // set the toolbar title
 //            setActionBarTitle(title);
+        } else {
+            fragmentTransaction.replace(R.id.container_body, mapFragment, title);
         }
+
+       fragmentTransaction.addToBackStack(title);
+
+       fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+           @Override
+           public void onBackStackChanged() {
+               if(getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+           }
+       });
+
+       fragmentTransaction.commit();
+
     }
 
     public final Fragment getVisibleFragment(){

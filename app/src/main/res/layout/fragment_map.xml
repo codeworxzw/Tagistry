@@ -16,12 +16,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0">
+
 <com.google.android.gms.maps.MapView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     />
+
+        <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/mapFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_below="@+id/buttonBar"-->
+            <!--class="com.pk.tagger.maps.MySupportMapFragment"-->
+            <!--/>-->
+
     </LinearLayout>
     <LinearLayout
         android:id="@+id/llview2"
@@ -48,9 +59,9 @@ app:rrvEmptyLayoutId="@layout/listings_empty_view"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="18dp"
+        android:layout_margin="10dp"
         android:clickable="true"
-        android:src="@drawable/ic_settings_action"
+        android:src="@drawable/ic_action_listings"
         app:layout_anchor="@id/llview1"
         app:layout_anchorGravity="top|right"/>
 </android.support.design.widget.CoordinatorLayout>

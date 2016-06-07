@@ -78,7 +78,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         textView.setText(genre.getName());
         //ImageView imageView = viewHolder.imageView;
         if (genre.getgSelected()) {
-            textView.setBackgroundColor(Color.rgb(245, 0, 87));
+            textView.setBackgroundColor(Color.rgb(122, 125, 125));
             //imageView.setImageResource(R.drawable.note2);
         } else {
             textView.setBackgroundColor(Color.rgb(0, 0, 0));
