@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    >
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/cv"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="2dp"
+        card_view:contentPadding="4dp"
+        card_view:cardUseCompatPadding="true">
+        <com.kyo.expandablelayout.ExpandableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/expandablelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:orientation="horizontal"
+                android:id="@+id/llexpand"
+                android:background="@color/lightGrey">
+
+                <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+                <ImageView
+                android:id="@+id/imageView_listings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/note_listings"/>
+                <ImageView
+                android:id="@+id/event_star"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/star_outline">
+                <requestFocus></requestFocus>
+
+                </ImageView>
+
+                </RelativeLayout>
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/imageView_listings"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="3"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:scaleType="centerCrop"-->
+                    <!--android:src="@drawable/note_listings"/>-->
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@android:color/darker_gray"/>-->
+                <!--<ImageView-->
+                    <!--android:id="@+id/event_star"-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:src="@drawable/ic_star_border_black_36dp"/>-->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray"/>
+                <LinearLayout
+                    android:id="@+id/llinfo"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView_listings_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:padding="1dp"
+                        android:textSize="20sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textStyle="bold"
+                        android:text="Title"
+                        android:textColor="@android:color/black"/>
+
+                    <!--Semi-works but mintextsize doesnt seem to be working yet-->
+
+                    <!--<me.grantland.widget.AutofitTextView-->
+                    <!--android:id="@+id/textView_listings_title"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:padding="1dp"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:ellipsize="end"-->
+                    <!--android:maxLines="1"-->
+                    <!--autofit:minTextSize="14sp"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:text="Title"-->
+                    <!--android:textColor="@android:color/black"/>-->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+                    <TextView
+                        android:id="@+id/textView_listings_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:padding="1dp"
+                        android:textSize="16sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Date"
+                        android:textColor="@android:color/black"/>
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1px"-->
+                    <!--android:background="@android:color/black"/>-->
+                    <TextView
+                        android:id="@+id/textView_listings_venue"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:padding="1dp"
+                        android:textSize="16sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Venue"
+                        android:textColor="@android:color/black"/>
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1px"-->
+                    <!--android:background="@android:color/black"/>-->
+                    <TextView
+                        android:id="@+id/textView_listings_tickets"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:padding="1dp"
+                        android:textSize="16sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Tickets"
+                        android:textColor="@android:color/black"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <include layout="@layout/listings_item_view_expandable"
+                android:id="@+id/container_expandable"/>
+
+        </com.kyo.expandablelayout.ExpandableLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
+

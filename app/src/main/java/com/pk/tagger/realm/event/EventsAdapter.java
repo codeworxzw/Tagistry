@@ -95,12 +95,13 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
         @Bind (R.id.textView_artist_title) TextView artist_title;
         @Bind (R.id.textView_artist_description) TextView artist_desc;
         @Bind (R.id.textView_artist_genre) TextView artist_genre;
-        @Bind (R.id.textView_artist_spotify) TextView artist_spotify;
+//        @Bind (R.id.textView_artist_spotify) TextView artist_spotify;
 //        @Bind (R.id.textView_artist_website_official) TextView artist_website_official;
 //        @Bind (R.id.textView_artist_website_facebook) TextView artist_website_fb;
 //        @Bind (R.id.textView_artist_website_twitter) TextView artist_website_twitter;
 //        @Bind (R.id.textView_artist_website_wiki) TextView artist_website_wiki;
         @Bind (R.id.icon_official) ImageView artist_link_official;
+        @Bind (R.id.icon_spotify) ImageView artist_link_spotify;
         @Bind (R.id.icon_fb) ImageView artist_link_fb;
         @Bind (R.id.icon_twitter) ImageView artist_link_twitter;
         @Bind (R.id.icon_wiki) ImageView artist_link_wiki;
@@ -181,38 +182,38 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             artist_genre.setText("Sw Genre ID: " +artist.getSw_genre_id());     //replace with actual genre names when we get them (waiting updated api)
 
 
-            switch(artist.getSw_genre_id()){
-                // pop & rock
-                case "10": llinfo.setBackgroundColor(context.getResources().getColor(R.color.poprock));
-                    break;
-                // hard rock & metal
-                case "11": llinfo.setBackgroundColor(context.getResources().getColor(R.color.hardrockmetal));
-                    break;
-                // indie & alternative
-                case "12": llinfo.setBackgroundColor(context.getResources().getColor(R.color.indiealternative));
-                    break;
-                // EDM & ibiza
-                case "14": llinfo.setBackgroundColor(context.getResources().getColor(R.color.edmibiza));
-                    break;
-                // EDM & ibiza
-                case "13": llinfo.setBackgroundColor(context.getResources().getColor(R.color.rnbhiphop));
-                    break;
-                default: llinfo.setBackgroundColor(0);
-            }
+//            switch(artist.getSw_genre_id()){
+//                // pop & rock
+//                case "10": llinfo.setBackgroundColor(context.getResources().getColor(R.color.poprock));
+//                    break;
+//                // hard rock & metal
+//                case "11": llinfo.setBackgroundColor(context.getResources().getColor(R.color.hardrockmetal));
+//                    break;
+//                // indie & alternative
+//                case "12": llinfo.setBackgroundColor(context.getResources().getColor(R.color.indiealternative));
+//                    break;
+//                // EDM & ibiza
+//                case "14": llinfo.setBackgroundColor(context.getResources().getColor(R.color.edmibiza));
+//                    break;
+//                // EDM & ibiza
+//                case "13": llinfo.setBackgroundColor(context.getResources().getColor(R.color.rnbhiphop));
+//                    break;
+//                default: llinfo.setBackgroundColor(0);
+//            }
 
             try{
                 if(artist.getSpotify_id().equals("Not found") || artist.getSpotify_id().equals("NA") || artist.getSpotify_id().isEmpty()){
-                    artist_spotify.setTextColor(Color.BLACK);
-                    artist_spotify.setText("Not found :<");
+//                    artist_spotify.setTextColor(Color.BLACK);
+//                    artist_spotify.setText("Not found :<");
                 } else {
                     String spotifyURL = "<a href='" + context.getResources().getString(R.string.spotify_url) + artist.getSpotify_id() + "'>Open in Spotify</a>";
 //                    Log.d("spotifyURl:", spotifyURL);
-                    artist_spotify.setText(Html.fromHtml(spotifyURL));
-                    artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
+//                    artist_spotify.setText(Html.fromHtml(spotifyURL));
+//                    artist_spotify.setMovementMethod(LinkMovementMethod.getInstance());
                 }
             } catch (Exception e) {
-                artist_spotify.setTextColor(Color.BLACK);
-                artist_spotify.setText("Not found :<");
+//                artist_spotify.setTextColor(Color.BLACK);
+//                artist_spotify.setText("Not found :<");
             }
             artist_link_official.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -289,6 +290,32 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
 
             venue_title.setText(venue.getName());
 
+            StringBuilder sb =  new StringBuilder();
+            String address;
+            try {
+                sb.append(venue.getLocation().getAddress_1());
+                sb.append(", ");
+            } catch(Exception e){Log.d("Address", "No address1");
+            }
+            try {
+                sb.append(venue.getLocation().getAddress_2());
+                sb.append(", ");
+            } catch(Exception e){Log.d("Address", "No address2");
+            }
+            try {
+                sb.append(venue.getLocation().getCity());
+                sb.append(", ");
+            } catch(Exception e){Log.d("Address", "No city");
+            }
+            try {
+                sb.append(venue.getLocation().getPost_code());
+            } catch(Exception e){Log.d("Address", "No post code");
+            }
+
+            address = sb.toString();
+
+            venue_address.setText(address);
+
             venue_website_official.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -313,24 +340,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             try{venue_website_sw.setText(venue.getSw_website());
             } catch (Exception e) {venue_website_sw.setText("N/A");}
 
-            String address, address1, address2, city, post_code;
-            address = address1 = address2 = city = post_code = "";
-            try {address1 = venue.getLocation().getAddress_1() + "\n";
-            } catch(Exception e){//Log.d("Address", "No address1");
-            }
-            try {address2 = venue.getLocation().getAddress_2() +"\n";
-            } catch(Exception e){//Log.d("Address", "No address2");
-            }
-            try {city = venue.getLocation().getCity() +"\n";
-            } catch(Exception e){//Log.d("Address", "No city");
-            }
-            try {post_code = venue.getLocation().getPost_code();
-            } catch(Exception e){//Log.d("Address", "No post code");
-            }
 
-            address = address1 + address2 + city + post_code;
-
-            venue_address.setText(address);
 
             String tickets2 = "Tickets unavailable";
 
@@ -367,17 +377,17 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
             final User user = myRealm.where(User.class).findFirst();
             //check if user has saved event before
             if (Arrays.asList(user.getStarredEventsArray()).contains(event.getId())) {
-                event_star.setImageResource(R.drawable.ic_star_yellow);
+                event_star.setImageResource(R.drawable.star_filled);
                 Log.d("Starred", event.getArtist().getName());
             } else {
-                event_star.setImageResource(R.drawable.ic_star_border_black_36dp);
+                event_star.setImageResource(R.drawable.star_outline);
             }
             event_star.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try{
                         if (Arrays.asList(user.getStarredEventsArray()).contains(event.getId())) {
-                            event_star.setImageResource(R.drawable.ic_star_border_black_36dp);
+                            event_star.setImageResource(R.drawable.star_outline);
                             myRealm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
@@ -385,7 +395,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                                 }
                             });
                         } else {
-                            event_star.setImageResource(R.drawable.ic_star_yellow);
+                            event_star.setImageResource(R.drawable.star_filled);
                             myRealm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
@@ -411,7 +421,7 @@ public class EventsAdapter extends RealmBasedRecyclerViewAdapter<Event, EventsAd
                                               int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent
                 .getContext());
-        View itemView = inflater.inflate(R.layout.listings_item_view,
+        View itemView = inflater.inflate(R.layout.listings_item_view_cardview,
                 parent, false);
         ViewHolder holder = new ViewHolder((LinearLayout)itemView);
         holder.llexpand.setOnClickListener(clickListener);

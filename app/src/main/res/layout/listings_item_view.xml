@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:orientation="horizontal"
-        android:id="@+id/llexpand">
+        android:id="@+id/llexpand"
+        android:background="@color/lightGrey">
 
         <!--<RelativeLayout-->
             <!--android:layout_width="0dp"-->
@@ -44,7 +45,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/black"/>
+            android:background="@android:color/darker_gray"/>
         <ImageView
             android:id="@+id/event_star"
             android:layout_width="40dp"
@@ -54,7 +55,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/black"/>
+            android:background="@android:color/darker_gray"/>
         <LinearLayout
             android:id="@+id/llinfo"
             android:layout_width="0dp"
@@ -62,25 +63,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!--<TextView-->
-                <!--android:id="@+id/textView_listings_title"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:padding="1dp"-->
-                <!--android:textSize="20sp"-->
-                <!--android:ellipsize="end"-->
-                <!--android:maxLines="1"-->
-                <!--android:textStyle="bold"-->
-                <!--android:text="Title"-->
-                <!--android:textColor="@android:color/black"/>-->
-
-            <!--Semi-works but mintextsize doesnt seem to be working yet-->
-
-            <me.grantland.widget.AutofitTextView
+            <TextView
                 android:id="@+id/textView_listings_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
@@ -88,14 +73,30 @@
                 android:textSize="20sp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                autofit:minTextSize="14sp"
                 android:textStyle="bold"
                 android:text="Title"
                 android:textColor="@android:color/black"/>
+
+            <!--Semi-works but mintextsize doesnt seem to be working yet-->
+
+            <!--<me.grantland.widget.AutofitTextView-->
+                <!--android:id="@+id/textView_listings_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:padding="1dp"-->
+                <!--android:textSize="20sp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--autofit:minTextSize="14sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="Title"-->
+                <!--android:textColor="@android:color/black"/>-->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/black"/>
+                android:background="@android:color/darker_gray"/>
             <TextView
                 android:id="@+id/textView_listings_date"
                 android:layout_width="match_parent"
@@ -146,9 +147,10 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/black"/>
+        android:background="@android:color/darker_gray"/>
 
     <include layout="@layout/listings_item_view_expandable"
         android:id="@+id/container_expandable"/>
 
 </com.kyo.expandablelayout.ExpandableLayout>
+

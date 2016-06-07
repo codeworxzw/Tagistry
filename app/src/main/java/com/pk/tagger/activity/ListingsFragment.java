@@ -94,7 +94,7 @@ public class ListingsFragment extends Fragment {
         Log.d("ListingsFragment Query", resultsQuery);
 
         mCustomTabActivityHelper = new CustomTabActivityHelper();
-        mCustomTabActivityHelper.setConnectionCallback(mConnectionCallback);
+//        mCustomTabActivityHelper.setConnectionCallback(mConnectionCallback);
 //        mCustomTabActivityHelper.mayLaunchUrl(Uri.parse(MY_URL), null, null);
 
         myRealm = Realm.getDefaultInstance();
@@ -397,16 +397,16 @@ public class ListingsFragment extends Fragment {
     }
 
     // You can use this callback to make UI changes
-    private CustomTabActivityHelper.ConnectionCallback mConnectionCallback = new CustomTabActivityHelper.ConnectionCallback() {
-        @Override
-        public void onCustomTabsConnected() {
-            Toast.makeText(getActivity(), "Connected to service", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onCustomTabsDisconnected() {
-            Toast.makeText(getActivity(), "Disconnected from service", Toast.LENGTH_SHORT).show();
-        }
-    };
+//    private CustomTabActivityHelper.ConnectionCallback mConnectionCallback = new CustomTabActivityHelper.ConnectionCallback() {
+//        @Override
+//        public void onCustomTabsConnected() {
+//            Toast.makeText(getActivity(), "Connected to service", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        @Override
+//        public void onCustomTabsDisconnected() {
+//            Toast.makeText(getActivity(), "Disconnected from service", Toast.LENGTH_SHORT).show();
+//        }
+//    };
 
 }
